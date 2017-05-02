@@ -1,6 +1,6 @@
 const { addToGQC } = require('./clogii/schema')
 
-global.nap.setBuildGraphqlSchema(({ GQC }) => {
+global.NAP.expose.setBuildGraphqlSchema(({ GQC }) => {
   addToGQC(GQC);
   return GQC.buildSchema();
 });
