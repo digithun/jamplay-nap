@@ -2,7 +2,7 @@ const { writeSeed, loadSeedId, genArray, casual } = require('../helpers');
 
 module.exports = async function generate() {
   const userIds = loadSeedId('user');
-  const authorIds = loadSeedId('author');
+  const authorIds = loadSeedId('user');
   let result = [];
   for (let i = 0; i < authorIds.length; i += 1) {
     const authorId = authorIds[i];
@@ -12,5 +12,5 @@ module.exports = async function generate() {
       editorId: authorId,
     }))];
   }
-  writeSeed('editor-follower', result);
+  writeSeed('user-follower', result);
 }

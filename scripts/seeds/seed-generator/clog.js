@@ -6,7 +6,7 @@ const { writeSeed, loadSeedId, cover, preview, genArray } = require('../helpers'
 const sequential = require('promise-sequential');
 
 module.exports = async function generate() {
-  const authorIds = loadSeedId('author');
+  const authorIds = loadSeedId('user');
   const tagIds = loadSeedId('tag');
   const authorId = authorIds[casual.integer(0, authorIds.length - 1)];
   const dumpClog = {

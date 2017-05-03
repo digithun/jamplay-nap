@@ -8,7 +8,7 @@ const { casual } = require('./helpers');
 const prog = require('caporal');
 const sequential = require('promise-sequential');
 
-const defaultTypes = ['author', 'tag', 'user', 'clog', 'episode', 'feed', 'bookmark', 'recommend', 'trending', 'clog-follower', 'editor-follower'].join(',');
+const defaultTypes = ['tag', 'user', 'clog', 'episode', 'feed', 'bookmark', 'recommend', 'trending', 'clog-follower', 'user-follower'].join(',');
 
 prog
   .version('1.0.0')
