@@ -9,7 +9,7 @@ module.exports = async function generate() {
     result = [...result, ...genArray(userIds, 1000).map(userId => ({
       _id: casual.objectId,
       userId,
-      editorId: authorId,
+      followUserId: authorId,
     }))];
   }
   writeSeed('user-follower', result);
