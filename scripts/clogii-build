@@ -5,3 +5,4 @@ NAME=clogii-content
 echo "$VERSION"
 echo "docker build -t "$NAME:$VERSION" -f ../Dockerfile.clogii"
 docker build -t "$NAME:$VERSION" -f Dockerfile.clogii .
+docker tag "$NAME:$VERSION" "$NAME:local-latest"
