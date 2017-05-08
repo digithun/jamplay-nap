@@ -1,4 +1,4 @@
-const config = require('./config');
+const config = require('./config')
 
 // Forget password
 const willResetPassword = (req, email) => new Promise(async (resolve, reject) => {
@@ -169,7 +169,7 @@ const willAuthen = (installationId, { id: userId, verified }, provider) => new P
   let authenData = {
     isLoggedIn: false,
     installationId,
-    userId,
+    userId
   }
 
   // Guard by user local verification if has
@@ -188,12 +188,15 @@ const willAuthen = (installationId, { id: userId, verified }, provider) => new P
     { installationId, userId },
     authenData,
     { new: true, upsert: true },
-    (err, result) => {
-      // Error?
-      err && debug.error(err) && reject(err)
-      // Succeed
-      resolve(result)
-    })
+    (err, result) => err ? reject(err) : resolve(result)
+  )
+})
+
+const willLogout = (installationId, userId, sessionToken) => new Promise((resolve, reject) => {
+  NAP.Authen.findOneAndUpdate({ installationId, userId, sessionToken, isLoggedIn: true }, {
+    loggedOutAt: new Date().toISOString(),
+    isLoggedIn: false
+  }, { new: true, upsert: false }, (err, result) => err ? reject(err) : resolve(result))
 })
 
 module.exports = {
@@ -203,5 +206,6 @@ module.exports = {
   willLoginWithFacebook,
   willSignUp,
   willLogin,
+  willLogout,
   willResetPassword
 }

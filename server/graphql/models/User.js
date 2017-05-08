@@ -1,18 +1,18 @@
 const mongoose = require('mongoose')
 const { composeWithMongoose } = require('graphql-compose-mongoose')
 
-const { buildMongooseSchema } = require('./helpers');
+const { buildMongooseSchema } = require('./helpers')
 
-module.exports = (config = {}) => {
+module.exports = (extendedSchema) => {
   const ProviderSchema = new mongoose.Schema(
     {
       id: String,
       token: String,
       profile: {},
-      isUnlink: Boolean,
+      isUnlink: Boolean
     },
     {
-      _id: false, // disable `_id` field for `Provider` schema
+      _id: false // disable `_id` field for `Provider` schema
     }
   )
   const UserSchemaObject = {
@@ -30,14 +30,14 @@ module.exports = (config = {}) => {
     twitter: { type: ProviderSchema },
     google: { type: ProviderSchema },
     github: { type: ProviderSchema },
-    role: { type: String, default: 'user' },
+    role: { type: String, default: 'user' }
   }
 
   const UserSchema = new mongoose.Schema(
     Object.assign(
-      buildMongooseSchema(UserSchemaObject, config)
+      buildMongooseSchema(UserSchemaObject, extendedSchema)
     ), {
-      timestamps: true,
+      timestamps: true
     }
   )
 
@@ -60,25 +60,15 @@ module.exports = (config = {}) => {
       type: 'Boolean!',
       resolve: (source) => {
         if (source.facebook && !source.facebook.isUnlink) {
-          return true;
+          return true
         }
-        return false;
+        return false
       },
-      projection: { facebook: true },
-    },
-  });
+      projection: { facebook: true }
+    }
+  })
 
   const Provider = mongoose.model('Provider', ProviderSchema)
 
-  const createUser = userData => new Promise((resolve, reject) => {
-    userData = Object.assign(userData, { role: 'user' })
-
-    User.create(userData, (err, result) => {
-      // Error?
-      err && debug.error(err) && reject(err)
-      // Succeed
-      resolve(result)
-    })
-  })
-  return { User, UserTC, Provider, createUser, model: User, typeComposer: UserTC };
-};
+  return { User, UserTC, Provider, model: User, typeComposer: UserTC }
+}

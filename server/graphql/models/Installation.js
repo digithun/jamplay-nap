@@ -1,9 +1,9 @@
 const mongoose = require('mongoose')
 const { composeWithMongoose } = require('graphql-compose-mongoose')
 
-const { buildMongooseSchema } = require('./helpers');
+const { buildMongooseSchema } = require('./helpers')
 
-module.exports = (config) => {
+module.exports = (extendedSchema) => {
   const InstallationSchemaObject = {
     deviceInfo: String,
     locale: String,
@@ -19,45 +19,19 @@ module.exports = (config) => {
     GCMSenderId: String,
     deviceToken: String,
     badge: String,
-    channels: String,
-  };
+    channels: String
+  }
 
   const InstallationSchema = new mongoose.Schema(
     Object.assign(
-      buildMongooseSchema(InstallationSchemaObject, config)
+      buildMongooseSchema(InstallationSchemaObject, extendedSchema)
     ), {
-      timestamps: true,
+      timestamps: true
     }
   )
 
   const Installation = mongoose.model('Installation', InstallationSchema)
   const InstallationTC = composeWithMongoose(Installation)
 
-  const willInstall = (device) => new Promise((resolve, reject) => {
-    Installation.create(device, (err, result) => {
-      // Error?
-      err && debug.error(err) && reject(err)
-      // Succeed
-      resolve(result)
-    })
-  })
-
-  const willUpdateField = (installationId, fieldObject) => new Promise((resolve, reject) => {
-    Installation.findOneAndUpdate(
-      // Find
-      { installationId },
-      // Update
-      fieldObject,
-      // Options
-      { new: true, upsert: false },
-      // Callback
-      (err, result) => {
-        // Error?
-        err && debug.error(err) && reject(err)
-        // Succeed
-        resolve(result)
-      })
-  })
-
-  return { Installation, InstallationTC, InstallationSchema, willInstall, willUpdateField };
-};
+  return { Installation, InstallationTC, InstallationSchema }
+}
