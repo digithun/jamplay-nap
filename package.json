@@ -44,6 +44,7 @@
     "apollo-client": "^1.2.0",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.17.1",
+    "clogii-snapshot": "git+ssh://git@github.com/digithun/clogii-snapshot.git",
     "connect-redis": "^3.3.0",
     "cookie-parser": "^1.4.3",
     "cors": "^2.8.3",
@@ -89,6 +90,7 @@
     "redux": "^3.6.0",
     "redux-thunk": "^2.2.0",
     "superagent": "^3.5.2",
+    "tmp-promise": "^1.0.3",
     "uuid": "^3.0.1",
     "validator": "^7.0.0"
   },
