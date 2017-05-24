@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { gql, graphql } from 'react-apollo'
 
 const Forget = ({ forget }) => {
@@ -16,7 +17,7 @@ const Forget = ({ forget }) => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <h1>Forget Password</h1>
+      <h1>Forget Password (GraphQL)</h1>
       <input placeholder='email' name='email' defaultValue='katopz@gmail.com' />
       <button type='submit'>Forget</button>
       <style jsx>{`
@@ -52,7 +53,7 @@ mutation forget($email: String!) {
 `
 
 Forget.propTypes = () => ({
-  forget: React.PropTypes.func.isRequired
+  forget: PropTypes.func.isRequired
 })
 
 export default graphql(forget, {
@@ -63,7 +64,7 @@ export default graphql(forget, {
         userProfile: (previousResult, { mutationResult }) => {
           // Guard
           if (mutationResult.data.errors.length > 0) {
-            console.error(mutationResult.data.errors[0].message)
+            console.error(mutationResult.data.errors[0].message) // eslint-disable-line
             return mutationResult.data.forget
           }
 

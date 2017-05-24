@@ -2,6 +2,7 @@ import React from 'react'
 import { gql, graphql } from 'react-apollo'
 import persist from '../../lib/persist'
 import userProfile from '../userProfile.gql'
+import PropTypes from 'prop-types'
 
 const SignUp = ({ signup }) => {
   const handleSubmit = (e) => {
@@ -20,9 +21,9 @@ const SignUp = ({ signup }) => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <h1>SignUp</h1>
+      <h1>SignUp (GraphQL)</h1>
       <input placeholder='email' name='email' defaultValue='katopz@gmail.com' />
-      <input placeholder='password' name='password' defaultValue='barbar' />
+      <input placeholder='password' name='password' defaultValue='foobar' />
       <button type='submit'>SignUp</button>
       <style jsx>{`
         form {
@@ -61,38 +62,32 @@ mutation signup($email: String!, $password: String!) {
 `
 
 SignUp.propTypes = () => ({
-  signup: React.PropTypes.func.isRequired
+  signup: PropTypes.func.isRequired
 })
 
 export default graphql(signup, {
   props: ({ mutate }) => ({
     signup: (email, password) => mutate({
       variables: { email, password },
-      updateQueries: {
-        userProfile: (previousResult, { mutationResult }) => {
-          // Guard
-          if (mutationResult.data.errors.length > 0) {
-            console.error(mutationResult.data.errors[0].message)
-            return mutationResult.data.signup
-          }
+      update: (proxy, { data }) => {
+        // Keep session
+        data.signup && persist.willSetSessionToken(data.signup.sessionToken)
 
-          // Keep session
-          mutationResult.data.signup && persist.willSetSessionToken(mutationResult.data.signup.sessionToken)
-
-          // Provide user
-          return mutationResult.data.signup
-        }
-      },
-      update: (proxy) => {
         // Read the data from our cache for this query.
         let cached = proxy.readQuery({ query: userProfile })
 
-        // Modify it
-        /* TODO : Do we need this?
-        cached.authen.isLoggedIn = false
-        cached.authen.sessionToken = null
-        cached.user = null
-        */
+        // Errors
+        cached.errors = data.errors
+
+        // User
+        cached.user = data.signup ? data.signup.user : { _id: null, name: null, status: null, _typename: 'User' }
+
+        // Authen
+        cached.authen = {
+          isLoggedIn: data.signup ? data.signup.isLoggedIn : null,
+          sessionToken: data.signup ? data.signup.sessionToken : null,
+          _typename: 'Authen'
+        }
 
         // Write our data back to the cache.
         proxy.writeQuery({ query: userProfile, data: cached })

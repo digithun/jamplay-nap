@@ -1,33 +1,48 @@
 import React from 'react'
-import { gql, graphql } from 'react-apollo'
+import { gql, graphql, compose } from 'react-apollo'
 import persist from '../../lib/persist'
 import device from '../../lib/device'
 import userProfile from '../userProfile.gql'
+import PropTypes from 'prop-types'
 
-const LoginWithFacebook = ({ loginWithFacebook }) => {
-  const handleSubmit = (e) => {
+class LoginWithFacebook extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = { accessToken: '' }
+    this.loginWithFacebook = props.loginWithFacebook
+  }
+
+  handleChange(event) {
+    this.setState({ accessToken: event.target.value })
+  }
+
+  handleSubmit(e) {
     e.preventDefault()
 
-    let deviceInfo = e.target.elements.deviceInfo.value
-    let accessToken = e.target.elements.accessToken.value
+    const deviceInfo = e.target.elements.deviceInfo.value
+    const accessToken = e.target.elements.accessToken.value
 
     if (deviceInfo === '' || accessToken === '') {
       window.alert('Both fields are required.')
       return false
     }
 
-    loginWithFacebook(deviceInfo, accessToken)
+    this.loginWithFacebook(deviceInfo, accessToken)
 
     // reset form
     e.target.elements.deviceInfo.value = ''
     e.target.elements.accessToken.value = ''
   }
 
-  return (
-    <form onSubmit={handleSubmit}>
-      <h1>Login with Facebook accessToken</h1>
+  componentDidMount() {
+    persist.willGetAccessToken().then(accessToken => this.setState({ accessToken }))
+  }
+
+  render() {
+    return <form onSubmit={this.handleSubmit.bind(this)}>
+      <h1>Login (GraphQL) with Facebook accessToken</h1>
       <input placeholder='deviceInfo' name='deviceInfo' defaultValue={device.info()} />
-      <input placeholder='accessToken' name='accessToken' defaultValue='EAABnTrZBSJyYBAKvcWAcAOUwt07ZCVxhCYQwKKWFZAwtOhsGYZAc7olL04W8eJTlxBeZCmxCQO9kYZA4kKtTD0zmZChhb5hEoZBl7JHT0Rx39uGP8ow2X9vGoTLFZCm4Dd0NFvH0qsHXNYinsOKjszfSJVOj3DZChv0MNszawr1le8O0ToqI3Ak9Jr8X3X6imEtvJ2q8ceeVh5Ux1rSbgypRQNRDjlredVXpIZD' />
+      <input placeholder='accessToken' name='accessToken' value={this.state.accessToken} onChange={this.handleChange.bind(this)} />
       <button type='submit'>Login</button>
       <style jsx>{`
         form {
@@ -44,7 +59,7 @@ const LoginWithFacebook = ({ loginWithFacebook }) => {
         }
       `}</style>
     </form>
-  )
+  }
 }
 
 const loginWithFacebook = gql`
@@ -66,30 +81,31 @@ mutation loginWithFacebook($deviceInfo: String!, $accessToken: String!) {
 `
 
 LoginWithFacebook.propTypes = () => ({
-  loginWithFacebook: React.PropTypes.func.isRequired
+  loginWithFacebook: PropTypes.func.isRequired
 })
 
-export default graphql(loginWithFacebook, {
+const withGraphQL = graphql(loginWithFacebook, {
   props: ({ mutate }) => ({
     loginWithFacebook: (deviceInfo, accessToken) => mutate({
       variables: { deviceInfo, accessToken },
-      updateQueries: {
-        userProfile: (previousResult, { mutationResult }) => {
-          // Keep session
-          persist.willSetSessionToken(mutationResult.data.loginWithFacebook.sessionToken)
-
-          // Provide user
-          return mutationResult.data.loginWithFacebook
-        }
-      },
       update: (proxy, { data }) => {
+        // Keep session
+        persist.willSetSessionToken(data.loginWithFacebook.sessionToken)
+          
         // Read the data from our cache for this query.
         let cached = proxy.readQuery({ query: userProfile })
 
-        // Modify it
-        if (cached && cached.authen) {
-          cached.authen.isLoggedIn = data.loginWithFacebook ? data.loginWithFacebook.isLoggedIn : false
-          cached.authen.sessionToken = data.loginWithFacebook ? data.loginWithFacebook.sessionToken : null
+        // Errors
+        cached.errors = data.errors
+
+        // User
+        cached.user = data.loginWithFacebook.user
+
+        // Authen
+        cached.authen = {
+          isLoggedIn: data.loginWithFacebook.isLoggedIn,
+          sessionToken: data.loginWithFacebook.sessionToken,
+          _typename: 'Authen'
         }
 
         // Write our data back to the cache.
@@ -97,4 +113,8 @@ export default graphql(loginWithFacebook, {
       }
     })
   })
-})(LoginWithFacebook)
+})
+
+export default compose(
+  withGraphQL,
+)(LoginWithFacebook)
