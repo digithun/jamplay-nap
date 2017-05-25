@@ -42,6 +42,7 @@
   },
   "dependencies": {
     "apollo-client": "^1.2.2",
+    "apollo-upload-server": "^2.0.1",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.17.2",
     "connect-redis": "^3.3.0",
