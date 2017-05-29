@@ -1,12 +1,13 @@
-const { GraphQLInputObjectType, GraphQLNonNull, GraphQLString } = require('graphql')
+const { GraphQLInputObjectType, GraphQLNonNull, GraphQLString, GraphQLInt } = require('graphql')
 const { InputTypeComposer } = require('graphql-compose')
 const InputType = new InputTypeComposer(
     new GraphQLInputObjectType({
-      name: 'FileInput',
+      name: 'File',
       fields: {
         name: { type: new GraphQLNonNull(GraphQLString) },
         type: { type: new GraphQLNonNull(GraphQLString) },
-        mapKey: { type: new GraphQLNonNull(GraphQLString) },
+        size: { type: new GraphQLNonNull(GraphQLInt) },
+        path: { type: new GraphQLNonNull(GraphQLString) },
       },
     })
 )

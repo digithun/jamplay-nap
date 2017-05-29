@@ -15,6 +15,7 @@ module.exports.getFile = (fileInput, context) => {
   return context.files.find(file => {
     return file.originalname === fileInput.mapKey
   })
+  // return fileInput;
 }
 module.exports.extendModel = require('./models').extendModel
 module.exports.setBuildGraphqlSchema = (builder) => (buildGraphqlSchema = builder)

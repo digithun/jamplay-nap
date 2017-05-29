@@ -1,5 +1,7 @@
 const fs = require('fs')
 const path = require('path')
+const bodyParser = require('body-parser')
+const { apolloUploadExpress } = require('apollo-upload-server')
 
 const init = (config, app) => {
   NAP.expose = {
@@ -27,16 +29,23 @@ const init = (config, app) => {
   const { buildSchema } = require('./graphql')
   const { authenticate } = require('./jwt-token')
   const schema = buildSchema()
-  app.use('/graphql', upload.array('files'), authenticate, graphqlHTTP(() => {
-    return {
-      schema,
-      graphiql: config.graphiql_enabled,
-      formatError: (error) => ({
-        message: error.message,
-        stack: !error.message.match(/[NOSTACK]/i) ? error.stack.split('\n') : null,
-      }),
-    }
-  }))
+  app.use(
+    '/graphql',
+    bodyParser.json(),
+    upload.array('files'),
+    apolloUploadExpress(),
+    authenticate,
+    graphqlHTTP(() => {
+      return {
+        schema,
+        graphiql: config.graphiql_enabled,
+        formatError: (error) => ({
+          message: error.message,
+          stack: !error.message.match(/[NOSTACK]/i) ? error.stack.split('\n') : null,
+        }),
+      }
+    })
+  )
 }
 
 module.exports = init
