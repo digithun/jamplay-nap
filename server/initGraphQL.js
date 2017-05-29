@@ -32,7 +32,7 @@ const init = (config, app) => {
   app.use(
     '/graphql',
     bodyParser.json(),
-    upload.array('files'),
+    // upload.array('files'),
     apolloUploadExpress(),
     authenticate,
     graphqlHTTP(() => {
