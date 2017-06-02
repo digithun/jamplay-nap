@@ -6,17 +6,17 @@ import userProfile from '../userProfile.gql'
 import PropTypes from 'prop-types'
 
 class LoginWithFacebook extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = { accessToken: '' }
     this.loginWithFacebook = props.loginWithFacebook
   }
 
-  handleChange(event) {
+  handleChange (event) {
     this.setState({ accessToken: event.target.value })
   }
 
-  handleSubmit(e) {
+  handleSubmit (e) {
     e.preventDefault()
 
     const deviceInfo = e.target.elements.deviceInfo.value
@@ -34,11 +34,11 @@ class LoginWithFacebook extends React.Component {
     e.target.elements.accessToken.value = ''
   }
 
-  componentDidMount() {
+  componentDidMount () {
     persist.willGetAccessToken().then(accessToken => this.setState({ accessToken }))
   }
 
-  render() {
+  render () {
     return <form onSubmit={this.handleSubmit.bind(this)}>
       <h1>Login (GraphQL) with Facebook accessToken</h1>
       <input placeholder='deviceInfo' name='deviceInfo' defaultValue={device.info()} />
@@ -91,7 +91,7 @@ const withGraphQL = graphql(loginWithFacebook, {
       update: (proxy, { data }) => {
         // Keep session
         persist.willSetSessionToken(data.loginWithFacebook.sessionToken)
-          
+
         // Read the data from our cache for this query.
         let cached = proxy.readQuery({ query: userProfile })
 
@@ -116,5 +116,5 @@ const withGraphQL = graphql(loginWithFacebook, {
 })
 
 export default compose(
-  withGraphQL,
+  withGraphQL
 )(LoginWithFacebook)
