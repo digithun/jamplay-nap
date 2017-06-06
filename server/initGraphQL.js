@@ -5,8 +5,8 @@ const { apolloUploadExpress } = require('apollo-upload-server')
 
 const { is_optics_enabled,
   bigquery_api_endpoint,
-  bigquery_header,
-  bigquery_insert_body_template } = require('./config')
+  bigquery_authorization,
+  bigquery_metadata } = require('./config')
 const OpticsAgent = require('optics-agent');
 
 //isomorphic-fetch
@@ -46,19 +46,16 @@ const init = (config, app) => {
   //bigquery
   app.use('/bigQuery/insert', (req, res) => {
     //copy from template
-    const bodyObj = Object.assign({}, bigquery_insert_body_template)
+    const bodyObj = Object.assign({}, bigquery_metadata.BIGQUERY_INSERT_BODY_TEMPLATE)
     //modify params
     bodyObj.params = Object.assign(bodyObj.params, {
       tableId: req.body.tableId || bodyObj.params.tableId,
       rows: req.body.rows
     });
 
-    console.log('type',(typeof req.body.rows))
-    console.log('req',req.body)
-
     fetch(bigquery_api_endpoint, {
       method: 'POST',
-      headers: bigquery_header,
+      headers: { "Content-Type": "application/json", "Authorization": bigquery_authorization },
       body: JSON.stringify(bodyObj)
     }).then(async (fetchRes) => {
       //const restext = await fetchRes.json()

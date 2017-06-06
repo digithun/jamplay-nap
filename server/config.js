@@ -30,9 +30,8 @@ const config = {
 
   // BigQuery
   bigquery_api_endpoint: process.env.BIGQUERY_API_ENDPOINT || 'http://bigquery',
-  bigquery_header: JSON.parse(process.env.BIGQUERY_HEADER || '{"Content-Type":"application/json","Authorization":"BvsoVUVdqO"}'),
-  bigquery_insert_body_template: JSON.parse(process.env.BIGQUERY_INSERT_BODY_TEMPLATE || '{"method":"null"}'),
-  bigquery_query_body_template: JSON.parse(process.env.BIGQUERY_QUERY_BODY_TEMPLATE || '{"method":"null"}')
+  bigquery_authorization: process.env.BIGQUERY_AUTHORIZATION || 'xxx',
+  bigquery_metadata: require(process.env.BIGQUERY_METADATA) || {}
 
 }
 
