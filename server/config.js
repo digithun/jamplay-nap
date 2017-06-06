@@ -32,7 +32,14 @@ const config = {
 
   bigquery_api_endpoint: process.env.BIGQUERY_API_ENDPOINT || 'http://bigquery',
   bigquery_authorization: process.env.BIGQUERY_AUTHORIZATION || 'xxx',
-  bigquery_metadata: process.env.hasOwnProperty('BIGQUERY_METADATA') && require(process.env.BIGQUERY_METADATA) || {}
+  bigquery_config: process.env.hasOwnProperty('BIGQUERY_CONFIG') && require(process.env.BIGQUERY_CONFIG) || (() => {
+    console.log('Warning, you must provide a path for BIGQUERY_CONFIG ENV, so that bigquery will execute normally, see .env.example for detail')
+    return {}
+  })(),
+  bigquery_route_map: process.env.hasOwnProperty('BIGQUERY_ROUTE_MAP') && require(process.env.BIGQUERY_ROUTE_MAP) || (() => {
+    console.log('Warning, you must provide a path for BIGQUERY_ROUTE_MAP ENV, so that bigquery can map route to collection correctly, see .env.example for detail')
+    return {}
+  })()
 }
 
 module.exports = config

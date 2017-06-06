@@ -14,7 +14,8 @@
     "server",
     "graphql",
     "providers",
-    "routes"
+    "routes",
+    "bigquery"
   ],
   "ext": "js json"
 }

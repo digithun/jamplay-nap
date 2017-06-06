@@ -6,7 +6,7 @@ const { apolloUploadExpress } = require('apollo-upload-server')
 const { is_optics_enabled,
   bigquery_api_endpoint,
   bigquery_authorization,
-  bigquery_metadata } = require('./config')
+  bigquery_config } = require('./config')
 const OpticsAgent = require('optics-agent');
 
 //isomorphic-fetch
@@ -44,22 +44,25 @@ const init = (config, app) => {
   is_optics_enabled && app.use(OpticsAgent.middleware())
 
   //bigquery
-  app.use('/bigQuery/insert', (req, res) => {
+  if (bigquery_config.hasOwnProperty('BIGQUERY_INSERT_BODY_TEMPLATE')) app.use('/bigQuery/insert', (req, res) => {
+    const { convertRouteNameToCollection } = require('../bigquery/routeCollection.helper')
     //copy from template
-    const bodyObj = Object.assign({}, bigquery_metadata.BIGQUERY_INSERT_BODY_TEMPLATE)
+    const bodyObj = Object.assign({}, bigquery_config.BIGQUERY_INSERT_BODY_TEMPLATE)
     //modify params
     bodyObj.params = Object.assign(bodyObj.params, {
       tableId: req.body.tableId || bodyObj.params.tableId,
       rows: req.body.rows
     });
+    //fix row route name
+    bodyObj.params.rows = convertRouteNameToCollection(bodyObj.params.rows)
 
+    //map raw route to collection
     fetch(bigquery_api_endpoint, {
       method: 'POST',
       headers: { "Content-Type": "application/json", "Authorization": bigquery_authorization },
       body: JSON.stringify(bodyObj)
-    }).then(async (fetchRes) => {
-      //const restext = await fetchRes.json()
-      res.status(fetchRes.status).send(fetchRes.json())
+    }).then(fetchRes => {
+      res.sendStatus(fetchRes.status)
     })
   })
 
@@ -72,9 +75,9 @@ const init = (config, app) => {
     graphqlHTTP((req) => {
       return {
         schema,
-        context: Object.assign({
+        context: is_optics_enabled ? Object.assign({
           opticsContext: OpticsAgent.context(req),
-        }, req),
+        }, req) : req.context,
         graphiql: config.graphiql_enabled,
         formatError: (error) => ({
           message: error.message,

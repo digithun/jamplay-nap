@@ -24,6 +24,10 @@ COPY templates /usr/app/templates
 RUN mkdir -p /usr/app/server
 COPY server /usr/app/server
 
+# bigquery
+RUN mkdir -p /usr/app/bigquery
+COPY bigquery /usr/app/bigquery
+
 # From here we load our application's code in, therefore the previous docker
 # "layer" thats been cached will be used if possible
 COPY package.json /usr/app/
@@ -34,7 +38,7 @@ COPY index.js /usr/app/
 COPY nodemon.json /usr/app/
 
 # Make volume path
-VOLUME ["/usr/app/.env", "/usr/app/pages", "/usr/app/components", "/usr/app/lib", "/usr/app/public", "/usr/app/graphql", "/usr/app/routes", "/usr/app/providers", "/usr/app/templates", "/usr/app/server"]
+VOLUME ["/usr/app/.env", "/usr/app/pages", "/usr/app/components", "/usr/app/lib", "/usr/app/public", "/usr/app/graphql", "/usr/app/routes", "/usr/app/providers", "/usr/app/templates", "/usr/app/server", "/usr/app/bigquery"]
 
 # Port
 # Node Inspector port
