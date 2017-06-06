@@ -24,6 +24,16 @@ const config = {
 
   mubsub: process.env.MUBSUB_URI,
   mubsub_enabled: process.env.MUBSUB_URI !== undefined && !!process.env.MUBSUB_URI,
+
+  // appolo optics
+  is_optics_enabled: parseInt(process.env.IS_OPTICS_ENABLED || '0') === 1,
+
+  // BigQuery
+  bigquery_api_endpoint: process.env.BIGQUERY_API_ENDPOINT || 'http://bigquery',
+  bigquery_header: JSON.parse(process.env.BIGQUERY_HEADER || '{"Content-Type":"application/json","Authorization":"BvsoVUVdqO"}'),
+  bigquery_insert_body_template: JSON.parse(process.env.BIGQUERY_INSERT_BODY_TEMPLATE || '{"method":"null"}'),
+  bigquery_query_body_template: JSON.parse(process.env.BIGQUERY_QUERY_BODY_TEMPLATE || '{"method":"null"}')
+
 }
 
 module.exports = config
