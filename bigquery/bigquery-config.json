@@ -1,0 +1,19 @@
+{
+   "BIGQUERY_INSERT_BODY_TEMPLATE": {
+      "method": "insertRowsAsStream",
+      "params": {
+         "datasetId": "logEvent",
+         "tableId": "navigation3",
+         "projectId": "jamplay-9a8cd"
+      }
+   },
+   "BIGQUERY_QUERY_BODY_TEMPLATE": {
+      "method": "query",
+      "params": {
+         "datasetId": "logEvent",
+         "tableId": "navigation3",
+         "projectId": "jamplay-9a8cd",
+         "query": "select contentId, count(*) as count from navigation3 group by contentId order by count desc"
+      }
+   }
+}
