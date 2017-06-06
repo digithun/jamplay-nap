@@ -29,10 +29,10 @@ const config = {
   is_optics_enabled: parseInt(process.env.IS_OPTICS_ENABLED || '0') === 1,
 
   // BigQuery
+
   bigquery_api_endpoint: process.env.BIGQUERY_API_ENDPOINT || 'http://bigquery',
   bigquery_authorization: process.env.BIGQUERY_AUTHORIZATION || 'xxx',
-  bigquery_metadata: require(process.env.BIGQUERY_METADATA) || {}
-
+  bigquery_metadata: process.env.hasOwnProperty('BIGQUERY_METADATA') && require(process.env.BIGQUERY_METADATA) || {}
 }
 
 module.exports = config
