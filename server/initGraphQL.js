@@ -44,37 +44,41 @@ const init = (config, app) => {
   is_optics_enabled && app.use(OpticsAgent.middleware())
 
   //bigquery
-  if (bigquery_config.hasOwnProperty('BIGQUERY_INSERT_BODY_TEMPLATE')) app.use('/bigQuery/insert', (req, res) => {
-    console.log('+1 views for ',req.body.rows.contentId)
-    const { convertRouteNameToCollection } = require('../bigquery/routeCollection.helper')
-    //copy from template
-    const bodyObj = Object.assign({}, bigquery_config.BIGQUERY_INSERT_BODY_TEMPLATE)
-    //modify params
-    bodyObj.params = Object.assign(bodyObj.params, {
-      tableId: req.body.tableId || bodyObj.params.tableId,
-      rows: req.body.rows
-    });
-    //fix row route name
-    bodyObj.params.rows = convertRouteNameToCollection(bodyObj.params.rows)
+  const { bigqueryInit } = require('../bigquery/queryCollection')
+  if (bigquery_config.hasOwnProperty('BIGQUERY_INSERT_BODY_TEMPLATE')) {
+    app.post('/bigQuery/insert', (req, res) => {
+      console.log('+1 views for ', req.body.rows.contentId)
+      const { convertRouteNameToCollection } = require('../bigquery/routeCollection.helper')
+      //copy from template
+      const bodyObj = Object.assign({}, bigquery_config.BIGQUERY_INSERT_BODY_TEMPLATE)
+      //modify params
+      bodyObj.params = Object.assign(bodyObj.params, {
+        tableId: req.body.tableId || bodyObj.params.tableId,
+        rows: req.body.rows
+      });
+      //fix row route name
+      bodyObj.params.rows = convertRouteNameToCollection(bodyObj.params.rows)
 
-    //map raw route to collection
-    fetch(bigquery_api_endpoint, {
-      method: 'POST',
-      headers: { "Content-Type": "application/json", "Authorization": bigquery_authorization },
-      body: JSON.stringify(bodyObj)
-    }).then(fetchRes => {
-      res.sendStatus(fetchRes.status)
+      //map raw route to collection
+      fetch(bigquery_api_endpoint, {
+        method: 'POST',
+        headers: { "Content-Type": "application/json", "Authorization": bigquery_authorization },
+        body: JSON.stringify(bodyObj)
+      }).then(fetchRes => {
+        res.sendStatus(fetchRes.status)
+      })
     })
-  })
 
-  const makeContext = (req) => {
-    const context = is_optics_enabled ? Object.assign({
-      opticsContext: OpticsAgent.context(req),
-    }, req) : req.context
-
-    context.bigQueryCollection = require('../bigquery/queryCollection');
-
-    return context
+    // app.post('/bigQuery/verify', (req, res) => {
+    //   //map raw route to collection
+    //   fetch(bigquery_api_endpoint, {
+    //     method: 'POST',
+    //     headers: { "Content-Type": "application/json", "Authorization": bigquery_authorization },
+    //     body: JSON.stringify(bigquery_config.BIGQUERY_QUERY_VERIFY_EXIST)
+    //   }).then(fetchRes => {
+    //     res.sendStatus(fetchRes.status)
+    //   })
+    // })
   }
 
   app.use(
@@ -83,10 +87,10 @@ const init = (config, app) => {
     // upload.array('files'),
     apolloUploadExpress(),
     authenticate,
-    graphqlHTTP((req) => {
+    bigqueryInit,
+    graphqlHTTP(() => {
       return {
         schema,
-        context: makeContext(req),
         graphiql: config.graphiql_enabled,
         formatError: (error) => ({
           message: error.message,

@@ -39,7 +39,8 @@ const config = {
   bigquery_route_map: process.env.hasOwnProperty('BIGQUERY_ROUTE_MAP') && require(process.env.BIGQUERY_ROUTE_MAP) || (() => {
     console.log('Warning, you must provide a path for BIGQUERY_ROUTE_MAP ENV, so that bigquery can map route to collection correctly, see .env.example for detail')
     return {}
-  })()
+  })(),
+  is_bigquery_enable: process.env.IS_BIGQUERY_ENABLE || false,
 }
 
 module.exports = config

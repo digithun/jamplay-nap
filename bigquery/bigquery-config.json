@@ -15,5 +15,9 @@
          "projectId": "jamplay-9a8cd",
          "query": "select contentId, count(*) as count from navigation3 where contentType = '{contentType}' and contentId = '{contentId}' group by contentId order by count desc"
       }
-   }
+   },
+   "BIGQUERY_QUERY_VERIFY_EXIST": {
+      "method": "verify"
+   },
+   "BIGQUERY_CACHE_TTL_SEC": 60
 }
