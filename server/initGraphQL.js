@@ -45,6 +45,7 @@ const init = (config, app) => {
 
   //bigquery
   if (bigquery_config.hasOwnProperty('BIGQUERY_INSERT_BODY_TEMPLATE')) app.use('/bigQuery/insert', (req, res) => {
+    console.log('+1 views for ',req.body.rows.contentId)
     const { convertRouteNameToCollection } = require('../bigquery/routeCollection.helper')
     //copy from template
     const bodyObj = Object.assign({}, bigquery_config.BIGQUERY_INSERT_BODY_TEMPLATE)
@@ -66,6 +67,16 @@ const init = (config, app) => {
     })
   })
 
+  const makeContext = (req) => {
+    const context = is_optics_enabled ? Object.assign({
+      opticsContext: OpticsAgent.context(req),
+    }, req) : req.context
+
+    context.bigQueryCollection = require('../bigquery/queryCollection');
+
+    return context
+  }
+
   app.use(
     '/graphql',
     bodyParser.json(),
@@ -75,9 +86,7 @@ const init = (config, app) => {
     graphqlHTTP((req) => {
       return {
         schema,
-        context: is_optics_enabled ? Object.assign({
-          opticsContext: OpticsAgent.context(req),
-        }, req) : req.context,
+        context: makeContext(req),
         graphiql: config.graphiql_enabled,
         formatError: (error) => ({
           message: error.message,

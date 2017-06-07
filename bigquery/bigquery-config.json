@@ -7,13 +7,13 @@
          "projectId": "jamplay-9a8cd"
       }
    },
-   "BIGQUERY_QUERY_BODY_TEMPLATE": {
+   "BIGQUERY_QUERY_COUNT_CONTENT": {
       "method": "query",
       "params": {
          "datasetId": "logEvent",
          "tableId": "navigation3",
          "projectId": "jamplay-9a8cd",
-         "query": "select contentId, count(*) as count from navigation3 group by contentId order by count desc"
+         "query": "select contentId, count(*) as count from navigation3 where contentType = '{contentType}' and contentId = '{contentId}' group by contentId order by count desc"
       }
    }
 }
