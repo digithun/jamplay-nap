@@ -7,18 +7,18 @@ const { is_optics_enabled,
   bigquery_api_endpoint,
   bigquery_authorization,
   bigquery_config } = require('./config')
-const OpticsAgent = require('optics-agent');
+const OpticsAgent = require('optics-agent')
 
-//isomorphic-fetch
-require('es6-promise').polyfill();
-require('isomorphic-fetch');
+// isomorphic-fetch
+require('es6-promise').polyfill()
+require('isomorphic-fetch')
 
 const init = (config, app) => {
   NAP.expose = {
     extendModel: require('./graphql').extendModel,
     setBuildGraphqlSchema: require('./graphql').setBuildGraphqlSchema,
     FileType: require('./graphql/types/File'),
-    getFile: require('./graphql').getFile,
+    getFile: require('./graphql').getFile
   }
 
   if (fs.existsSync(path.resolve(__dirname, '../graphql/setup.js'))) {
@@ -43,36 +43,38 @@ const init = (config, app) => {
   const schema = is_optics_enabled ? OpticsAgent.instrumentSchema(buildSchema()) : buildSchema()
   is_optics_enabled && app.use(OpticsAgent.middleware())
 
-  //bigquery
-  if (bigquery_config.hasOwnProperty('BIGQUERY_INSERT_BODY_TEMPLATE')) app.use('/bigQuery/insert', (req, res) => {
-    console.log('+1 views for ',req.body.rows.contentId)
-    const { convertRouteNameToCollection } = require('../bigquery/routeCollection.helper')
-    //copy from template
-    const bodyObj = Object.assign({}, bigquery_config.BIGQUERY_INSERT_BODY_TEMPLATE)
-    //modify params
-    bodyObj.params = Object.assign(bodyObj.params, {
-      tableId: req.body.tableId || bodyObj.params.tableId,
-      rows: req.body.rows
-    });
-    //fix row route name
-    bodyObj.params.rows = convertRouteNameToCollection(bodyObj.params.rows)
+  // bigquery
+  if (bigquery_config.hasOwnProperty('BIGQUERY_INSERT_BODY_TEMPLATE')) {
+    app.use('/bigQuery/insert', (req, res) => {
+      console.log('+1 views for ', req.body.rows.contentId)
+      const { convertRouteNameToCollection } = require('../bigquery/routeCollection.helper')
+    // copy from template
+      const bodyObj = Object.assign({}, bigquery_config.BIGQUERY_INSERT_BODY_TEMPLATE)
+    // modify params
+      bodyObj.params = Object.assign(bodyObj.params, {
+        tableId: req.body.tableId || bodyObj.params.tableId,
+        rows: req.body.rows
+      })
+    // fix row route name
+      bodyObj.params.rows = convertRouteNameToCollection(bodyObj.params.rows)
 
-    //map raw route to collection
-    fetch(bigquery_api_endpoint, {
-      method: 'POST',
-      headers: { "Content-Type": "application/json", "Authorization": bigquery_authorization },
-      body: JSON.stringify(bodyObj)
-    }).then(fetchRes => {
-      res.sendStatus(fetchRes.status)
+    // map raw route to collection
+      fetch(bigquery_api_endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': bigquery_authorization },
+        body: JSON.stringify(bodyObj)
+      }).then(fetchRes => {
+        res.sendStatus(fetchRes.status)
+      })
     })
-  })
+  }
 
   const makeContext = (req) => {
     const context = is_optics_enabled ? Object.assign({
-      opticsContext: OpticsAgent.context(req),
-    }, req) : req.context
+      opticsContext: OpticsAgent.context(req)
+    }, req) : req
 
-    context.bigQueryCollection = require('../bigquery/queryCollection');
+    context.bigQueryCollection = require('../bigquery/queryCollection')
 
     return context
   }
@@ -84,14 +86,15 @@ const init = (config, app) => {
     apolloUploadExpress(),
     authenticate,
     graphqlHTTP((req) => {
+      req.bigQueryCollection = require('../bigquery/queryCollection')
       return {
         schema,
-        context: makeContext(req),
+        context: req,
         graphiql: config.graphiql_enabled,
         formatError: (error) => ({
           message: error.message,
-          stack: !error.message.match(/[NOSTACK]/i) ? error.stack.split('\n') : null,
-        }),
+          stack: !error.message.match(/[NOSTACK]/i) ? error.stack.split('\n') : null
+        })
       }
     })
   )

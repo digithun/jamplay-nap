@@ -1,8 +1,8 @@
-const nap = require('./nap')
+const Nap = require('./nap')
 
 const init = (req, res, next) => {
   // Inject nap to req
-  req.nap = new nap()
+  req.nap = new Nap()
 
   // Good to go
   next()
