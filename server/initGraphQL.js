@@ -43,40 +43,31 @@ const init = (config, app) => {
   const schema = is_optics_enabled ? OpticsAgent.instrumentSchema(buildSchema()) : buildSchema()
   is_optics_enabled && app.use(OpticsAgent.middleware())
 
-  // bigquery
+  //bigquery
+  const { bigqueryInit } = require('../bigquery/queryCollection')
   if (bigquery_config.hasOwnProperty('BIGQUERY_INSERT_BODY_TEMPLATE')) {
-    app.use('/bigQuery/insert', (req, res) => {
+    app.post('/bigQuery/insert', (req, res) => {
       console.log('+1 views for ', req.body.rows.contentId)
       const { convertRouteNameToCollection } = require('../bigquery/routeCollection.helper')
-    // copy from template
+      //copy from template
       const bodyObj = Object.assign({}, bigquery_config.BIGQUERY_INSERT_BODY_TEMPLATE)
-    // modify params
+      //modify params
       bodyObj.params = Object.assign(bodyObj.params, {
         tableId: req.body.tableId || bodyObj.params.tableId,
         rows: req.body.rows
-      })
-    // fix row route name
+      });
+      //fix row route name
       bodyObj.params.rows = convertRouteNameToCollection(bodyObj.params.rows)
 
-    // map raw route to collection
+      //map raw route to collection
       fetch(bigquery_api_endpoint, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': bigquery_authorization },
+        headers: { "Content-Type": "application/json", "Authorization": bigquery_authorization },
         body: JSON.stringify(bodyObj)
       }).then(fetchRes => {
         res.sendStatus(fetchRes.status)
       })
     })
-  }
-
-  const makeContext = (req) => {
-    const context = is_optics_enabled ? Object.assign({
-      opticsContext: OpticsAgent.context(req)
-    }, req) : req
-
-    context.bigQueryCollection = require('../bigquery/queryCollection')
-
-    return context
   }
 
   app.use(
@@ -85,11 +76,10 @@ const init = (config, app) => {
     // upload.array('files'),
     apolloUploadExpress(),
     authenticate,
-    graphqlHTTP((req) => {
-      req.bigQueryCollection = require('../bigquery/queryCollection')
+    bigqueryInit,
+    graphqlHTTP(() => {
       return {
         schema,
-        context: req,
         graphiql: config.graphiql_enabled,
         formatError: (error) => ({
           message: error.message,
