@@ -4,7 +4,8 @@ const {
    is_bigquery_enable,
    bigquery_api_endpoint,
    bigquery_authorization,
-   bigquery_config
+   bigquery_config,
+   redis_url
 } = require('../server/config')
 
 const getQueryResult = async (queryJsonString, redisClient) => {
@@ -69,7 +70,7 @@ const getEpisodeCountById = (id, redisClient) => getCustomCountByContentTypeAndC
 const bigqueryInit = (req, res, next) => {
    if (is_bigquery_enable) {
       req.bigQueryCollection = require('./queryCollection');
-      req.bigQueryCollection.redisClient = require('redis').createClient({ host: 'redis', db: 2 })
+      req.bigQueryCollection.redisClient = require('redis').createClient({ host: redis_url.replace('redis://', ''), db: 2 })
    }
    next()
 }
