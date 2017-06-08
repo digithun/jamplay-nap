@@ -5,9 +5,7 @@ const { apolloUploadExpress } = require('apollo-upload-server')
 
 const { is_optics_enabled,
   is_bigquery_enable,
-  bigquery_config,
-  bigquery_logevent_datasetid,
-  bigquery_navigation_tableid } = require('./config')
+  bigquery_config } = require('./config')
 const OpticsAgent = require('optics-agent')
 
 // isomorphic-fetch
@@ -47,7 +45,7 @@ const init = (config, app) => {
   //bigquery
   const { bigqueryInit, insertQuery } = require('../bigquery/queryCollection')
   if (is_bigquery_enable && bigquery_config.hasOwnProperty('BIGQUERY_INSERT_BODY_TEMPLATE'))
-    app.post('/bigQuery/insert', (req, res) => insertQuery(bigquery_logevent_datasetid, bigquery_navigation_tableid, req, res))
+    app.post('/bigQuery/insert', (req, res) => insertQuery(req, res))
 
   app.use(
     '/graphql',

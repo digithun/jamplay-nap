@@ -94,6 +94,7 @@
     "redis": "^2.7.1",
     "redux": "^3.6.0",
     "redux-thunk": "^2.2.0",
+    "sha256": "^0.2.0",
     "superagent": "^3.5.2",
     "tmp-promise": "^1.0.3",
     "uuid": "^3.0.1",
