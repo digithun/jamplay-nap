@@ -4,9 +4,10 @@ const bodyParser = require('body-parser')
 const { apolloUploadExpress } = require('apollo-upload-server')
 
 const { is_optics_enabled,
-  bigquery_api_endpoint,
-  bigquery_authorization,
-  bigquery_config } = require('./config')
+  is_bigquery_enable,
+  bigquery_config,
+  bigquery_logevent_datasetid,
+  bigquery_navigation_tableid } = require('./config')
 const OpticsAgent = require('optics-agent')
 
 // isomorphic-fetch
@@ -44,31 +45,9 @@ const init = (config, app) => {
   is_optics_enabled && app.use(OpticsAgent.middleware())
 
   //bigquery
-  const { bigqueryInit } = require('../bigquery/queryCollection')
-  if (bigquery_config.hasOwnProperty('BIGQUERY_INSERT_BODY_TEMPLATE')) {
-    app.post('/bigQuery/insert', (req, res) => {
-      console.log('+1 views for ', req.body.rows.contentId)
-      const { convertRouteNameToCollection } = require('../bigquery/routeCollection.helper')
-      //copy from template
-      const bodyObj = Object.assign({}, bigquery_config.BIGQUERY_INSERT_BODY_TEMPLATE)
-      //modify params
-      bodyObj.params = Object.assign(bodyObj.params, {
-        tableId: req.body.tableId || bodyObj.params.tableId,
-        rows: req.body.rows
-      });
-      //fix row route name
-      bodyObj.params.rows = convertRouteNameToCollection(bodyObj.params.rows)
-
-      //map raw route to collection
-      fetch(bigquery_api_endpoint, {
-        method: 'POST',
-        headers: { "Content-Type": "application/json", "Authorization": bigquery_authorization },
-        body: JSON.stringify(bodyObj)
-      }).then(fetchRes => {
-        res.sendStatus(fetchRes.status)
-      })
-    })
-  }
+  const { bigqueryInit, insertQuery } = require('../bigquery/queryCollection')
+  if (is_bigquery_enable && bigquery_config.hasOwnProperty('BIGQUERY_INSERT_BODY_TEMPLATE'))
+    app.post('/bigQuery/insert', (req, res) => insertQuery(bigquery_logevent_datasetid, bigquery_navigation_tableid, req, res))
 
   app.use(
     '/graphql',
