@@ -10,7 +10,7 @@ const {
    bigquery_navigation_tableid,
    redis_url
 } = require('../server/config')
-const sha256 = require('sha256');
+const hash = require('md5');
 /**
  * 
  * @param {string} json json to modify 
@@ -69,7 +69,7 @@ const _getQueryCache = async (queryJsonString, redisClient, defaultValue) => {
 
 const _getQueryManagedCache = async (queryJsonString, redisClient, defaultValue) => {
 
-   const cacheKey = sha256(queryJsonString)
+   const cacheKey = hash(queryJsonString)
 
 
    if (!is_bigquery_enable) {
