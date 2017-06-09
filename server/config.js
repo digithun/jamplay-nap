@@ -29,9 +29,8 @@ const config = {
   is_optics_enabled: parseInt(process.env.IS_OPTICS_ENABLED || '0') === 1,
 
   // BigQuery
-
   bigquery_api_endpoint: process.env.BIGQUERY_API_ENDPOINT || 'http://bigquery',
-  bigquery_authorization: process.env.BIGQUERY_AUTHORIZATION || 'xxx',
+  bigquery_authorization: process.env.BIGQUERY_AUTHORIZATION || 'foo',
   bigquery_config: process.env.hasOwnProperty('BIGQUERY_CONFIG') && require(process.env.BIGQUERY_CONFIG) || (() => {
     console.log('Warning, you must provide a path for BIGQUERY_CONFIG ENV, so that bigquery will execute normally, see .env.example for detail')
     return {}
@@ -40,7 +39,11 @@ const config = {
     console.log('Warning, you must provide a path for BIGQUERY_ROUTE_MAP ENV, so that bigquery can map route to collection correctly, see .env.example for detail')
     return {}
   })(),
-  is_bigquery_enable: process.env.IS_BIGQUERY_ENABLE || false,
+  bigquery_projectid: process.env.BIGQUERY_PROJECTID || 'foo',
+  bigquery_logevent_datasetid: process.env.BIGQUERY_LOGEVENT_DATASETID || 'foo',
+  bigquery_navigation_tableid: process.env.BIGQUERY_NAVIGATION_TABLEID || 'foo',
+
+  is_bigquery_enabled: parseInt(process.env.IS_BIGQUERY_ENABLED || '0') === 1,
 }
 
 module.exports = config

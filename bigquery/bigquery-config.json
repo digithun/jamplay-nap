@@ -2,18 +2,18 @@
    "BIGQUERY_INSERT_BODY_TEMPLATE": {
       "method": "insertRowsAsStream",
       "params": {
-         "datasetId": "logEvent",
-         "tableId": "navigation3",
-         "projectId": "jamplay-9a8cd"
+         "datasetId": "${datasetId}",
+         "tableId": "${tableId}",
+         "projectId": "${projectId}"
       }
    },
    "BIGQUERY_QUERY_COUNT_CONTENT": {
       "method": "query",
       "params": {
-         "datasetId": "logEvent",
-         "tableId": "navigation3",
-         "projectId": "jamplay-9a8cd",
-         "query": "select contentId, count(*) as count from navigation3 where contentType = '{contentType}' and contentId = '{contentId}' group by contentId order by count desc"
+         "datasetId": "${datasetId}",
+         "tableId": "${tableId}",
+         "projectId": "${projectId}",
+         "query": "select contentId, count(*) as count from ${tableId} where contentType = '${contentType}' and contentId = '${contentId}' group by contentId order by count desc"
       }
    },
    "BIGQUERY_QUERY_VERIFY_EXIST": {
