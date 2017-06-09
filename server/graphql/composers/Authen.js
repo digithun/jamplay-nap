@@ -4,26 +4,30 @@ module.exports = (models) => {
   models.AuthenTC.addRelation(
     'user',
     () => ({
-      resolver: models.UserTC.getResolver('user'),
+      resolver: models.UserTC.getResolver('findById'),
       args: {
+        _id: (source) => `${source.userId}`,
         filter: (source) => ({ userId: source.userId }),
         skip: null,
         sort: null
       },
-      projection: { userId: true }
+      projection: { userId: true },
+      catchErrors: false,
     })
   )
 
   models.AuthenTC.addRelation(
     'installation',
     () => ({
-      resolver: models.AuthenTC.getResolver('authen'),
+      resolver: models.InstallationTC.getResolver('findById'),
       args: {
-        filter: (source) => ({ userId: source.installationId }),
+        _id: (source) => `${source.installationId}`,
+        filter: (source) => ({ installationId: source.installationId }),
         skip: null,
         sort: null
       },
-      projection: { installationId: true }
+      projection: { installationId: true },
+      catchErrors: false,
     })
   )
 
