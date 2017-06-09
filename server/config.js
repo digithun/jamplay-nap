@@ -43,7 +43,7 @@ const config = {
   bigquery_logevent_datasetid: process.env.BIGQUERY_LOGEVENT_DATASETID || 'foo',
   bigquery_navigation_tableid: process.env.BIGQUERY_NAVIGATION_TABLEID || 'foo',
 
-  is_bigquery_enable: process.env.IS_BIGQUERY_ENABLE || false,
+  is_bigquery_enabled: parseInt(process.env.IS_BIGQUERY_ENABLED || '0') === 1,
 }
 
 module.exports = config

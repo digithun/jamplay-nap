@@ -1,7 +1,7 @@
 require('isomorphic-fetch')
 const DEBUG = true
 const {
-   is_bigquery_enable,
+   is_bigquery_enabled,
    bigquery_api_endpoint,
    bigquery_authorization,
    bigquery_config,
@@ -10,7 +10,7 @@ const {
    bigquery_navigation_tableid,
    redis_url
 } = require('../server/config')
-const hash = require('md5');
+const hash = require('sha1');
 /**
  * 
  * @param {string} json json to modify 
@@ -27,7 +27,7 @@ const _dynamicJsonFactory = (json, objectKeyValue) => {
 }
 
 const _getQueryResult = async (queryJsonString) => {
-   if (!is_bigquery_enable) {
+   if (!is_bigquery_enabled) {
       //warning
       DEBUG && console.log('env is_bigquery_enable is disabled')
       return { err: 'env is_bigquery_enable is disabled' }
@@ -47,7 +47,7 @@ const _getQueryResult = async (queryJsonString) => {
 
 
 const _getQueryCache = async (queryJsonString, redisClient, defaultValue) => {
-   if (!is_bigquery_enable) {
+   if (!is_bigquery_enabled) {
       //warnng
       DEBUG && console.log('env is_bigquery_enable is disabled')
       return { err: 'env is_bigquery_enable is disabled' }
@@ -72,7 +72,7 @@ const _getQueryManagedCache = async (queryJsonString, redisClient, defaultValue)
    const cacheKey = hash(queryJsonString)
 
 
-   if (!is_bigquery_enable) {
+   if (!is_bigquery_enabled) {
       //warnng
       DEBUG && console.log('env is_bigquery_enable is disabled')
       return { err: 'env is_bigquery_enable is disabled' }
@@ -121,11 +121,15 @@ const _getQueryManagedCache = async (queryJsonString, redisClient, defaultValue)
 
 
 const getCustomCountByContentTypeAndContentId = async (contentType, contentId, redisClient) => {
-   const rng = Math.random()
-   DEBUG && console.log('getCustomCountByContentTypeAndContentId', contentType, contentId)
-   DEBUG && console.time('getCustomCountByContentTypeAndContentId' + rng)
+
+   DEBUG && console.log('getCustomCountByContentTypeAndContentId ', contentType, contentId)
+   DEBUG && console.time('getCustomCountByContentTypeAndContentId ' + contentId)
    //if disabled return 0
-   if (!is_bigquery_enable) return 0
+   if (!is_bigquery_enabled) {
+      DEBUG && console.timeEnd('getCustomCountByContentTypeAndContentId ' + contentId)
+      DEBUG && console.log('env is_bigquery_enable is disabled')
+      return 0
+   }
 
    const jsonString = _dynamicJsonFactory(bigquery_config.BIGQUERY_QUERY_COUNT_CONTENT, {
       datasetId: bigquery_logevent_datasetid,
@@ -140,7 +144,7 @@ const getCustomCountByContentTypeAndContentId = async (contentType, contentId, r
    if (obj.hasOwnProperty('err')) return 0
 
    const count = obj.length == 0 ? 0 : obj[0].count
-   DEBUG && console.timeEnd('getCustomCountByContentTypeAndContentId' + rng)
+   DEBUG && console.timeEnd('getCustomCountByContentTypeAndContentId ' + contentId)
 
    return count
 }
