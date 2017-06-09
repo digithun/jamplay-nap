@@ -19,7 +19,7 @@ module.exports = (extendedSchema) => {
     name: String,
     last_name: String,
     first_name: String,
-    email: String,
+    email: { type: String, unique: true },
     token: String,
     status: String,
     hashed_password: String,
@@ -69,6 +69,9 @@ module.exports = (extendedSchema) => {
   })
 
   const Provider = mongoose.model('Provider', ProviderSchema)
+
+  // Not allow to read hashed_password
+  UserTC.removeField('hashed_password')
 
   return { User, UserTC, Provider, model: User, typeComposer: UserTC }
 }
