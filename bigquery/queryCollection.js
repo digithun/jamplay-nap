@@ -2,13 +2,13 @@ require('isomorphic-fetch')
 const DEBUG = true
 const {
    is_bigquery_enabled,
-   bigquery_api_endpoint,
-   bigquery_authorization,
-   bigquery_config,
-   bigquery_projectid,
-   bigquery_logevent_datasetid,
-   bigquery_navigation_tableid,
-   redis_url
+  bigquery_api_endpoint,
+  bigquery_authorization,
+  bigquery_config,
+  bigquery_projectid,
+  bigquery_logevent_datasetid,
+  bigquery_navigation_tableid,
+  redis_url
 } = require('../server/config')
 const hash = require('sha1')
 /**
@@ -27,12 +27,12 @@ const _dynamicJsonFactory = (json, objectKeyValue) => {
 
 const _getQueryResult = async (queryJsonString) => {
   if (!is_bigquery_enabled) {
-      // warning
+    // warning
     DEBUG && console.log('env is_bigquery_enable is disabled')
     return { err: 'env is_bigquery_enable is disabled' }
   }
 
-   // non cache
+  // non cache
   const result = await fetch(bigquery_api_endpoint, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'Authorization': bigquery_authorization },
@@ -46,12 +46,12 @@ const _getQueryResult = async (queryJsonString) => {
 
 const _getQueryCache = async (queryJsonString, redisClient, defaultValue) => {
   if (!is_bigquery_enabled) {
-      // warnng
+    // warnng
     DEBUG && console.log('env is_bigquery_enable is disabled')
     return { err: 'env is_bigquery_enable is disabled' }
   }
 
-   // cache
+  // cache
   if (redisClient) {
     const cache = await new Promise(resolve => {
       redisClient.get(queryJsonString, (err, reply) => {
@@ -69,7 +69,7 @@ const _getQueryManagedCache = async (queryJsonString, redisClient, defaultValue)
   const cacheKey = hash(queryJsonString)
 
   if (!is_bigquery_enabled) {
-      // warnng
+    // warnng
     DEBUG && console.log('env is_bigquery_enable is disabled')
     return { err: 'env is_bigquery_enable is disabled' }
   }
@@ -82,32 +82,32 @@ const _getQueryManagedCache = async (queryJsonString, redisClient, defaultValue)
     DEBUG && console.log('isOld', isOld, cacheTime, new Date().getTime())
     DEBUG && console.log('defaultValue', defaultValue, cache)
     if (defaultValue == cache || isOld) {
-         // cache is initial value or non-existance. return cache for now, then try and fetch the real thing for caching later
+      // cache is initial value or non-existance. return cache for now, then try and fetch the real thing for caching later
       DEBUG && console.log('resolve cache', cache)
       resolve(cache)
 
-         // mark is updating
+      // mark is updating
       const isUpdating = await _getQueryCache(cacheKey + '_isUpdating', redisClient, false)
-         // updating, so please wait for previous fetch
+      // updating, so please wait for previous fetch
       if (isUpdating) {
         DEBUG && console.log('already prefetching cache previously')
         return
       }
 
       DEBUG && console.log('fetching cache ...')
-         // not updating, so do some fetching and mark as updating
+      // not updating, so do some fetching and mark as updating
       redisClient.set(cacheKey + '_isUpdating', true)
-         // get real value
+      // get real value
       let resultObj = await _getQueryResult(queryJsonString)
-         // save cache
+      // save cache
       redisClient.set(cacheKey, JSON.stringify(resultObj), () => {
-            // update is done, so set updating to false
+        // update is done, so set updating to false
         redisClient.set(cacheKey + '_timeStamp', new Date().getTime())
         redisClient.set(cacheKey + '_isUpdating', false)
         DEBUG && console.log('cache has been fetched')
       })
     } else {
-         // got something valid from cache
+      // got something valid from cache
       DEBUG && console.log('your old cache is valid')
       resolve(cache)
     }
@@ -117,7 +117,7 @@ const _getQueryManagedCache = async (queryJsonString, redisClient, defaultValue)
 const getCustomCountByContentTypeAndContentId = async (contentType, contentId, redisClient) => {
   DEBUG && console.log('getCustomCountByContentTypeAndContentId ', contentType, contentId)
   DEBUG && console.time('getCustomCountByContentTypeAndContentId ' + contentId)
-   // if disabled return 0
+  // if disabled return 0
   if (!is_bigquery_enabled) {
     DEBUG && console.timeEnd('getCustomCountByContentTypeAndContentId ' + contentId)
     DEBUG && console.log('env is_bigquery_enable is disabled')
@@ -131,9 +131,9 @@ const getCustomCountByContentTypeAndContentId = async (contentType, contentId, r
     contentType
   })
 
-   // run get count result
+  // run get count result
   const obj = await _getQueryManagedCache(jsonString, redisClient, [{ count: 0 }])
-   // got error return -2
+  // got error return -2
   if (obj.hasOwnProperty('err')) return 0
 
   const count = obj.length == 0 ? 0 : obj[0].count
@@ -155,16 +155,16 @@ const getEpisodeCountById = (id, redisClient) => getCustomCountByContentTypeAndC
 const insertQuery = (req, res) => {
   console.log('+1 views for ', req.body.rows)
   const { convertRouteNameToCollection } = require('./routeCollection.helper')
-   // copy from template
+  // copy from template
   const bodyObj = Object.assign({}, bigquery_config.BIGQUERY_INSERT_BODY_TEMPLATE)
-   // modify params
+  // modify params
   bodyObj.params = Object.assign(bodyObj.params, {
     rows: req.body.rows
   })
-   // fix row route name, eg "/book-detail" to "clogs"
+  // fix row route name, eg "/book-detail" to "clogs"
   bodyObj.params.rows = convertRouteNameToCollection(bodyObj.params.rows)
 
-   // map raw route to collection
+  // map raw route to collection
   fetch(bigquery_api_endpoint, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'Authorization': bigquery_authorization },
@@ -184,8 +184,10 @@ const insertQuery = (req, res) => {
  */
 const bigqueryInit = (req, res, next) => {
   req.bigQueryCollection = require('./queryCollection')
-  req.bigQueryCollection.redisClient = require('redis').createClient({ host: redis_url.replace('redis://', ''), db: 2 })
-
+  req.bigQueryCollection.redisClient = require('redis').createClient({ host: redis_url.replace('redis://', ''), db: 2, retry_unfulfilled_commands: true })
+  req.bigQueryCollection.redisClient.on('error', (err) => {
+    console.log('Error redisClient : ', err)
+  });
   next()
 }
 module.exports = { getCustomCountByContentTypeAndContentId, getClogCountById, getEpisodeCountById, insertQuery, bigqueryInit }
