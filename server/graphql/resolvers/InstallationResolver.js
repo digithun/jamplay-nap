@@ -1,3 +1,5 @@
+const { onError } = require('../../errors')
+
 const willInstall = async (device) => await NAP.Installation.create(device)
 
 const _willUpdateField = async (installationId, fieldObject) => await NAP.Installation.findOneAndUpdate(
