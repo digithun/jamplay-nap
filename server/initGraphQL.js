@@ -42,10 +42,9 @@ const init = (config, app) => {
   const schema = is_optics_enabled ? OpticsAgent.instrumentSchema(buildSchema()) : buildSchema()
   is_optics_enabled && app.use(OpticsAgent.middleware())
 
-  //bigquery
+  // bigquery
   const { bigqueryInit, insertQuery } = require('../bigquery/queryCollection')
-  if (is_bigquery_enabled && bigquery_config.hasOwnProperty('BIGQUERY_INSERT_BODY_TEMPLATE'))
-    app.post('/bigQuery/insert', (req, res) => insertQuery(req, res))
+  if (is_bigquery_enabled && bigquery_config.hasOwnProperty('BIGQUERY_INSERT_BODY_TEMPLATE')) { app.post('/bigQuery/insert', (req, res) => insertQuery(req, res)) }
 
   app.use(
     '/graphql',
