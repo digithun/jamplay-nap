@@ -71,7 +71,6 @@
     "localforage": "^1.5.0",
     "lusca": "^1.4.1",
     "mailgun.js": "^2.0.1",
-    "md5": "^2.2.1",
     "mongoose": "^4.10.5",
     "mongoose-role": "^2.0.1",
     "mubsub": "^1.4.0",

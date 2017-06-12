@@ -5,7 +5,8 @@ const { apolloUploadExpress } = require('apollo-upload-server')
 
 const { is_optics_enabled,
   is_bigquery_enabled,
-  bigquery_config } = require('./config')
+  bigquery_config 
+  redis_url} = require('./config')
 const OpticsAgent = require('optics-agent')
 
 // isomorphic-fetch
@@ -43,8 +44,12 @@ const init = (config, app) => {
   is_optics_enabled && app.use(OpticsAgent.middleware())
 
   // bigquery
-  const { bigqueryInit, insertQuery } = require('../bigquery/queryCollection')
+  const { bigqueryInitMiddleWare, insertQuery } = require('../bigquery/queryCollection')
   if (is_bigquery_enabled && bigquery_config.hasOwnProperty('BIGQUERY_INSERT_BODY_TEMPLATE')) { app.post('/bigQuery/insert', (req, res) => insertQuery(req, res)) }
+
+  const bigQueryRedisClient = is_bigquery_enabled ? require('redis').createClient({ host: redis_url.replace('redis://', ''), db: 2, retry_unfulfilled_commands: true }) : null
+  bigQueryRedisClient && bigQueryRedisClient.on('error', (err) => console.log('Error redisClient : ', err));
+
 
   app.use(
     '/graphql',
@@ -52,7 +57,7 @@ const init = (config, app) => {
     // upload.array('files'),
     apolloUploadExpress(),
     authenticate,
-    bigqueryInit,
+    bigqueryInitMiddleWare(bigQueryRedisClient),
     graphqlHTTP(() => {
       return {
         schema,

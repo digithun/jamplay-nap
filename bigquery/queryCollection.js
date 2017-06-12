@@ -1,23 +1,25 @@
 require('isomorphic-fetch')
-const DEBUG = true
 const {
-   is_bigquery_enabled,
+  is_bigquery_debug_enabled,
+  is_bigquery_enabled,
   bigquery_api_endpoint,
   bigquery_authorization,
   bigquery_config,
   bigquery_projectid,
   bigquery_logevent_datasetid,
-  bigquery_navigation_tableid,
-  redis_url
+  bigquery_navigation_tableid
 } = require('../server/config')
+
+const DEBUG = is_bigquery_debug_enabled
+
 const hash = require('sha1')
 /**
- *
- * @param {string} json json to modify
+ * Return json-string where ${key} as value is replaced from objectKeyValue
+ * @param {*} inputJsonString json or string to modify
  * @param {object} objectKeyValue replace each key into json ${key} as value
  */
-const _dynamicJsonFactory = (json, objectKeyValue) => {
-  let jsonString = JSON.stringify(json)
+const _dynamicStringFactory = (inputJsonString, objectKeyValue) => {
+  let jsonString = inputJsonString === Object(inputJsonString) ? JSON.stringify(inputJsonString) : inputJsonString
 
   for (let key in objectKeyValue) { jsonString = jsonString.replace(new RegExp('\\${' + key + '}', 'g'), objectKeyValue[key]) }
   jsonString = jsonString.replace(new RegExp('\\${projectId}', 'g'), bigquery_projectid)
@@ -66,6 +68,9 @@ const _getQueryCache = async (queryJsonString, redisClient, defaultValue) => {
 }
 
 const _getQueryManagedCache = async (queryJsonString, redisClient, defaultValue) => {
+  //fallback if no redis client
+  if (!redisClient) return _getQueryResult(queryJsonString)
+
   const cacheKey = hash(queryJsonString)
 
   if (!is_bigquery_enabled) {
@@ -124,7 +129,7 @@ const getCustomCountByContentTypeAndContentId = async (contentType, contentId, r
     return 0
   }
 
-  const jsonString = _dynamicJsonFactory(bigquery_config.BIGQUERY_QUERY_COUNT_CONTENT, {
+  const jsonString = _dynamicStringFactory(bigquery_config.BIGQUERY_QUERY_COUNT_CONTENT, {
     datasetId: bigquery_logevent_datasetid,
     tableId: bigquery_navigation_tableid,
     contentId,
@@ -168,7 +173,7 @@ const insertQuery = (req, res) => {
   fetch(bigquery_api_endpoint, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'Authorization': bigquery_authorization },
-    body: _dynamicJsonFactory(bodyObj, {
+    body: _dynamicStringFactory(bodyObj, {
       datasetId: bigquery_logevent_datasetid,
       tableId: bigquery_navigation_tableid
     })
@@ -182,9 +187,12 @@ const insertQuery = (req, res) => {
  * @param {*} res
  * @param {*} next
  */
-const bigqueryInit = (redisClient) => (req, res, next) => {
+const bigqueryInitMiddleWare = (redisClient) => (req, res, next) => {
   req.bigQueryCollection = require('./queryCollection')
   req.bigQueryCollection.redisClient = redisClient
   next()
 }
-module.exports = { getCustomCountByContentTypeAndContentId, getClogCountById, getEpisodeCountById, insertQuery, bigqueryInit }
+module.exports = {
+  getCustomCountByContentTypeAndContentId, getClogCountById, getEpisodeCountById, insertQuery, bigqueryInitMiddleWare,
+  _dynamicStringFactory, _getQueryResult, _getQueryCache, _getQueryManagedCache
+}

@@ -42,7 +42,7 @@ const config = {
   bigquery_projectid: process.env.BIGQUERY_PROJECTID || 'foo',
   bigquery_logevent_datasetid: process.env.BIGQUERY_LOGEVENT_DATASETID || 'foo',
   bigquery_navigation_tableid: process.env.BIGQUERY_NAVIGATION_TABLEID || 'foo',
-
+  is_bigquery_debug_enabled: parseInt(process.env.IS_BIGQUERY_DEBUG_ENABLED || '0') === 1,
   is_bigquery_enabled: parseInt(process.env.IS_BIGQUERY_ENABLED || '0') === 1,
 }
 
