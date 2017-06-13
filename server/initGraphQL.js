@@ -3,10 +3,13 @@ const path = require('path')
 const bodyParser = require('body-parser')
 const { apolloUploadExpress } = require('apollo-upload-server')
 
-const { is_optics_enabled,
+const {
+  is_optics_enabled,
+  optics_api_key,
+
   is_bigquery_enabled,
-  bigquery_config 
-  redis_url} = require('./config')
+  bigquery_config,
+  redis_url } = require('./config')
 const OpticsAgent = require('optics-agent')
 
 // isomorphic-fetch
@@ -40,16 +43,23 @@ const init = (config, app) => {
 
   const { authenticate } = require('./jwt-token')
 
-  const schema = is_optics_enabled ? OpticsAgent.instrumentSchema(buildSchema()) : buildSchema()
-  is_optics_enabled && app.use(OpticsAgent.middleware())
-
+  /// Optics
+  let schema 
+  if (is_optics_enabled) {
+    const agent = new OpticsAgent.Agent({ apiKey: optics_api_key });
+    schema = agent.instrumentSchema(buildSchema())
+    app.use(OpticsAgent.middleware())
+  } else schema = buildSchema()
+  
   // bigquery
-  const { bigqueryInitMiddleWare, insertQuery } = require('../bigquery/queryCollection')
-  if (is_bigquery_enabled && bigquery_config.hasOwnProperty('BIGQUERY_INSERT_BODY_TEMPLATE')) { app.post('/bigQuery/insert', (req, res) => insertQuery(req, res)) }
+  if (is_bigquery_enabled && bigquery_config.hasOwnProperty('BIGQUERY_INSERT_BODY_TEMPLATE')) {
+    const { bigqueryInitMiddleWare, insertQuery } = require('../bigquery/queryCollection')
+    const bigQueryRedisClient = require('redis').createClient({ host: redis_url.replace('redis://', ''), db: 2, retry_unfulfilled_commands: true })
+    bigQueryRedisClient.on('error', (err) => console.log('Error redisClient : ', err));
 
-  const bigQueryRedisClient = is_bigquery_enabled ? require('redis').createClient({ host: redis_url.replace('redis://', ''), db: 2, retry_unfulfilled_commands: true }) : null
-  bigQueryRedisClient && bigQueryRedisClient.on('error', (err) => console.log('Error redisClient : ', err));
-
+    app.post('/bigQuery/insert', (req, res) => insertQuery(req, res))
+    app.use(bigqueryInitMiddleWare(bigQueryRedisClient))
+  }
 
   app.use(
     '/graphql',
@@ -57,10 +67,10 @@ const init = (config, app) => {
     // upload.array('files'),
     apolloUploadExpress(),
     authenticate,
-    bigqueryInitMiddleWare(bigQueryRedisClient),
-    graphqlHTTP(() => {
+    graphqlHTTP((req) => {
       return {
         schema,
+        opticsContext: OpticsAgent.context(req),
         graphiql: config.graphiql_enabled,
         formatError: (error) => ({
           message: error.message,

@@ -139,7 +139,10 @@ const getCustomCountByContentTypeAndContentId = async (contentType, contentId, r
   // run get count result
   const obj = await _getQueryManagedCache(jsonString, redisClient, [{ count: 0 }])
   // got error return -2
-  if (obj.hasOwnProperty('err')) return 0
+  if (obj.hasOwnProperty('err')) {
+    DEBUG && console.timeEnd('getCustomCountByContentTypeAndContentId ' + contentId)
+    return 0
+  }
 
   const count = obj.length == 0 ? 0 : obj[0].count
   DEBUG && console.timeEnd('getCustomCountByContentTypeAndContentId ' + contentId)

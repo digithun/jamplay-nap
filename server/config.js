@@ -27,7 +27,8 @@ const config = {
 
   // appolo optics
   is_optics_enabled: parseInt(process.env.IS_OPTICS_ENABLED || '0') === 1,
-
+  optics_api_key: process.env.OPTICS_API_KEY || 'foo',
+  
   // BigQuery
   bigquery_api_endpoint: process.env.BIGQUERY_API_ENDPOINT || 'http://bigquery',
   bigquery_authorization: process.env.BIGQUERY_AUTHORIZATION || 'foo',
