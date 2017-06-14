@@ -10,7 +10,6 @@ const getCustomCountById = async (id, path) => new Promise((resolve) => {
     return
   }
 
-  // map raw route to collection
   try {
     fetch(bigquery_service_endpoint + path, {
       timeout: 1500,
@@ -40,16 +39,22 @@ const getEpisodeCountById = (id) => getCustomCountById(id, '/getEpisodeCountById
  * @param {*} res
  */
 const insertQuery = (req, res) => {
-  // console.log('+1 views for ', req.body.rows)
 
-  // map raw route to collection
-  fetch(bigquery_service_endpoint + '/insert', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(req.method == 'GET' ? req.query : req.body)
-  }).then(fetchRes => {
-    res.sendStatus(fetchRes.status)
-  })
+  const body = req.method == 'GET' ? req.query : req.body
+  try {
+    fetch(bigquery_service_endpoint + '/insert', {
+      timeout: 1500,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    }).then(fetchRes => {
+      console.log(fetchRes)
+      res.sendStatus(fetchRes.status)
+    })
+  } catch (error) {
+    console.log('insertQuery err', error)
+  }
+
 }
 
 const initMiddleWare = (req, res, next) => {
