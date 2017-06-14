@@ -3,9 +3,9 @@ const path = require('path')
 const bodyParser = require('body-parser')
 const { apolloUploadExpress } = require('apollo-upload-server')
 
-const { is_optics_enabled,
-  is_bigquery_enabled,
-  bigquery_config } = require('./config')
+const {
+  bigquery_service_endpoint,
+  is_optics_enabled } = require('./config')
 const OpticsAgent = require('optics-agent')
 
 // isomorphic-fetch
@@ -42,17 +42,19 @@ const init = (config, app) => {
   const schema = is_optics_enabled ? OpticsAgent.instrumentSchema(buildSchema()) : buildSchema()
   is_optics_enabled && app.use(OpticsAgent.middleware())
 
-  // bigquery
-  const { bigqueryInit, insertQuery } = require('../bigquery/queryCollection')
-  if (is_bigquery_enabled && bigquery_config.hasOwnProperty('BIGQUERY_INSERT_BODY_TEMPLATE')) { app.post('/bigQuery/insert', (req, res) => insertQuery(req, res)) }
-  const bigQuery = bigqueryInit()
+  //attach middleware
+  if (bigquery_service_endpoint) {
+    const { insertQuery , initMiddleWare} = require('../bigquery/queryCollection')
+    app.all('/bigQuery/insert', (req, res) => insertQuery(req, res))
+    app.use(initMiddleWare)
+  }
+
   app.use(
     '/graphql',
     bodyParser.json(),
     // upload.array('files'),
     apolloUploadExpress(),
     authenticate,
-    bigQuery,
     graphqlHTTP(() => {
       return {
         schema,
