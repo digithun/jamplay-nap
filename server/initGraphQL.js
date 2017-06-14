@@ -4,12 +4,8 @@ const bodyParser = require('body-parser')
 const { apolloUploadExpress } = require('apollo-upload-server')
 
 const {
-  is_optics_enabled,
-  optics_api_key,
-
-  is_bigquery_enabled,
-  bigquery_config,
-  redis_url } = require('./config')
+  bigquery_service_endpoint,
+  is_optics_enabled } = require('./config')
 const OpticsAgent = require('optics-agent')
 
 // isomorphic-fetch
@@ -43,22 +39,14 @@ const init = (config, app) => {
 
   const { authenticate } = require('./jwt-token')
 
-  /// Optics
-  let schema 
-  if (is_optics_enabled) {
-    const agent = new OpticsAgent.Agent({ apiKey: optics_api_key });
-    schema = agent.instrumentSchema(buildSchema())
-    app.use(OpticsAgent.middleware())
-  } else schema = buildSchema()
-  
-  // bigquery
-  if (is_bigquery_enabled && bigquery_config.hasOwnProperty('BIGQUERY_INSERT_BODY_TEMPLATE')) {
-    const { bigqueryInitMiddleWare, insertQuery } = require('../bigquery/queryCollection')
-    const bigQueryRedisClient = require('redis').createClient({ host: redis_url.replace('redis://', ''), db: 2, retry_unfulfilled_commands: true })
-    bigQueryRedisClient.on('error', (err) => console.log('Error redisClient : ', err));
+  const schema = is_optics_enabled ? OpticsAgent.instrumentSchema(buildSchema()) : buildSchema()
+  is_optics_enabled && app.use(OpticsAgent.middleware())
 
-    app.post('/bigQuery/insert', (req, res) => insertQuery(req, res))
-    app.use(bigqueryInitMiddleWare(bigQueryRedisClient))
+  //attach middleware
+  if (bigquery_service_endpoint) {
+    const { insertQuery , initMiddleWare} = require('../bigquery/queryCollection')
+    app.all('/bigQuery/insert', (req, res) => insertQuery(req, res))
+    app.use(initMiddleWare)
   }
 
   app.use(
@@ -67,10 +55,9 @@ const init = (config, app) => {
     // upload.array('files'),
     apolloUploadExpress(),
     authenticate,
-    graphqlHTTP((req) => {
+    graphqlHTTP(() => {
       return {
         schema,
-        opticsContext: OpticsAgent.context(req),
         graphiql: config.graphiql_enabled,
         formatError: (error) => ({
           message: error.message,
