@@ -182,12 +182,15 @@ const insertQuery = (req, res) => {
  * @param {*} res
  * @param {*} next
  */
-const bigqueryInit = (req, res, next) => {
-  req.bigQueryCollection = require('./queryCollection')
-  req.bigQueryCollection.redisClient = require('redis').createClient({ host: redis_url.replace('redis://', ''), db: 2, retry_unfulfilled_commands: true })
-  req.bigQueryCollection.redisClient.on('error', (err) => {
-    console.log('Error redisClient : ', err)
-  });
-  next()
+const bigqueryInit = () => {
+  const connection = require('redis').createClient({ host: redis_url.replace('redis://', ''), db: 2, retry_unfulfilled_commands: true })
+  return (req, res, next) => {
+    req.bigQueryCollection = require('./queryCollection')
+    req.bigQueryCollection.redisClient = connection
+    req.bigQueryCollection.redisClient.on('error', (err) => {
+      console.log('Error redisClient : ', err)
+    })
+    next()
+  }
 }
 module.exports = { getCustomCountByContentTypeAndContentId, getClogCountById, getEpisodeCountById, insertQuery, bigqueryInit }

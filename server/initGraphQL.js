@@ -45,14 +45,14 @@ const init = (config, app) => {
   // bigquery
   const { bigqueryInit, insertQuery } = require('../bigquery/queryCollection')
   if (is_bigquery_enabled && bigquery_config.hasOwnProperty('BIGQUERY_INSERT_BODY_TEMPLATE')) { app.post('/bigQuery/insert', (req, res) => insertQuery(req, res)) }
-
+  const bigQuery = bigqueryInit()
   app.use(
     '/graphql',
     bodyParser.json(),
     // upload.array('files'),
     apolloUploadExpress(),
     authenticate,
-    bigqueryInit,
+    bigQuery,
     graphqlHTTP(() => {
       return {
         schema,
