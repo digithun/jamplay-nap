@@ -23,8 +23,7 @@ const getCustomCountById = async (id, path) => new Promise((resolve) => {
     }).catch(() => {
       resolve(-2)
     })
-  }
-  catch (e) {
+  } catch (e) {
     resolve(-1)
   }
 })
@@ -46,16 +45,30 @@ const insertQuery = (req, res) => {
   fetch(bigquery_service_endpoint + '/insert', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(req.method == 'GET' ? req.query : req.body)
+    body: JSON.stringify(req.method === 'GET' ? req.query : req.body)
   }).then(fetchRes => {
     res.sendStatus(fetchRes.status)
   })
 }
 
-const initMiddleWare = (req, res, next) => {
-  if (!req.bigQueryCollection)
-    req.bigQueryCollection = { getClogCountById, getEpisodeCountById, insertQuery }
-  next()
+const initMiddleWare = () => {
+  console.log('try to handshake with analytic service....')
+  fetch(`${bigquery_service_endpoint}/`, {
+    method: 'GET'
+  }).then(
+      (result) => {
+        if (result.status === 200) {
+          console.log('handshake with analytic service done !!')
+        }
+      }
+    ).catch(() => {
+      console.warn('Cannot connect to Analytic service, analytic might not work properly')
+    })
+
+  return (req, res, next) => {
+    if (!req.bigQueryCollection) { req.bigQueryCollection = { getClogCountById, getEpisodeCountById, insertQuery } }
+    next()
+  }
 }
 
 module.exports = { getClogCountById, getEpisodeCountById, insertQuery, initMiddleWare }

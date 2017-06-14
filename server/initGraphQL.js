@@ -46,7 +46,7 @@ const init = (config, app) => {
   if (bigquery_service_endpoint) {
     const { insertQuery, initMiddleWare } = require('../bigquery/queryCollection')
     app.all('/bigQuery/insert', (req, res) => insertQuery(req, res))
-    app.use(initMiddleWare)
+    app.use(initMiddleWare())
   }
 
   app.use(
