@@ -6,12 +6,12 @@ services:
     env_file: .env
     environment:
       - PORT=${PORT:-3000}
-      - BIGQUERY_SERVICE_ENDPOINT=http://bigqueryservice:3003
     image: rabbotio/nap
     restart: on-failure
     links:
       - redis
       - mongo
+      # - bigqueryservice
     working_dir: /usr/app
     ports:
       - "5858:5858" # Node Inspector port
@@ -66,26 +66,26 @@ services:
     networks:
       - back
 
-  bigqueryservice:
-    container_name: bigqueryservice
-    env_file: 
-      - ./bigquery.env
-    environment:
-      - IS_BIGQUERY_DEBUG_ENABLED=0
-      # - - - - - express - - - - - -
-      - BIGQUERY_PORT=3003
-      # - - - - - - - - REDIS - - - - - -
-      - REDIS_URI=redis://redis
-    image: bigqueryservice
-    restart: on-failure
-    links:
-      - redis
-    working_dir: /usr/app
-    # ports:
-    #   - "3003:3003" # HTTP port , uncomment when want to test from outside docker
-    command: node index.js
-    networks:
-      - back
+  # bigqueryservice:
+  #   container_name: bigqueryservice
+  #   env_file: 
+  #     - ./bigquery.env
+  #   environment:
+  #     - IS_BIGQUERY_DEBUG_ENABLED=0
+  #     # - - - - - express - - - - - -
+  #     - BIGQUERY_PORT=3003
+  #     # - - - - - - - - REDIS - - - - - -
+  #     - REDIS_URI=redis://redis
+  #   image: bigqueryservice
+  #   restart: on-failure
+  #   links:
+  #     - redis
+  #   working_dir: /usr/app
+  #   # ports:
+  #   #    - "3003:3003" # HTTP port, uncomment when want to test from outside docker
+  #   command: node index.js
+  #   networks:
+  #     - back
 
 networks:
   front:
