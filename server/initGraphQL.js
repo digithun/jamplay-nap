@@ -42,9 +42,9 @@ const init = (config, app) => {
   const schema = is_optics_enabled ? OpticsAgent.instrumentSchema(buildSchema()) : buildSchema()
   is_optics_enabled && app.use(OpticsAgent.middleware())
 
-  //attach middleware
+  // attach middleware
   if (bigquery_service_endpoint) {
-    const { insertQuery , initMiddleWare} = require('../bigquery/queryCollection')
+    const { insertQuery, initMiddleWare } = require('../bigquery/queryCollection')
     app.all('/bigQuery/insert', (req, res) => insertQuery(req, res))
     app.use(initMiddleWare)
   }
