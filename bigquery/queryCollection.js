@@ -28,7 +28,7 @@ const getCustomCountById = async (id, path) => new Promise((resolve) => {
   }
 })
 
-const getClogCountById = async (id) => getCustomCountById(id, '/getClogCountById')
+const getBookCountById = (id) => getCustomCountById(id, '/getBookCountById')
 const getEpisodeCountById = (id) => getCustomCountById(id, '/getEpisodeCountById')
 
 /**
@@ -66,9 +66,9 @@ const initMiddleWare = () => {
     })
 
   return (req, res, next) => {
-    if (!req.bigQueryCollection) { req.bigQueryCollection = { getClogCountById, getEpisodeCountById, insertQuery } }
+    if (!req.bigQueryCollection) { req.bigQueryCollection = { getBookCountById, getEpisodeCountById, insertQuery } }
     next()
   }
 }
 
-module.exports = { getClogCountById, getEpisodeCountById, insertQuery, initMiddleWare }
+module.exports = { getBookCountById, getEpisodeCountById, insertQuery, initMiddleWare }
