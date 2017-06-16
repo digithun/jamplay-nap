@@ -1,16 +1,16 @@
-const { models } = require('../../graphql/clogii/models');
+const { models } = require('../../graphql/clogii/models')
 
 module.exports.modelMapping = {
-  clog: models.Clog,
+  book: models.Book,
   episode: models.Episode,
   feed: models.Feed,
   tag: models.Tag,
   user: models.User,
-  'clog-follower': models.ClogFollower,
+  'book-follower': models.BookFollower,
   comment: models.Comment,
   'user-follower': models.UserFollower,
-  recommend: models.RecommendClog,
-  trending: models.TrendingClog,
-};
+  recommend: models.RecommendBook,
+  trending: models.TrendingBook
+}
 
-module.exports.models = models;
+module.exports.models = models

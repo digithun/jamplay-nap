@@ -1,9 +1,9 @@
-const mongoose = require('mongoose');
+const mongoose = require('mongoose')
 
-mongoose.connect('mongodb://localhost:27017/graphql');
+mongoose.connect('mongodb://localhost:27017/graphql')
 
-const models = require('./graphql/clogii/models').models;
+const models = require('./graphql/clogii/models').models
 
 models.User.find().then(u => {
-  console.log(u);
+  console.log(u)
 })

@@ -1,13 +1,13 @@
-const { loadSeed, writeSeed, genArray, casual } = require('../helpers');
+const { loadSeed, writeSeed, genArray, casual } = require('../helpers')
 
-const sequential = require('promise-sequential');
+const sequential = require('promise-sequential')
 
-module.exports = function generate() {
-  const clogs = loadSeed('clog');
-  return sequential(genArray(clogs, clogs.length - 1).map(clog => () => ({
+module.exports = function generate () {
+  const books = loadSeed('book')
+  return sequential(genArray(books, books.length - 1).map(book => () => ({
     _id: casual.objectId,
-    clogId: clog._id,
-    category: clog.category,
+    bookId: book._id,
+    category: book.category
   })))
-  .then(result => writeSeed('trending', result));
+  .then(result => writeSeed('trending', result))
 }
