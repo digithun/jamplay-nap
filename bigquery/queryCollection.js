@@ -31,7 +31,6 @@ const getCustomCountById = async (id, path) => new Promise((resolve) => {
 const getBookCountById = (id) => getCustomCountById(id, '/getBookCountById')
 const getEpisodeCountById = (id) => getCustomCountById(id, '/getEpisodeCountById')
 
-
 const getQueryObjectResult = async (path, option) => new Promise((resolve) => {
   if (!bigquery_service_endpoint) {
     resolve([])
@@ -48,7 +47,6 @@ const getQueryObjectResult = async (path, option) => new Promise((resolve) => {
       body: JSON.stringify(option)
     }).then(async (result) => {
       const data = await result.json()
-      console.log('data', data)
       resolve(data)
     }).catch(() => {
       resolve([])
