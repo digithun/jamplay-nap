@@ -50,7 +50,7 @@ const init = (config, app) => {
 
   const initEWallet = (req, res, next) => {
     if (config.e_wallet_enabled) {
-      req.ewallet = global.NAP.EWallet.getEWallet(req)
+      req.ewallet = global.NAP.EWallet.getEWallet(req.token)
     }
     next()
   }
