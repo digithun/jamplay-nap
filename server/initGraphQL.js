@@ -38,7 +38,6 @@ const init = (config, app) => {
   const { buildSchema } = require('./graphql')
 
   const { authenticate } = require('./jwt-token')
-
   const schema = is_optics_enabled ? OpticsAgent.instrumentSchema(buildSchema()) : buildSchema()
   is_optics_enabled && app.use(OpticsAgent.middleware())
 
@@ -49,12 +48,20 @@ const init = (config, app) => {
     app.use(initMiddleWare())
   }
 
+  const initEWallet = (req, res, next) => {
+    if (config.e_wallet_enabled) {
+      req.ewallet = global.NAP.EWallet.getEWallet(req)
+    }
+    next()
+  }
+
   app.use(
     '/graphql',
     bodyParser.json(),
     // upload.array('files'),
     apolloUploadExpress(),
     authenticate,
+    initEWallet,
     graphqlHTTP(() => {
       return {
         schema,
