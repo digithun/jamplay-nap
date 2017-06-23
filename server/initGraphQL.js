@@ -8,7 +8,7 @@ const init = (config, app) => {
     extendModel: require('./graphql').extendModel,
     setBuildGraphqlSchema: require('./graphql').setBuildGraphqlSchema,
     FileType: require('./graphql/types/File'),
-    getFile: require('./graphql').getFile,
+    getFile: require('./graphql').getFile
   }
 
   if (fs.existsSync(path.resolve(__dirname, '../graphql/setup.js'))) {
@@ -29,20 +29,29 @@ const init = (config, app) => {
   const { buildSchema } = require('./graphql')
   const { authenticate } = require('./jwt-token')
   const schema = buildSchema()
+
+  const initEWallet = (req, res, next) => {
+    if (config.e_wallet_enabled) {
+      req.ewallet = global.NAP.EWallet.getEWallet(req)
+    }
+    next()
+  }
+
   app.use(
     '/graphql',
     bodyParser.json(),
     upload.array('files'),
     apolloUploadExpress(),
     authenticate,
+    initEWallet,
     graphqlHTTP(() => {
       return {
         schema,
         graphiql: config.graphiql_enabled,
         formatError: (error) => ({
           message: error.message,
-          stack: !error.message.match(/[NOSTACK]/i) ? error.stack.split('\n') : null,
-        }),
+          stack: !error.message.match(/[NOSTACK]/i) ? error.stack.split('\n') : null
+        })
       }
     })
   )

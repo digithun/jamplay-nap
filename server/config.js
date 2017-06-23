@@ -24,6 +24,15 @@ const config = {
 
   mubsub: process.env.MUBSUB_URI,
   mubsub_enabled: process.env.MUBSUB_URI !== undefined && !!process.env.MUBSUB_URI,
+
+  e_wallet_api: process.env.E_WALLET_API,
+  e_wallet_enabled: process.env.E_WALLET_API !== undefined && !!process.env.E_WALLET_API,
+
+  // appolo optics
+  is_optics_enabled: parseInt(process.env.IS_OPTICS_ENABLED || '0') === 1,
+
+  // BigQuery
+  bigquery_service_endpoint: process.env.BIGQUERY_SERVICE_ENDPOINT || null
 }
 
 module.exports = config
