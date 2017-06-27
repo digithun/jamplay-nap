@@ -34,7 +34,7 @@ const init = (config, app) => {
             .send(Object.assign({
               token
             }, data))
-          return result.body[0]
+          return result.body.data
         }
         return {
           hasReceipt: async ({ refId, spendType }) => {
