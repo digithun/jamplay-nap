@@ -60,13 +60,14 @@ module.exports.buildSchema = () => {
     )(models.AuthenTC)
   }
 
-  GQC.rootQuery().addFields(Object.assign(
-    userAccess({
+  GQC.rootQuery().addFields(
+    Object.assign(userAccess({
       user: models.UserTC.getResolver('user')
-    }), {
-      authen: models.AuthenTC.getResolver('authen'),
-      errors: models.ErrorTC.getResolver('error')
-    })
+    }),
+      {
+        authen: models.AuthenTC.getResolver('authen'),
+        errors: models.ErrorTC.getResolver('error')
+      })
   )
 
   GQC.rootMutation().addFields(
