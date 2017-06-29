@@ -4,3 +4,4 @@ npm-debug.log
 .next
 .env
 coverage
+yarn-error.log
