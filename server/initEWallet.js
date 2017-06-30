@@ -21,7 +21,8 @@ const init = (config, app) => {
           }
           wallet.receipts.push(refId)
           return { gold: wallet.gold, silver: wallet.silver }
-        }
+        },
+        //addExchange: async () =>({token, amountIn, amountOut, conversionType, progressBarcode, status})
       })
     }
   } else {
@@ -31,6 +32,7 @@ const init = (config, app) => {
           const result = await request
             .post(`${api}/v1/${path}`)
             .set('Content-Type', 'application/json')
+            // add token to data
             .send(Object.assign({
               token
             }, data))
@@ -48,6 +50,11 @@ const init = (config, app) => {
           spendJelly: async ({ refId, spendType, merchantId, merchantAlaisId, amount, currencyType, commissionRate }) => {
             const result = await callApi('spend/spendJelly', { refId, spendType, merchantId, merchantAlaisId, amount, currencyType, commissionRate })
             return result.reader
+          },
+          //TO DO: change schema
+          addExchange: async ({amountIn, amountOut, conversionType}) => {
+            const result = await callApi('exchange/addExchange', { amountIn, amountOut, conversionType })
+            return result
           }
         }
       }
