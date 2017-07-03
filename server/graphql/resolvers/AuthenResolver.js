@@ -23,6 +23,7 @@ const forget = async ({ context, args }) => await context.nap.willResetPassword(
 
 const logout = async ({ context }) => {
   // Logout from cookie
+  console.log(context.nap.session)
   context.logout()
   context.session.destroy()
 
@@ -62,7 +63,7 @@ const willAuthen = async (installationId, { _id: userId, verified }, provider) =
     userId
   }
 
-  // Create session token  
+  // Create session token
   const { createSessionToken } = require('../../jwt-token')
   const sessionToken = createSessionToken(installationId, userId)
 
