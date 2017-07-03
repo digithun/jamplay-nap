@@ -23,7 +23,6 @@ const forget = async ({ context, args }) => await context.nap.willResetPassword(
 
 const logout = async ({ context }) => {
   // Logout from cookie
-  console.log(context.nap.session)
   context.logout()
   context.session.destroy()
 
