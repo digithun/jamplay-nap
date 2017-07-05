@@ -5,7 +5,7 @@
   "main": "index.js",
   "docker-registry": "hub.clogii.com",
   "scripts": {
-    "prod" : "node index.js",
+    "prod": "node index.js",
     "setup": "echo \"# See .env.example for more\" > .env",
     "lint": "eslint . || true",
     "_dev": "next",
