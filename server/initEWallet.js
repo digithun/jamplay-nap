@@ -45,7 +45,7 @@ const init = (config, app) => {
           },
           getJelly: async () => {
             const result = await callApi('user/getJelly')
-            return result.reader
+            return result
           },
           spendJelly: async ({ refId, spendType, merchantId, merchantAlaisId, amount, currencyType, commissionRate }) => {
             const result = await callApi('spend/spendJelly', { refId, spendType, merchantId, merchantAlaisId, amount, currencyType, commissionRate })
@@ -54,6 +54,12 @@ const init = (config, app) => {
           //TO DO: change schema
           addExchange: async ({amountIn, amountOut, conversionType}) => {
             const result = await callApi('exchange/addExchange', { amountIn, amountOut, conversionType })
+            return result
+          },
+          getRateTable: async () => {
+            const rateType = "baht:gold"
+            const result = await callApi('rate/findRateActive', {rateType})
+            console.log(result)
             return result
           }
         }
