@@ -65,18 +65,18 @@ const getBookViewCount = (option) => getQueryObjectResult('/book/viewCount', opt
  * @param {*} req
  * @param {*} res
  */
-const insertQuery = (req, res) => {
-  // console.log('+1 views for ', req.body.rows)
+const insertQuery = (req, res) => fetch(bigquery_service_endpoint + '/insert', {
+  method: req.method,
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify(req.method === 'GET' ? req.query : req.body)
+}).then(fetchRes => res.sendStatus(fetchRes.status))
 
-  // map raw route to collection
-  fetch(bigquery_service_endpoint + '/insert', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(req.method === 'GET' ? req.query : req.body)
-  }).then(fetchRes => {
-    res.sendStatus(fetchRes.status)
-  })
-}
+
+const putBook = (body) => new Promise(resolve => fetch(bigquery_service_endpoint + '/book', {
+  method: 'PUT',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify(body)
+}).then(fetchRes => resolve(fetchRes.status)))
 
 const initMiddleWare = () => {
   console.log('try to handshake with analytic service....')
@@ -93,9 +93,9 @@ const initMiddleWare = () => {
     })
 
   return (req, res, next) => {
-    if (!req.bigQueryCollection) { req.bigQueryCollection = { getBookCountById, getEpisodeCountById, insertQuery, getBookViewCount } }
+    if (!req.bigQueryCollection) { req.bigQueryCollection = { getBookCountById, getEpisodeCountById, insertQuery, putBook, getBookViewCount } }
     next()
   }
 }
 
-module.exports = { getBookCountById, getEpisodeCountById, insertQuery, getBookViewCount, initMiddleWare }
+module.exports = { getBookCountById, getEpisodeCountById, insertQuery, putBook, getBookViewCount, initMiddleWare }
