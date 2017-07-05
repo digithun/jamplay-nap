@@ -33,6 +33,7 @@ const init = (config, app) => {
             .post(`${api}/v1/${path}`)
             .set('Content-Type', 'application/json')
             // add token to data
+            .set('authorization', process.env.E_WALLET_APIKEY)
             .send(Object.assign({
               token
             }, data))
