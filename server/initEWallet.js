@@ -59,6 +59,7 @@ const init = (config, app) => {
           getRateTable: async () => {
             const rateType = "baht:gold"
             const result = await callApi('rate/findRateActive', {rateType})
+            console.log(result)
             return result
           }
         }
