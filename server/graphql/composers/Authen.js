@@ -1,4 +1,6 @@
+const { GraphQLInputObjectType, GraphQLString } = require('graphql')
 const AuthenResolver = require('../resolvers/AuthenResolver')
+const { GenderGraphQLType } = require('../../../graphql/content/types')
 
 module.exports = (models) => {
   models.AuthenTC.addRelation(
@@ -7,10 +9,10 @@ module.exports = (models) => {
       resolver: models.UserTC.getResolver('findById'),
       args: {
         _id: (source) => `${source.userId}`,
-        filter: (source) => ({ userId: source.userId }),
+        filter: (source) => ({ userId: source.userId })
       },
       projection: { userId: 1 },
-      catchErrors: false,
+      catchErrors: false
     })
   )
 
@@ -20,10 +22,10 @@ module.exports = (models) => {
       resolver: models.InstallationTC.getResolver('findById'),
       args: {
         _id: (source) => `${source.installationId}`,
-        filter: (source) => ({ installationId: source.installationId }),
+        filter: (source) => ({ installationId: source.installationId })
       },
       projection: { installationId: 1 },
-      catchErrors: false,
+      catchErrors: false
     })
   )
 
@@ -37,7 +39,6 @@ module.exports = (models) => {
       timezone: 'String',
       deviceName: 'String',
       deviceToken: 'String',
-
       accessToken: 'String'
     },
     type: models.AuthenTC,
@@ -48,8 +49,14 @@ module.exports = (models) => {
     name: 'signup',
     kind: 'mutation',
     args: {
-      email: 'String',
-      password: 'String'
+      email: { type: GraphQLString, required: true },
+      confirmPassword: { type: GraphQLString, required: true },
+      password: { type: GraphQLString, required: true },
+      name: { type: GraphQLString, required: true },
+      gender: { type: GenderGraphQLType, required: true },
+      first_name: { type: GraphQLString, required: true },
+      last_name: { type: GraphQLString, required: true },
+      dateOfBirth: { type: GraphQLString, required: true }
     },
     type: models.AuthenTC,
     resolve: AuthenResolver.signup
