@@ -1,7 +1,6 @@
-const { GraphQLInputObjectType, GraphQLString } = require('graphql')
+const { GraphQLNonNull } = require('graphql')
 const AuthenResolver = require('../resolvers/AuthenResolver')
 const GenderType = require('../types/Gender')
-const { GraphQLNonNull, GraphQLInputObjectType } = require('graphql')
 const { InputTypeComposer } = require('graphql-compose')
 
 module.exports = (models) => {
