@@ -1,3 +1,4 @@
+const { GraphQLInputObjectType, GraphQLString } = require('graphql')
 const AuthenResolver = require('../resolvers/AuthenResolver')
 const GenderType = require('../types/Gender')
 const { GraphQLNonNull, GraphQLInputObjectType } = require('graphql')
@@ -40,7 +41,6 @@ module.exports = (models) => {
       timezone: 'String',
       deviceName: 'String',
       deviceToken: 'String',
-
       accessToken: 'String'
     },
     type: models.AuthenTC,
