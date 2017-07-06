@@ -17,6 +17,7 @@ const init = (config, app) => {
     extendModel: require('./graphql').extendModel,
     setBuildGraphqlSchema: require('./graphql').setBuildGraphqlSchema,
     FileType: require('./graphql/types/File'),
+    GenderType: require('./graphql/types/Gender'),
     getFile: require('./graphql').getFile
   }
 

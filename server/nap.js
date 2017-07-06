@@ -6,7 +6,8 @@ const {
   willSignUp,
   willLogin,
   willLogout,
-  willResetPassword
+  willResetPassword,
+  signup
 } = require('./authen-local')
 
 const {
@@ -16,10 +17,11 @@ const {
 const { willCreateUser } = require('./graphql/resolvers/UserResolver')
 
 class nap {
-  constructor() {
+  constructor () {
     this.session = null
     this.errors = []
 
+    this.signup = signup
     this.willLoginWithFacebook = willLoginWithFacebook
     this.willSignUp = willSignUp
     this.willLogin = willLogin
