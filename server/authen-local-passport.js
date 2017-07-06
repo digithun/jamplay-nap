@@ -51,26 +51,26 @@ const _withVerifiedByEmail = (user) => {
   return user
 }
 
-const _createNewUserData = (email, password, token) => _withHashedPassword(
-  {
+const _createNewUserData = (email, password, extraFields, token) => _withHashedPassword(
+  Object.assign({
     email,
     name: email.split('@')[0],
     token,
     role: 'user',
     verified: false,
-    status: 'WAIT_FOR_EMAIL_VERIFICATION',
-  },
+    status: 'WAIT_FOR_EMAIL_VERIFICATION'
+  }, extraFields),
   password
 )
 
-const willSignUpNewUser = async (email, password, token) => {
+const willSignUpNewUser = async (email, password, extraFields, token) => {
   // Guard existing user
   const user = await NAP.User.findOne({ email })
   const { EMAIL_ALREADY_USE_ERROR } = require('./errors')
   if (user) { throw EMAIL_ALREADY_USE_ERROR }
 
   // Create user with email and token, password if any
-  const userData = _createNewUserData(email, password, token)
+  const userData = _createNewUserData(email, password, extraFields, token)
   return await NAP.User.create(userData)
 }
 
@@ -149,7 +149,7 @@ const reset_password_by_token = (req, res) => {
     user = _withVerifiedByEmail(user)
 
     const result = await user.save().catch(err => res.json({ errors: [err.message] }))
-    return res.json({ data: { isReset: result ? true : false } })
+    return res.json({ data: { isReset: !!result } })
   })()
 }
 
@@ -171,5 +171,5 @@ module.exports = {
   willValidateEmailAndPassword,
   willResetPasswordExistingUser,
   validateLocalStrategy,
-  handler,
+  handler
 }

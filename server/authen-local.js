@@ -42,8 +42,19 @@ const willResetPassword = async (req, email) => {
   return msg ? user : new Error(`Can't send email: ${password_reset_url}`)
 }
 
+const signup = async (req, email, password, extraFields) => {
+  const userData = await willSignUp(
+    req,
+    email,
+    password,
+    extraFields
+  ).catch(onError(req))
+  const user = userData ? await req.nap.willCreateUser(userData).catch(onError(req)) : null
+  return user
+}
+
 // Register with email and password
-const willSignUp = async (req, email, password) => {
+const willSignUp = async (req, email, password, extraFields) => {
   // Guard
   const { WRONG_EMAIL_PASSWORD_ERROR } = require('./errors')
   const { willValidateEmailAndPassword } = require('./authen-local-passport')
@@ -57,7 +68,7 @@ const willSignUp = async (req, email, password) => {
 
   // Validate receiver
   const { willSignUpNewUser } = require('./authen-local-passport')
-  const user = await willSignUpNewUser(email, password, token)
+  const user = await willSignUpNewUser(email, password, extraFields, token)
 
   // Guard
   if (!user) {
@@ -71,6 +82,7 @@ const willSignUp = async (req, email, password) => {
   // New user, will need verification by email
   const config = require('./config')
   const mailer = require('./mailer')
+  return user
   const msg = await mailer.willSendVerification({
     mailgun_api_key: config.mailgun_api_key,
     mailgun_domain: config.mailgun_domain,
@@ -85,7 +97,7 @@ const willSignUp = async (req, email, password) => {
 // Login with email
 const willLogin = async (req, email, password) => {
   // Guard
-  const { WRONG_EMAIL_PASSWORD_ERROR } = require('./errors')  
+  const { WRONG_EMAIL_PASSWORD_ERROR } = require('./errors')
   const { willValidateEmailAndPassword } = require('./authen-local-passport')
   const isValidEmailAndPassword = await willValidateEmailAndPassword(email, password)
   if (!isValidEmailAndPassword) {
@@ -115,5 +127,6 @@ module.exports = {
   willSignUp,
   willLogin,
   willLogout,
-  willResetPassword
+  willResetPassword,
+  signup
 }

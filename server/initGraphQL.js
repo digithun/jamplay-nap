@@ -15,6 +15,7 @@ const init = ({ graphiql_enabled: graphiql, port, e_wallet_enabled }, app) => {
     extendModel: require('./graphql').extendModel,
     setBuildGraphqlSchema: require('./graphql').setBuildGraphqlSchema,
     FileType: require('./graphql/types/File'),
+    GenderType: require('./graphql/types/Gender'),
     getFile: require('./graphql').getFile
   }
 
