@@ -80,7 +80,15 @@ describe('AuthenResolver', () => {
     }
     const email = 'foo@bar.com'
     const password = 'password'
-    const args = { email, password }
+    const args = {
+      email, password, record: {
+        name,
+        gender: 'male',
+        first_name: 'foo',
+        last_name: 'bar',
+        dateOfBirth: new Date()
+      }
+    }
 
     // stub
     global.NAP = {}
