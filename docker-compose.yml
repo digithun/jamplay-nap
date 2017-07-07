@@ -11,14 +11,10 @@ services:
     links:
       - redis
       - mongo
-      # - bigqueryservice
     working_dir: /usr/app
     ports:
-      - "5858:5858" # Node Inspector port
-      - "9222:9222" # Node V8 Inspector port
       - "${PORT:-3000}:${PORT:-3000}" # HTTP port
     volumes:
-      - npm:/root/.npm
       - ./.env:/usr/app/.env
       - ./pages:/usr/app/pages
       - ./components:/usr/app/components
@@ -26,12 +22,8 @@ services:
       - ./lib:/usr/app/lib
       - ./routes:/usr/app/routes
       - ./graphql:/usr/app/graphql
-      - ./providers:/usr/app/providers # __DEV__
-      - ./templates:/usr/app/templates # __DEV__
-      - ./server:/usr/app/server # __DEV__
-      - ./bigquery:/usr/app/bigquery # __DEV__
-    build: . # __DEV__
-    command: npm run _build-back # Will build next and run express server
+      - ./templates:/usr/app/templates
+    command: npm run _prod
     networks:
       - front
       - back
@@ -66,32 +58,10 @@ services:
     networks:
       - back
 
-  # bigqueryservice:
-  #   container_name: bigqueryservice
-  #   env_file: 
-  #     - ./bigquery.env
-  #   environment:
-  #     - IS_BIGQUERY_DEBUG_ENABLED=0
-  #     # - - - - - express - - - - - -
-  #     - BIGQUERY_PORT=3003
-  #     # - - - - - - - - REDIS - - - - - -
-  #     - REDIS_URI=redis://redis
-  #   image: bigqueryservice
-  #   restart: on-failure
-  #   links:
-  #     - redis
-  #   working_dir: /usr/app
-  #   # ports:
-  #   #    - "3003:3003" # HTTP port, uncomment when want to test from outside docker
-  #   command: node index.js
-  #   networks:
-  #     - back
-
 networks:
   front:
   back:
 
 volumes:
-  npm:
   redis_data:
   mongo_data:

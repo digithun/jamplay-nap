@@ -11,7 +11,9 @@ const start = async () => {
   await initializer(config, nextjs)
 
   // Ready
-  debug.info('NAP is ready to use, enjoy! [^._.^]ﾉ彡')
+  console.info(
+    `NAP is ready to use (${process.env.NODE_ENV}), enjoy! [^._.^]ﾉ彡`
+  ) // eslint-disable-line
 }
 
 module.exports = {
