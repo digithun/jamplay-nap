@@ -28,10 +28,6 @@ const signup = async ({ context, args }) => {
   return user
 }
 
-const forget = async ({ context, args }) => await context.nap.willResetPassword(context, args.email)
-  .then(({ status }) => ({ user: { status } }))
-  .catch(onError(context))
-
 const logout = async ({ context }) => {
   // Logout from cookie
   context.logout()
@@ -95,7 +91,6 @@ const willAuthen = async (installationId, { _id: userId, verified }, provider) =
 module.exports = {
   loginWithFacebook,
   signup,
-  forget,
   login,
   logout,
   authen,
