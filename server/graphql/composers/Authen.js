@@ -1,7 +1,7 @@
 const { GraphQLNonNull } = require('graphql')
 const AuthenResolver = require('../resolvers/AuthenResolver')
 const GenderType = require('../types/Gender')
-const { InputTypeComposer } = require('graphql-compose')
+const { InputTypeComposer, TypeComposer } = require('graphql-compose')
 
 module.exports = (models) => {
   models.AuthenTC.addRelation(
@@ -56,7 +56,6 @@ module.exports = (models) => {
           fields: {
             email: { type: 'String!' },
             password: { type: 'String!' },
-            confirmPassword: { type: 'String!' },
             name: { type: 'String!' },
             gender: { type: new GraphQLNonNull(GenderType) },
             first_name: { type: 'String!' },
@@ -66,7 +65,7 @@ module.exports = (models) => {
         })
       }
     },
-    type: models.AuthenTC,
+    type: models.UserTC,
     resolve: AuthenResolver.signup
   })
 

@@ -86,15 +86,22 @@ const willSignUp = async (req, email, password, extraFields) => {
   // New user, will need verification by email
   const config = require('./config')
   const mailer = require('./mailer')
-  const msg = await mailer.willSendVerification({
-    mailgun_api_key: config.mailgun_api_key,
-    mailgun_domain: config.mailgun_domain,
-    email,
-    verification_url
-  })
+  return user
+  let msg
+  try {
+    msg = await mailer.willSendVerification({
+      mailgun_api_key: config.mailgun_api_key,
+      mailgun_domain: config.mailgun_domain,
+      email,
+      verification_url
+    })
+  } catch (error) {}
 
   // Got verificationURL and msg?
-  return msg ? user : new Error(`Can't send email: ${verification_url}`)
+  if (!msg) {
+    throw new Error(`Can't send email: ${verification_url}`)
+  }
+  return user
 }
 
 // Login with email
