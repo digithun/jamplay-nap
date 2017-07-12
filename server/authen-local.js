@@ -36,9 +36,11 @@ const willResetPassword = async (req, email) => {
     email,
     password_reset_url,
     new_password_reset_url
+  }).catch(err => {
+    throw new Error(`Can't send email: ${email}, Reason : ${err.message}`)
   })
 
-  // Got verificationURL and msg?
+  // Got msg?
   if (!msg) {
     throw new Error(`Can't send email: ${email}`)
   } else {
@@ -87,19 +89,18 @@ const willSignUp = async (req, email, password, extraFields) => {
   const config = require('./config')
   const mailer = require('./mailer')
 
-  let msg
-  try {
-    msg = await mailer.willSendVerification({
-      mailgun_api_key: config.mailgun_api_key,
-      mailgun_domain: config.mailgun_domain,
-      email,
-      verification_url
-    })
-  } catch (error) {}
+  const msg = await mailer.willSendVerification({
+    mailgun_api_key: config.mailgun_api_key,
+    mailgun_domain: config.mailgun_domain,
+    email,
+    verification_url
+  }).catch(err => {
+    throw new Error(`Can't send email: ${email}, Reason : ${err.message}`)
+  })
 
-  // Got verificationURL and msg?
+  // Got msg?
   if (!msg) {
-    throw new Error(`Can't send email: ${verification_url}`)
+    throw new Error(`Can't send email: ${email}`)
   }
   return user
 }
