@@ -35,4 +35,6 @@ Object {
 }
 `;
 
+exports[`errors should return AUTH_INVALID_USER_TOKEN 1`] = `undefined`;
+
 exports[`errors should return SESSION_EMPTY_ERROR 1`] = `[Error: User has no session provide]`;

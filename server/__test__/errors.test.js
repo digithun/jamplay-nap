@@ -12,9 +12,9 @@ describe('errors', () => {
     expect(err).toMatchObject(customError)
   })
 
-  it('should return SESSION_EMPTY_ERROR', () => {
-    const { SESSION_EMPTY_ERROR } = require('../errors')
-    expect(SESSION_EMPTY_ERROR).toMatchSnapshot()
+  it('should return AUTH_INVALID_USER_TOKEN', () => {
+    const { AUTH_INVALID_USER_TOKEN } = require('../errors')
+    expect(AUTH_INVALID_USER_TOKEN).toMatchSnapshot()
   })
 
   it('should guard null and throw error', () => {
