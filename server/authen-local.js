@@ -43,9 +43,8 @@ const willResetPassword = async (req, email) => {
   // Got msg?
   if (!msg) {
     throw new Error(`Can't send email: ${email}`)
-  } else {
-    return user
   }
+  return user
 }
 
 const signup = async (req, email, password, extraFields) => {
