@@ -12,7 +12,7 @@ module.exports = {
   AUTH_INVALID_PHOTO_URL: new GenericError('auth/invalid-photo-url', 'The provided value for the photoURL user property is invalid. It must be a string URL.'),
   AUTH_INVALID_UID: new GenericError('auth/invalid-uid', 'The provided uid must be a non-empty string with at most 128 characters.'),
   AUTH_MISSING_UID: new GenericError('auth/missing-uid', 'A uid identifier is required for the current operation.'),
-  AUTH_UID_ALREAD_EXISTS: new GenericError('auth/uid-alread-exists', 'The provided uid is already in use by an existing user. Each user must have a unique uid.'),
+  AUTH_UID_ALREADY_EXISTS: new GenericError('auth/uid-already-exists', 'The provided uid is already in use by an existing user. Each user must have a unique uid.'),
   AUTH_EMAIL_ALREADY_EXISTS: new GenericError('auth/email-already-exists', 'The provided email is already in use by an existing user. Each user must have a unique email.'),
   AUTH_USER_NOT_FOUND: new GenericError('auth/user-not-found', 'There is no existing user record corresponding to the provided identifier.'),
   AUTH_OPERATION_NOT_ALLOWED: new GenericError('auth/operation-not-allowed', 'The provided sign-in provider is disabled for your NAP project. Enable it from the Sign-in Method section of the NAP console.'),
