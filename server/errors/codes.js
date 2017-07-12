@@ -23,18 +23,19 @@ module.exports = {
 
   // Ref: Firebase Auth Error
   // https://firebase.google.com/docs/reference/node/firebase.auth.Error
-  get AUTH_APP_DELETED() { return new GenericError('auth/app-deleted', 'Thrown if the instance of NAPApp has been deleted.')},
-  get AUTH_APP_NOT_AUTHORIZED() { return new GenericError('auth/app-not-authorized', 'Thrown if the app identified by the domain where it\'s hosted, is not authorized to use NAP Authentication with the provided API key. Review your key configuration in the Google API console.')},
-  get AUTH_ARGUMENT_ERROR() { return new GenericError('auth/argument-error', 'Thrown if a method is called with incorrect arguments.')},
-  get AUTH_INVALID_API_KEY() { return new GenericError('auth/invalid-api-key', 'Thrown if the provided API key is invalid. Please check that you have copied it correctly from the NAP Console.')},
-  get AUTH_INVALID_USER_TOKEN() { return new GenericError('auth/invalid-user-token', 'Thrown if the user\'s credential is no longer valid. The user must sign in again.')},
-  get AUTH_NETWORK_REQUEST_FAILED() { return new GenericError('auth/network-request-failed', 'Thrown if a network error (such as timeout, interrupted connection or unreachable host) has occurred.')},
-  get AUTH_REQUIRES_RECENT_LOGIN() { return new GenericError('auth/requires-recent-login', 'Thrown if the user\'s last sign-in time does not meet the security threshold. Use firebase.User#reauthenticateWithCredential to resolve. This does not apply if the user is anonymous.')},
-  get AUTH_TOO_MANY_REQUESTS() { return new GenericError('auth/too-many-requests', 'Thrown if requests are blocked from a device due to unusual activity. Trying again after some delay would unblock.')},
-  get AUTH_UNAUTHORIZED_DOMAIN() { return new GenericError('auth/unauthorized-domain', 'Thrown if the app domain is not authorized for OAuth operations for your NAP project. Edit the list of authorized domains from the NAP console.')},
-  get AUTH_USER_DISABLED() { return new GenericError('auth/user-disabled', 'Thrown if the user account has been disabled by an administrator. Accounts can be enabled or disabled in the NAP Console, the Auth section and Users subsection.')},
-  get AUTH_USER_TOKEN_EXPIRED() { return new GenericError('auth/user-token-expired', 'Thrown if the user\'s credential has expired. This could also be thrown if a user has been deleted. Prompting the user to sign in again should resolve this for either case.')},
-  get AUTH_WEB_STORAGE_UNSUPPORTED() { return new GenericError('auth/web-storage-unsupported', 'Thrown if the browser does not support web storage or if the user disables them.')},
+  get AUTH_APP_DELETED() { return new GenericError('auth/app-deleted', 'The instance of NAPApp has been deleted.')},
+  get AUTH_APP_NOT_AUTHORIZED() { return new GenericError('auth/app-not-authorized', 'The app identified by the domain where it\'s hosted, is not authorized to use NAP Authentication with the provided API key. Review your key configuration in the Google API console.')},
+  get AUTH_ARGUMENT_ERROR() { return new GenericError('auth/argument-error', 'A method is called with incorrect arguments.')},
+  get AUTH_INVALID_API_KEY() { return new GenericError('auth/invalid-api-key', 'The provided API key is invalid. Please check that you have copied it correctly from the NAP Console.')},
+  get AUTH_INVALID_USER_TOKEN() { return new GenericError('auth/invalid-user-token', 'The user\'s credential is no longer valid. The user must sign in again.')},
+  get AUTH_NETWORK_REQUEST_FAILED() { return new GenericError('auth/network-request-failed', 'A network error (such as timeout, interrupted connection or unreachable host) has occurred.')},
+  get AUTH_REQUIRES_RECENT_LOGIN() { return new GenericError('auth/requires-recent-login', 'The user\'s last sign-in time does not meet the security threshold. Use firebase.User#reauthenticateWithCredential to resolve. This does not apply if the user is anonymous.')},
+  get AUTH_TOO_MANY_REQUESTS() { return new GenericError('auth/too-many-requests', 'Requests are blocked from a device due to unusual activity. Trying again after some delay would unblock.')},
+  get AUTH_UNAUTHORIZED_DOMAIN() { return new GenericError('auth/unauthorized-domain', 'The app domain is not authorized for OAuth operations for your NAP project. Edit the list of authorized domains from the NAP console.')},
+  get AUTH_USER_DISABLED() { return new GenericError('auth/user-disabled', 'The user account has been disabled by an administrator. Accounts can be enabled or disabled in the NAP Console, the Auth section and Users subsection.')},
+  get AUTH_USER_TOKEN_EXPIRED() { return new GenericError('auth/user-token-expired', 'The user\'s credential has expired. This could also be thrown if a user has been deleted. Prompting the user to sign in again should resolve this for either case.')},
+  get AUTH_WEB_STORAGE_UNSUPPORTED() { return new GenericError('auth/web-storage-unsupported', 'The browser does not support web storage or if the user disables them.')},
 
   // Ref: https://firebase.google.com/docs/reference/js/firebase.auth.Auth
+    get AUTH_WEAK_PASSWORD() { return new GenericError('auth/weak-password', 'Password must be in between 6-256 length')},
 }

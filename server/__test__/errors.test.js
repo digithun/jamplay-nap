@@ -13,7 +13,7 @@ describe('errors', () => {
   })
 
   it('should return AUTH_INVALID_USER_TOKEN', () => {
-    const { AUTH_INVALID_USER_TOKEN } = require('../errors')
+    const { AUTH_INVALID_USER_TOKEN } = require('../errors/codes')
     expect(AUTH_INVALID_USER_TOKEN).toMatchSnapshot()
   })
 

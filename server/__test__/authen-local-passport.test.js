@@ -51,9 +51,9 @@ describe('authen-local-passport', () => {
 
   it('should throw error for invalid password', async () => {
     const { willValidatePassword } = require('../authen-local-passport')
-    const { PASSWORD_LENGTH_ERROR } = require('../errors')
+    const { AUTH_WEAK_PASSWORD } = require('../errors/codes')
     await willValidatePassword('foo').catch(err => {
-      expect(() => { throw err }).toThrow(PASSWORD_LENGTH_ERROR.message)
+      expect(() => { throw err }).toThrow(AUTH_WEAK_PASSWORD)
     })
   })
 
