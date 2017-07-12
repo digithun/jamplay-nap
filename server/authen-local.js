@@ -40,7 +40,7 @@ const willResetPassword = async (req, email) => {
 
   // Got verificationURL and msg?
   if (!msg) {
-    throw new Error(`Can't send email: ${password_reset_url}`)
+    throw new Error(`Can't send email: ${email}`)
   } else {
     return user
   }
@@ -86,7 +86,7 @@ const willSignUp = async (req, email, password, extraFields) => {
   // New user, will need verification by email
   const config = require('./config')
   const mailer = require('./mailer')
-  return user
+
   let msg
   try {
     msg = await mailer.willSendVerification({
