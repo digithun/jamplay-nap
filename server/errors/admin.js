@@ -29,7 +29,6 @@ module.exports = {
   AUTH_INVALID_API_KEY: new GenericError('auth/invalid-api-key', "Thrown if the provided API key is invalid. Please check that you have copied it correctly from the Firebase Console."),
   AUTH_INVALID_USER_TOKEN: new GenericError('auth/invalid-user-token', "Thrown if the user's credential is no longer valid. The user must sign in again."),
   AUTH_NETWORK_REQUEST_FAILED: new GenericError('auth/network-request-failed', "Thrown if a network error (such as timeout, interrupted connection or unreachable host) has occurred."),
-  AUTH_OPERATION_NOT_ALLOWED: new GenericError('auth/operation-not-allowed', "Thrown if you have not enabled the provider in the Firebase Console. Go to the Firebase Console for your project, in the Auth section and the Sign in Method tab and configure the provider."),
   AUTH_REQUIRES_RECENT_LOGIN: new GenericError('auth/requires-recent-login', "Thrown if the user's last sign-in time does not meet the security threshold. Use firebase.User#reauthenticateWithCredential to resolve. This does not apply if the user is anonymous."),
   AUTH_TOO_MANY_REQUESTS: new GenericError('auth/too-many-requests', "Thrown if requests are blocked from a device due to unusual activity. Trying again after some delay would unblock."),
   AUTH_UNAUTHORIZED_DOMAIN: new GenericError('auth/unauthorized-domain', "Thrown if the app domain is not authorized for OAuth operations for your Firebase project. Edit the list of authorized domains from the Firebase console."),
