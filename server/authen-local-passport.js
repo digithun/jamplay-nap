@@ -145,21 +145,25 @@ const auth_local_token = (req, res) => {
   })
 }
 
+const willChangePasswordByToken = async (password, token) => {
+  const isValid = await willValidatePassword(password)
+  if (!isValid) throw new Error('invalid-password')
+  
+  let user = await NAP.User.findOne({ token })
+  if (!user) throw new Error('user-not-exist')
+
+  user = _withHashedPassword(user, password)
+  user = Object.assign(user, _verifiedByEmailPayload())
+
+  return await user.save()
+}
+
 const reset_password_by_token = (req, res) => {
+  const { token, password } = req.body;
   (async () => {
-    const token = req.body.token
-    const password = req.body.password
-
-    const isValid = await willValidatePassword(password).catch(err => res.json({ errors: [err.message] }))
-    if (!isValid) { return res.json({ errors: ['token-invalid'] }) }
-
-    let user = await NAP.User.findOne({ token }).catch(err => res.json({ errors: [err.message] }))
-    if (!user) { return res.json({ errors: ['user-not-exist'] }) }
-
-    user = _withHashedPassword(user, password)
-    user = Object.assign(user, _verifiedByEmailPayload())
-
-    const result = await user.save().catch(err => res.json({ errors: [err.message] }))
+    const result = await willChangePasswordByToken(password, token)
+      .catch(err => res.json({ errors: [err.message] }))
+    
     return res.json({ data: { isReset: !!result } })
   })()
 }
@@ -181,6 +185,7 @@ module.exports = {
   willValidatePassword,
   willValidateEmailAndPassword,
   willResetPasswordExistingUser,
+  willChangePasswordByToken,
   validateLocalStrategy,
   handler
 }
