@@ -18,7 +18,7 @@ const willResetPassword = async (req, email) => {
 
   // Guard
   if (!user) {
-    throw new Error(`Email not exist? : ${email}`)
+    throw require('./errors/codes').AUTH_USER_NOT_FOUND
   }
 
   // Will send email verification
@@ -83,7 +83,7 @@ const willSignUp = async (req, email, password, extraFields) => {
 
   // Guard
   if (!user) {
-    throw new Error(`Can't sign up : ${email}`)
+    throw require('./errors/codes').AUTH_USER_NOT_FOUND
   }
 
   // Will send email verification
