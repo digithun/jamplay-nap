@@ -49,7 +49,7 @@ const guard = (arg, msg) => {
 
   return false
 }
-new Error('Password must be in between 6-256 length')
+
 module.exports = {
   GenericError,
   WRONG_EMAIL_PASSWORD_ERROR: new GenericError(181, 'Wrong email and/or password'),
