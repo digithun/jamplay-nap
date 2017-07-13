@@ -28,7 +28,6 @@ module.exports = (models) => {
     type: models.UserTC,
     args: {
       email: 'String!',
-      token: 'String!',
     },
     resolve: UserResolver.changeEmail
   })
