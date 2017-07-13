@@ -205,5 +205,9 @@ module.exports = {
 
   get AUTH_EMAIL_ALREADY_SENT () {
     return new GenericError('auth/email-already-sent', 'Email already sent.')
+  },
+
+  get AUTH_EMAIL_NOT_SENT () {
+    return new GenericError('auth/email-not-sent', "Email can't be send.")
   }
 }

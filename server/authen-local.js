@@ -1,5 +1,11 @@
 const { onError } = require('./errors')
 
+const _emailError = msg => {
+  const genericError = require('./errors/codes').AUTH_EMAIL_NOT_SENT
+  genericError.message += msg
+  return genericError
+}
+
 // Forget password
 const willResetPassword = async (req, email) => {
   // Guard
@@ -42,12 +48,12 @@ const willResetPassword = async (req, email) => {
       new_password_reset_url
     })
     .catch(err => {
-      throw new Error(`Can't send email: ${email}, Reason : ${err.message}`)
+      throw _emailError(` (${email}) : ${err.message}`)
     })
 
   // Got msg?
   if (!msg) {
-    throw new Error(`Can't send email: ${email}`)
+    throw _emailError(` (${email})`)
   }
   return user
 }
@@ -105,12 +111,12 @@ const willSignUp = async (req, email, password, extraFields) => {
       verification_url
     })
     .catch(err => {
-      throw new Error(`Can't send email: ${email}, Reason : ${err.message}`)
+      throw _emailError(` (${email}) : ${err.message}`)
     })
 
   // Got msg?
   if (!msg) {
-    throw new Error(`Can't send email: ${email}`)
+    throw _emailError(` (${email})`)
   }
   return user
 }
