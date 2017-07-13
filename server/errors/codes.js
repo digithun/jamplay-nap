@@ -187,5 +187,12 @@ module.exports = {
       'auth/weak-password',
       'Password must be in between 6-256 length'
     )
+  },
+
+  get AUTH_EMAIL_ALREADY_IN_USE () {
+    return new GenericError(
+      'auth/email-already-in-use',
+      'There is already exists an account with the given email address.'
+    )
   }
 }

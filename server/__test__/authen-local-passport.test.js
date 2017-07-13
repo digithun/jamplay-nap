@@ -26,14 +26,18 @@ describe('authen-local-passport', () => {
   it('should throw error for empty email', async () => {
     const { willValidateEmail } = require('../authen-local-passport')
     await willValidateEmail().catch(err => {
-      expect(() => { throw err }).toThrow('Required : email')
+      expect(() => {
+        throw err
+      }).toThrow('Required : email')
     })
   })
 
   it('should throw error for invalid email', async () => {
     const { willValidateEmail } = require('../authen-local-passport')
     await willValidateEmail('').catch(err => {
-      expect(() => { throw err }).toThrow('Invalid email')
+      expect(() => {
+        throw err
+      }).toThrow('Invalid email')
     })
   })
 
@@ -45,7 +49,9 @@ describe('authen-local-passport', () => {
   it('should throw error for empty password', async () => {
     const { willValidatePassword } = require('../authen-local-passport')
     await willValidatePassword().catch(err => {
-      expect(() => { throw err }).toThrow('Required : password')
+      expect(() => {
+        throw err
+      }).toThrow('Required : password')
     })
   })
 
@@ -53,7 +59,9 @@ describe('authen-local-passport', () => {
     const { willValidatePassword } = require('../authen-local-passport')
     const { AUTH_WEAK_PASSWORD } = require('../errors/codes')
     await willValidatePassword('foo').catch(err => {
-      expect(() => { throw err }).toThrow(AUTH_WEAK_PASSWORD)
+      expect(() => {
+        throw err
+      }).toThrow(AUTH_WEAK_PASSWORD)
     })
   })
 
@@ -64,10 +72,12 @@ describe('authen-local-passport', () => {
 
   it('should be true for valid email and password', async () => {
     const { willValidateEmailAndPassword } = require('../authen-local-passport')
-    expect(await willValidateEmailAndPassword('foo@bar.com', 'foofoobarbar')).toMatchSnapshot()
+    expect(
+      await willValidateEmailAndPassword('foo@bar.com', 'foofoobarbar')
+    ).toMatchSnapshot()
   })
 
-  it('should throw error if email already exist when signup new user', async () => {
+  it('should throw error if email already in use when signup new user', async () => {
     // mock
     const userData = { foo: 'bar' }
 
@@ -75,32 +85,38 @@ describe('authen-local-passport', () => {
     global.NAP = {}
     NAP.User = {
       findOne: jest.fn().mockImplementationOnce(() =>
-        Promise.resolve(Object.assign(
-          {
-            _id: '592c0bb4484d740e0e73798b',
-            status: 'VERIFIED_BY_EMAIL',
-            role: 'user'
-          },
-          userData
-        ))
+        Promise.resolve(
+          Object.assign(
+            {
+              _id: '592c0bb4484d740e0e73798b',
+              status: 'VERIFIED_BY_EMAIL',
+              role: 'user'
+            },
+            userData
+          )
+        )
       ),
       _create: jest.fn().mockImplementationOnce(() =>
-        Promise.resolve(Object.assign(
-          {
-            _id: '592c0bb4484d740e0e73798b',
-            role: 'user'
-          },
-          userData
-        ))
+        Promise.resolve(
+          Object.assign(
+            {
+              _id: '592c0bb4484d740e0e73798b',
+              role: 'user'
+            },
+            userData
+          )
+        )
       )
     }
-    
+
     const { willSignUpNewUser } = require('../authen-local-passport')
     const token = require('uuid/v4')()
-    const { EMAIL_ALREADY_USE_ERROR } = require('../errors')
+    const { AUTH_EMAIL_ALREADY_IN_USE } = require('../errors/codes')
 
     await willSignUpNewUser('foo@bar.com', 'foofoobarbar', token).catch(err => {
-      expect(() => { throw err }).toThrow(EMAIL_ALREADY_USE_ERROR)
+      expect(() => {
+        throw err
+      }).toThrow(AUTH_EMAIL_ALREADY_IN_USE)
     })
   })
 
@@ -111,21 +127,25 @@ describe('authen-local-passport', () => {
     // stub
     global.NAP = {}
     NAP.User = {
-      findOne: jest.fn().mockImplementationOnce(() => null),      
+      findOne: jest.fn().mockImplementationOnce(() => null),
       create: jest.fn().mockImplementationOnce(() =>
-        Promise.resolve(Object.assign(
-          {
-            _id: '592c0bb4484d740e0e73798b',
-            role: 'user'
-          },
-          userData
-        ))
+        Promise.resolve(
+          Object.assign(
+            {
+              _id: '592c0bb4484d740e0e73798b',
+              role: 'user'
+            },
+            userData
+          )
+        )
       )
     }
 
     const { willSignUpNewUser } = require('../authen-local-passport')
     const token = require('uuid/v4')()
-    expect(await willSignUpNewUser('foo@bar.com', 'foofoobarbar', token)).toMatchSnapshot()
+    expect(
+      await willSignUpNewUser('foo@bar.com', 'foofoobarbar', token)
+    ).toMatchSnapshot()
   })
 
   it('should reset password if user exist', async () => {
@@ -136,14 +156,17 @@ describe('authen-local-passport', () => {
     // stub
     global.NAP = {}
     NAP.User = {
-      findOne: jest.fn().mockImplementationOnce(() => Promise.resolve({
-        save: () => Promise.resolve({
-          _id: '592c0bb4484d740e0e73798b',
-          role: 'user',
-          email,
-          token
+      findOne: jest.fn().mockImplementationOnce(() =>
+        Promise.resolve({
+          save: () =>
+            Promise.resolve({
+              _id: '592c0bb4484d740e0e73798b',
+              role: 'user',
+              email,
+              token
+            })
         })
-      })),
+      ),
       findOneAndUpdate: jest.fn().mockImplementationOnce(() =>
         Promise.resolve({
           _id: '592c0bb4484d740e0e73798b',
@@ -154,7 +177,9 @@ describe('authen-local-passport', () => {
       )
     }
 
-    const { willResetPasswordExistingUser } = require('../authen-local-passport')
+    const {
+      willResetPasswordExistingUser
+    } = require('../authen-local-passport')
     expect(await willResetPasswordExistingUser(email, token)).toMatchSnapshot()
   })
 
@@ -162,7 +187,7 @@ describe('authen-local-passport', () => {
     const { auth_local_token } = require('../authen-local-passport').handler
     const req = { params: { token: null } }
     const res = {
-      redirect: (route) => expect(route).toMatchSnapshot()
+      redirect: route => expect(route).toMatchSnapshot()
     }
     auth_local_token(req, res)
   })
@@ -177,7 +202,7 @@ describe('authen-local-passport', () => {
     const { auth_local_token } = require('../authen-local-passport').handler
     const req = { params: { token: 'NOT_EXIST_TOKEN' } }
     const res = {
-      redirect: (route) => expect(route).toMatchSnapshot()
+      redirect: route => expect(route).toMatchSnapshot()
     }
 
     auth_local_token(req, res)
@@ -187,22 +212,27 @@ describe('authen-local-passport', () => {
     const token = 'aa90f9ca-ced9-4cad-b4a2-948006bf000d'
     const password = 'password'
 
-   // stub
+    // stub
     global.NAP = {}
     NAP.User = {
-      findOne: jest.fn().mockImplementationOnce(() => Promise.resolve({
-        save: () => Promise.resolve({
-          _id: '592c0bb4484d740e0e73798b',
-          role: 'user',
-          token
+      findOne: jest.fn().mockImplementationOnce(() =>
+        Promise.resolve({
+          save: () =>
+            Promise.resolve({
+              _id: '592c0bb4484d740e0e73798b',
+              role: 'user',
+              token
+            })
         })
-      }))
+      )
     }
-    
-    const { reset_password_by_token } = require('../authen-local-passport').handler
-    const req = { body: { token, password} }
+
+    const {
+      reset_password_by_token
+    } = require('../authen-local-passport').handler
+    const req = { body: { token, password } }
     const res = {
-      redirect: (route) => expect(route).toMatchSnapshot(),
+      redirect: route => expect(route).toMatchSnapshot(),
       json: JSON.toString
     }
     reset_password_by_token(req, res)
@@ -211,17 +241,19 @@ describe('authen-local-passport', () => {
   it('should redirect valid token to /auth/verified', async () => {
     // stub
     NAP.User = {
-      findOneAndUpdate: jest.fn().mockImplementationOnce(() => Promise.resolve({
-        _id: '592c0bb4484d740e0e73798b',
-        role: 'user',
-        status: 'VERIFIED_BY_EMAIL'
-      }))
+      findOneAndUpdate: jest.fn().mockImplementationOnce(() =>
+        Promise.resolve({
+          _id: '592c0bb4484d740e0e73798b',
+          role: 'user',
+          status: 'VERIFIED_BY_EMAIL'
+        })
+      )
     }
 
     const { auth_local_token } = require('../authen-local-passport').handler
     const req = { params: { token: 'VALID_TOKEN' } }
     const res = {
-      redirect: (route) => expect(route).toMatchSnapshot()
+      redirect: route => expect(route).toMatchSnapshot()
     }
     auth_local_token(req, res)
   })
@@ -230,19 +262,24 @@ describe('authen-local-passport', () => {
     // mock
     const email = 'foo@bar.com'
     const password = 'password'
-    const hashed_password = '$2a$10$J8sNyptEzgDuQu3b9H8PnuYO85KLnMYF2RjmMeAbt.vpND7NymH/O'
+    const hashed_password =
+      '$2a$10$J8sNyptEzgDuQu3b9H8PnuYO85KLnMYF2RjmMeAbt.vpND7NymH/O'
 
     // stub
     NAP.User = {
-      findOne: jest.fn().mockImplementationOnce(() => Promise.resolve({
-        _id: '592c0bb4484d740e0e73798b',
-        role: 'user',
-        verified: true,
-        hashed_password
-      }))
+      findOne: jest.fn().mockImplementationOnce(() =>
+        Promise.resolve({
+          _id: '592c0bb4484d740e0e73798b',
+          role: 'user',
+          verified: true,
+          hashed_password
+        })
+      )
     }
 
     const { validateLocalStrategy } = require('../authen-local-passport')
-    validateLocalStrategy(email, password, (err, result) => expect(result).toMatchSnapshot())
+    validateLocalStrategy(email, password, (err, result) =>
+      expect(result).toMatchSnapshot()
+    )
   })
 })
