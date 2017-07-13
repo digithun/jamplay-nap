@@ -6,7 +6,7 @@ const willResetPassword = async (req, email) => {
   const { willValidateEmail } = require('./authen-local-passport')
   const isValidEmail = await willValidateEmail(email)
   if (!isValidEmail) {
-    throw new Error('Not valid email')
+    throw require('./errors/codes').AUTH_INVALID_EMAIL
   }
 
   // Token
