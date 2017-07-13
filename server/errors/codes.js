@@ -188,25 +188,21 @@ module.exports = {
       'Password must be in between 6-256 length'
     )
   },
-
   get AUTH_EMAIL_ALREADY_IN_USE () {
     return new GenericError(
       'auth/email-already-in-use',
       'There is already exists an account with the given email address.'
     )
   },
-
   get AUTH_WRONG_PASSWORD () {
     return new GenericError(
       'auth/wrong-password',
       'Password is invalid for the given email, or if the account corresponding to the email does not have a password set.'
     )
   },
-
   get AUTH_EMAIL_ALREADY_SENT () {
     return new GenericError('auth/email-already-sent', 'Email already sent.')
   },
-
   get AUTH_EMAIL_NOT_SENT () {
     return new GenericError('auth/email-not-sent', "Email can't be send.")
   }

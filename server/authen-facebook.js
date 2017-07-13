@@ -2,12 +2,11 @@ const { guard, onError } = require('./errors')
 
 // Valid accessToken?
 const willLoginWithFacebook = async (req, accessToken) => {
-  // Guard
-  if (!process.env.FACEBOOK_APP_ID || !process.env.FACEBOOK_APP_SECRET) {
-    throw new Error('Required : FACEBOOK_APP_ID, FACEBOOK_APP_SECRET')
-  }
+  const { FACEBOOK_APP_ID, FACEBOOK_APP_SECRET } = process.env
 
   // Guard
+  guard({ FACEBOOK_APP_ID })
+  guard({ FACEBOOK_APP_SECRET })
   guard({ accessToken })
 
   // To let passport-facebook-token consume
