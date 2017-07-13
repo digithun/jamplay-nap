@@ -25,7 +25,7 @@ exports[`authen-facebook should not attach current user to nap from wrong sessio
 Object {
   "errors": Array [
     Object {
-      "code": 0,
+      "code": "node-error",
       "message": "jwt malformed",
     },
   ],

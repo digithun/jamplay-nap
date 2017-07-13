@@ -10,18 +10,26 @@ const _COMMON_ERRORS = {
   501: 'Server error'
 }
 
+const DEFAULT_CODE = 'node-error'
+
 const _push = (req, { code, message }) => req.nap.errors.push({ code, message })
 
 const onError = req => (...args) => {
+  // GenericError
+  if (args[0] instanceof GenericError) {
+    _push(req, args[0])
+    return null
+  }
+
   // Error('foo')
   if (args[0] instanceof Error) {
-    _push(req, new GenericError(0, args[0].message))
+    _push(req, new GenericError(DEFAULT_CODE, args[0].message))
     return null
   }
 
   // 'foo'
   if (typeof args[0] === 'string') {
-    _push(req, new GenericError(0, args[0]))
+    _push(req, new GenericError(DEFAULT_CODE, args[0]))
     return null
   }
 
@@ -46,7 +54,10 @@ const guard = (arg, msg) => {
     throw new Error('Required : Object e.g. { foo }')
   }
   if (is.not.existy(Object.values(arg)[0])) {
-    throw new GenericError(0, msg || `Required : ${Object.keys(arg)[0]}`)
+    throw new GenericError(
+      'missing-params',
+      msg || `Required : ${Object.keys(arg)[0]}`
+    )
   }
 
   return false
@@ -54,10 +65,6 @@ const guard = (arg, msg) => {
 
 module.exports = {
   GenericError,
-  WAIT_FOR_EMAIL_VERIFICATION_ERROR: new GenericError(
-    181,
-    'Email has been sent and wait for verification'
-  ),
   onError,
   guard
 }

@@ -201,5 +201,9 @@ module.exports = {
       'auth/wrong-password',
       'Password is invalid for the given email, or if the account corresponding to the email does not have a password set.'
     )
+  },
+
+  get AUTH_EMAIL_ALREADY_SENT () {
+    return new GenericError('auth/email-already-sent', 'Email already sent.')
   }
 }

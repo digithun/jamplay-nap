@@ -23,14 +23,14 @@ Object {
 
 exports[`errors should add error new generic error to request 1`] = `
 Object {
-  "code": 0,
+  "code": "node-error",
   "message": "foo",
 }
 `;
 
 exports[`errors should add string as new generic error to request 1`] = `
 Object {
-  "code": 0,
+  "code": "node-error",
   "message": "foo",
 }
 `;
