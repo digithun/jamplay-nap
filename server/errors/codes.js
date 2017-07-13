@@ -37,5 +37,5 @@ module.exports = {
   get AUTH_WEB_STORAGE_UNSUPPORTED() { return new GenericError('auth/web-storage-unsupported', 'The browser does not support web storage or if the user disables them.')},
 
   // Ref: https://firebase.google.com/docs/reference/js/firebase.auth.Auth
-    get AUTH_WEAK_PASSWORD() { return new GenericError('auth/weak-password', 'Password must be in between 6-256 length')},
+  get AUTH_WEAK_PASSWORD() { return new GenericError('auth/weak-password', 'Password must be in between 6-256 length')},
 }
