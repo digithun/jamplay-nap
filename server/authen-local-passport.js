@@ -118,7 +118,7 @@ const _willMarkUserAsVerifiedByToken = async token => {
     _verifiedByEmailPayload()
   )
   if (!user) {
-    throw new Error('Token has been use')
+    throw require('./errors/codes').AUTH_INVALID_USER_TOKEN
   }
 
   return user
@@ -166,10 +166,10 @@ const auth_local_token = (req, res) => {
 
 const willChangePasswordByToken = async (password, token) => {
   const isValid = await willValidatePassword(password)
-  if (!isValid) throw new Error('invalid-password')
+  if (!isValid) throw require('./errors/codes').AUTH_INVALID_PASSWORD
 
   let user = await NAP.User.findOne({ token })
-  if (!user) throw new Error('user-not-exist')
+  if (!user) throw require('./errors/codes').AUTH_USER_NOT_FOUND
 
   user = _withHashedPassword(user, password)
   user = Object.assign(user, _verifiedByEmailPayload())
