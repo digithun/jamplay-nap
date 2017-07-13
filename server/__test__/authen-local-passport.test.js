@@ -37,7 +37,7 @@ describe('authen-local-passport', () => {
     await willValidateEmail('').catch(err => {
       expect(() => {
         throw err
-      }).toThrow('Invalid email')
+      }).toThrow(require('../errors/codes').AUTH_INVALID_EMAIL)
     })
   })
 

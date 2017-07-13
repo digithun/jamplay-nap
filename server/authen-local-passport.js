@@ -13,7 +13,7 @@ const willValidateEmail = async email => {
   guard({ email })
 
   if (is.not.email(email)) {
-    throw new Error('Invalid email')
+    throw require('./errors/codes').AUTH_INVALID_EMAIL
   }
 
   return true
