@@ -194,5 +194,12 @@ module.exports = {
       'auth/email-already-in-use',
       'There is already exists an account with the given email address.'
     )
+  },
+
+  get AUTH_WRONG_PASSWORD () {
+    return new GenericError(
+      'auth/wrong-password',
+      'Password is invalid for the given email, or if the account corresponding to the email does not have a password set.'
+    )
   }
 }

@@ -54,10 +54,6 @@ const guard = (arg, msg) => {
 
 module.exports = {
   GenericError,
-  WRONG_EMAIL_PASSWORD_ERROR: new GenericError(
-    181,
-    'Wrong email and/or password'
-  ),
   WAIT_FOR_EMAIL_VERIFICATION_ERROR: new GenericError(
     181,
     'Email has been sent and wait for verification'
