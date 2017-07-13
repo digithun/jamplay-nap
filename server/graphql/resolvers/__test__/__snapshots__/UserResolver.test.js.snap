@@ -14,7 +14,7 @@ Object {
 }
 `;
 
-exports[`willReadUser should return error if session not exist 1`] = `[Error: No session found]`;
+exports[`willReadUser should return error if session not exist 1`] = `[Error: A uid identifier is required for the current operation.]`;
 
 exports[`willReadUser should return user data if has session 1`] = `
 Object {

@@ -1,20 +1,23 @@
 const { onError } = require('../../errors')
 
 // Guard
-const _getUserIdFromSession = (context) => context.nap.session ? context.nap.session.userId : null
-const _willGetUserFromSession = async (context) => {
+const _getUserIdFromSession = context =>
+  (context.nap.session ? context.nap.session.userId : null)
+const _willGetUserFromSession = async context => {
   const userId = _getUserIdFromSession(context)
 
   // Guard
-  if(!userId) {
-    throw new Error('No session found')
+  if (!userId) {
+    throw require('../../errors/codes').AUTH_MISSING_UID
   }
 
   return await NAP.User.findById(userId).catch(onError(context))
 }
 
-const willCreateUser = async (user) => await NAP.User.create(Object.assign(user, { role: 'user' }))
-const willReadUser = async ({ context }) => await _willGetUserFromSession(context)
+const willCreateUser = async user =>
+  await NAP.User.create(Object.assign(user, { role: 'user' }))
+const willReadUser = async ({ context }) =>
+  await _willGetUserFromSession(context)
 
 // TODO : Other provider
 const unlinkFacebook = async ({ context }) => {
@@ -32,7 +35,10 @@ const unlinkFacebook = async ({ context }) => {
 
 const linkFacebook = async ({ args, context }) => {
   const user = await _willGetUserFromSession(context)
-  const authenUser = await context.nap.willLoginWithFacebook(context, args.accessToken)
+  const authenUser = await context.nap.willLoginWithFacebook(
+    context,
+    args.accessToken
+  )
 
   // Guard
   if (authenUser && authenUser.facebook) {
@@ -50,7 +56,7 @@ const changeEmail = async ({ args, context }) => {
   // Guard
   const is = require('is_js')
   if (is.not.email(args.email)) {
-    throw new Error('email format not valid')
+    throw require('../../errors/codes').AUTH_INVALID_EMAIL
   }
 
   if (user) {
@@ -71,4 +77,12 @@ const resetPassword = async ({ context, args }) =>
     .willChangePasswordByToken(args.email, args.token)
     .catch(onError(context))
 
-module.exports = { willCreateUser, user: willReadUser, linkFacebook, unlinkFacebook, changeEmail, forget, resetPassword }
+module.exports = {
+  willCreateUser,
+  user: willReadUser,
+  linkFacebook,
+  unlinkFacebook,
+  changeEmail,
+  forget,
+  resetPassword
+}
