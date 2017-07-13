@@ -27,7 +27,8 @@ module.exports = (models) => {
     name: 'changeEmail',
     type: models.UserTC,
     args: {
-      email: 'String!'
+      email: 'String!',
+      token: 'String!',
     },
     resolve: UserResolver.changeEmail
   })
@@ -36,9 +37,20 @@ module.exports = (models) => {
     name: 'forget',
     kind: 'mutation',
     args: {
-      email: 'String'
+      email: 'String!'
     },
     type: models.UserTC,
     resolve: UserResolver.forget
+  })
+
+  models.UserTC.addResolver({
+    name: 'resetPassword',
+    kind: 'mutation',
+    args: {
+      email: 'String!',
+      token: 'String!'
+    },
+    type: models.UserTC,
+    resolve: UserResolver.resetPassword
   })
 }

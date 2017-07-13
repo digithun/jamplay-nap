@@ -11,6 +11,10 @@ const {
 } = require('./authen-local')
 
 const {
+  willChangePasswordByToken
+} = require('./authen-local-passport')
+
+const {
   willInstallAndAuthen
 } = require('./graphql/resolvers')
 
@@ -27,6 +31,7 @@ class nap {
     this.willLogin = willLogin
     this.willLogout = willLogout
     this.willResetPassword = willResetPassword
+    this.willChangePasswordByToken = willChangePasswordByToken
     this.willInstallAndAuthen = willInstallAndAuthen
     this.willCreateUser = willCreateUser
   }
