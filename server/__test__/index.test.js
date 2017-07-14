@@ -1,12 +1,11 @@
 /* eslint-env jest */
 const e2e = false
 describe('index', () => {
-
   it('should have start function', async () => {
     const start = require('../passport-local')
     expect(start).toMatchSnapshot()
   })
-  
+
   const fetcher = async (body, authorization) => {
     const fetch = require('isomorphic-fetch')
     return await fetch('http://localhost:3000/graphql', {
@@ -36,34 +35,38 @@ describe('index', () => {
     variables: `{"deviceInfo": "foo", "accessToken": "EAABnTrZBSJyYBAKvcWAcAOUwt07ZCVxhCYQwKKWFZAwtOhsGYZAc7olL04W8eJTlxBeZCmxCQO9kYZA4kKtTD0zmZChhb5hEoZBl7JHT0Rx39uGP8ow2X9vGoTLFZCm4Dd0NFvH0qsHXNYinsOKjszfSJVOj3DZChv0MNszawr1le8O0ToqI3Ak9Jr8X3X6imEtvJ2q8ceeVh5Ux1rSbgypRQNRDjlredVXpIZD"}`
   }
 
-  e2e && it('can log user in with Facebook token', async () => {
-    const query = JSON.stringify(loginWithFacebook)
+  e2e &&
+    it('can log user in with Facebook token', async () => {
+      const query = JSON.stringify(loginWithFacebook)
 
-    await fetcher(query).then(result => {
-      const sessionToken = result.data.loginWithFacebook.sessionToken
-      expect(result).toMatchObject({
-        "data": {
-          "loginWithFacebook": {
-            sessionToken,
-            "user": {
-              "_id": expect.any(String),
-              "name": expect.any(String),
-            }
-          },
-          "errors": null
-        }
+      await fetcher(query).then(result => {
+        const sessionToken = result.data.loginWithFacebook.sessionToken
+        expect(result).toMatchObject({
+          data: {
+            loginWithFacebook: {
+              sessionToken,
+              user: {
+                _id: expect.any(String),
+                name: expect.any(String)
+              }
+            },
+            errors: null
+          }
+        })
       })
     })
-  })
 
-  e2e && it('can log user out and return null user', async () => {
-    // Login first
-    const loginWithFacebook_query = JSON.stringify(loginWithFacebook)
-    const sessionToken = await fetcher(loginWithFacebook_query).then(result => result.data.loginWithFacebook.sessionToken)
+  e2e &&
+    it('can log user out and return null user', async () => {
+      // Login first
+      const loginWithFacebook_query = JSON.stringify(loginWithFacebook)
+      const sessionToken = await fetcher(loginWithFacebook_query).then(
+        result => result.data.loginWithFacebook.sessionToken
+      )
 
-    // Then logout
-    const logout = {
-      query: `
+      // Then logout
+      const logout = {
+        query: `
 mutation {
   logout {
     loggedOutAt
@@ -74,25 +77,25 @@ mutation {
     message
   }
 }`,
-      variables: null
-    }
-
-    const query = JSON.stringify(logout)
-    const authorization = `Bearer ${sessionToken}`
-
-    const result = await fetcher(query, authorization)
-    expect(result).toMatchObject({
-      "data": {
-        "logout": {
-          "loggedOutAt": expect.any(String),
-          "isLoggedIn": false,
-        },
-        "errors": null
+        variables: null
       }
-    })
 
-    const userProfile = {
-      query: `query {
+      const query = JSON.stringify(logout)
+      const authorization = `Bearer ${sessionToken}`
+
+      const result = await fetcher(query, authorization)
+      expect(result).toMatchObject({
+        data: {
+          logout: {
+            loggedOutAt: expect.any(String),
+            isLoggedIn: false
+          },
+          errors: null
+        }
+      })
+
+      const userProfile = {
+        query: `query {
         authen {
           isLoggedIn
         }
@@ -106,24 +109,19 @@ mutation {
           message
         }
       }`,
-      variables: null
-    }
-
-    const userProfile_query = JSON.stringify(userProfile)
-    const userProfile_result = await fetcher(userProfile_query)
-    expect(userProfile_result).toMatchObject({
-      "data": {
-        "authen": {
-          "isLoggedIn": false,
-        },
-        "errors": [
-          {
-            "code": 0,
-            "message": "No session found"
-          }
-        ],
-        "user": null
+        variables: null
       }
+
+      const userProfile_query = JSON.stringify(userProfile)
+      const userProfile_result = await fetcher(userProfile_query)
+      expect(userProfile_result).toMatchObject({
+        data: {
+          authen: {
+            isLoggedIn: false
+          },
+          errors: [require('../errors/commons').NAP_SESSION_NOT_FOUND],
+          user: null
+        }
+      })
     })
-  })
 })

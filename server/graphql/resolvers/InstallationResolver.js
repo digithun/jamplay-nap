@@ -8,13 +8,13 @@ const _willUpdateField = async (installationId, fieldObject) =>
   )
 
 const willUpdateField = field => async ({ context, args }) => {
-  if (!context.nap.session) throw new Error('No session found')
+  if (!context.nap.session) { throw require('../../errors/commons').NAP_SESSION_NOT_FOUND }
 
   const installation = await _willUpdateField(
     context.nap.session.installationId,
     { [field]: args[field] }
   )
-  if (!installation) throw new Error('No installation found')
+  if (!installation) { throw require('../../errors/commons').NAP_INSTALLATION_NOT_FOUND }
   return installation
 }
 

@@ -18,17 +18,25 @@ module.exports.getFile = (fileInput, context) => {
   // return fileInput;
 }
 module.exports.extendModel = require('./models').extendModel
-module.exports.setBuildGraphqlSchema = (builder) => (buildGraphqlSchema = builder)
+module.exports.setBuildGraphqlSchema = builder => (buildGraphqlSchema = builder)
 module.exports.buildSchema = () => {
   let authenChannel
   async function loginMiddleware ({ rp }, next) {
     const authen = await next()
-    authenChannel.publish('login', { Authen_Id: authen._id.toString(), User_Id: authen.userId.toString(), Installation_Id: authen.installationId.toString() })
+    authenChannel.publish('login', {
+      Authen_Id: authen._id.toString(),
+      User_Id: authen.userId.toString(),
+      Installation_Id: authen.installationId.toString()
+    })
   }
 
   async function logoutMiddleware ({ rp }, next) {
     const authen = await next()
-    authenChannel.publish('logout', { Authen_Id: authen._id.toString(), User_Id: authen.userId.toString(), Installation_Id: authen.installationId.toString() })
+    authenChannel.publish('logout', {
+      Authen_Id: authen._id.toString(),
+      User_Id: authen.userId.toString(),
+      Installation_Id: authen.installationId.toString()
+    })
   }
 
   const { ComposeStorage } = require('graphql-compose')
@@ -37,11 +45,13 @@ module.exports.buildSchema = () => {
   require('./composers')(models)
   const { onError } = require('../errors')
 
-  const userAccess = (resolvers) => {
-    Object.keys(resolvers).forEach((k) => {
-      resolvers[k] = resolvers[k].wrapResolve(next => (rp) => {
+  const userAccess = resolvers => {
+    Object.keys(resolvers).forEach(k => {
+      resolvers[k] = resolvers[k].wrapResolve(next => rp => {
         if (!rp.context.nap.session) {
-          onError(rp.context)('No session found')
+          onError(rp.context)(
+            require('../errors/commons').NAP_SESSION_NOT_FOUND
+          )
           return null
         }
         return next(rp)
@@ -61,31 +71,31 @@ module.exports.buildSchema = () => {
   }
 
   GQC.rootQuery().addFields(
-    Object.assign(userAccess({
-      user: models.UserTC.getResolver('user')
-    }),
+    Object.assign(
+      userAccess({
+        user: models.UserTC.getResolver('user')
+      }),
       {
         authen: models.AuthenTC.getResolver('authen'),
         errors: models.ErrorTC.getResolver('error')
-      })
+      }
+    )
   )
 
-  GQC.rootMutation().addFields(
-    {
-      signup: models.AuthenTC.getResolver('signup'),
-      login: models.AuthenTC.getResolver('login'),
-      logout: models.AuthenTC.getResolver('logout'),
-      loginWithFacebook: models.AuthenTC.getResolver('loginWithFacebook'),
-      forget: models.UserTC.getResolver('forget'),
-      resetPassword: models.UserTC.getResolver('resetPassword'),
-      unlinkFacebook: models.UserTC.getResolver('unlinkFacebook'),
-      linkFacebook: models.UserTC.getResolver('linkFacebook'),
-      changeEmail: models.UserTC.getResolver('changeEmail'),
-      update_GCMSenderId: models.InstallationTC.getResolver('update_GCMSenderId'),
-      update_deviceToken: models.InstallationTC.getResolver('update_deviceToken'),
-      errors: models.ErrorTC.getResolver('error')
-    }
-  )
+  GQC.rootMutation().addFields({
+    signup: models.AuthenTC.getResolver('signup'),
+    login: models.AuthenTC.getResolver('login'),
+    logout: models.AuthenTC.getResolver('logout'),
+    loginWithFacebook: models.AuthenTC.getResolver('loginWithFacebook'),
+    forget: models.UserTC.getResolver('forget'),
+    resetPassword: models.UserTC.getResolver('resetPassword'),
+    unlinkFacebook: models.UserTC.getResolver('unlinkFacebook'),
+    linkFacebook: models.UserTC.getResolver('linkFacebook'),
+    changeEmail: models.UserTC.getResolver('changeEmail'),
+    update_GCMSenderId: models.InstallationTC.getResolver('update_GCMSenderId'),
+    update_deviceToken: models.InstallationTC.getResolver('update_deviceToken'),
+    errors: models.ErrorTC.getResolver('error')
+  })
 
   if (buildGraphqlSchema) {
     return buildGraphqlSchema({ GQC, models })

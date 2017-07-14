@@ -6,5 +6,14 @@ module.exports = {
       'nap/invalid-argument',
       'An invalid argument was provided. '
     )
+  },
+  get NAP_SESSION_NOT_FOUND () {
+    return new GenericError('nap/session-not-found', 'NAP session not found. ')
+  },
+  get NAP_INSTALLATION_NOT_FOUND () {
+    return new GenericError(
+      'nap/installation-not-found',
+      'NAP session not found. '
+    )
   }
 }
