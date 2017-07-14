@@ -1,28 +1,28 @@
 module.exports = async (config, nextjs) => {
-    // NAP
-    const nap = require('./initNAP')
+  // NAP
+  const nap = require('./initNAP')
 
-    // Express
-    const app = require('./initExpress')(config, nap)
+  // Express
+  const app = require('./initExpress')(config, nap)
 
-    // MubSub  
-    config.mubsub_enabled && require('./initMubsub')()
+  // MubSub
+  config.mubsub_enabled && require('./initMubsub')()
 
-    // Mongoose
-    const mongoose = await require('./initMongoose')(config.mongo_url)
+  // Mongoose
+  const mongoose = await require('./initMongoose')(config.mongo_url)
 
-    // Passport
-    !config.passport_disabled && require('./initPassport')(config, app)
+  // Passport
+  !config.passport_disabled && require('./initPassport')(config, app)
 
-    // EWallet
-    config.e_wallet_enabled && require('./initEWallet')(config, app)
-  
-    // GraphQL
-    !config.graphql_disabled && require('./initGraphQL')(config, app)
+  // EWallet
+  config.e_wallet_enabled && require('./initEWallet')(config, app)
 
-    // Store
-    require('./initStore')(mongoose)
+  // GraphQL
+  !config.graphql_disabled && require('./initGraphQL')(config, app)
 
-    // Next+Express
-    return await require('./initRoute')(config, app, nextjs)
+  // Store
+  require('./initStore')(mongoose)
+
+  // Next+Express
+  return await require('./initRoute')(config, app, nextjs)
 }
