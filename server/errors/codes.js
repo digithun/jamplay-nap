@@ -211,5 +211,11 @@ module.exports = {
       'auth/facebook-invalid-token',
       'Invalid Facebook token.'
     )
+  },
+  get AUTH_PASSPORT_FAILED () {
+    return new GenericError(
+      'auth/passport-failed',
+      "Authentication with Passport has been fail, can't resolve user data"
+    )
   }
 }

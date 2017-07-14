@@ -9,7 +9,9 @@ const willAuthenWithPassport = (strategy, req) =>
       }
 
       // User?
-      return user ? resolve(user) : reject(new Error('Authentication failed.'))
+      return user
+        ? resolve(user)
+        : reject(require('./errors/codes').AUTH_PASSPORT_FAILED)
     })(req)
   })
 
