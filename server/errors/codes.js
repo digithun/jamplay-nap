@@ -217,5 +217,13 @@ module.exports = {
       'auth/passport-failed',
       "Authentication with Passport has been fail, can't resolve user data"
     )
+  },
+
+  // Provider
+  get AUTH_PROVIDER_ALREADY_LINKED () {
+    return new GenericError(
+      'auth/provider-already-linked',
+      "The provider has already been linked to the user. This error is thrown even if this is not the same provider's account that is currently linked to the user."
+    )
   }
 }
