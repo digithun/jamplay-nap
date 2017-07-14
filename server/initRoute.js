@@ -68,7 +68,7 @@ const init = ({ port }, app, nextjs) => new Promise((resolve, reject) => {
 
   // listen for TERM signal .e.g. Ctrl-C
   process.on('SIGINT', () => {
-    gracefulShutdown(server, 'SIGNINT')
+    gracefulShutdown(server, 'SIGINT')
   })
 })
 
