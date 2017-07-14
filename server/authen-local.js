@@ -1,10 +1,6 @@
-const { onError } = require('./errors')
+const { onError, errorBy } = require('./errors')
 
-const _emailError = msg => {
-  const genericError = require('./errors/codes').AUTH_EMAIL_NOT_SENT
-  genericError.message += msg
-  return genericError
-}
+const _emailError = msg => errorBy('AUTH_EMAIL_NOT_SENT', msg)
 
 // Forget password
 const willResetPassword = async (req, email) => {

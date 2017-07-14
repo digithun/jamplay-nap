@@ -19,14 +19,16 @@ describe('errors', () => {
 
   it('should guard null and throw error', () => {
     const { guard } = require('../errors')
-    expect(() => guard()).toThrow('Required : Object e.g. { foo }')
+    expect(() => guard()).toThrow(
+      'An invalid argument was provided. Required : guard({ foo })'
+    )
     expect(() => guard({ foo: null })).toThrow('Required : foo')
     expect(() => guard({ foo: undefined })).toThrow('Required : foo')
   })
 
   it('should add error new generic error to request', () => {
     const { onError } = require('../errors')
-    const req = { nap: { errors:[] } }
+    const req = { nap: { errors: [] } }
     onError(req)(new Error('foo'))
 
     expect(req.nap.errors[0]).toMatchSnapshot()
@@ -34,7 +36,7 @@ describe('errors', () => {
 
   it('should add string as new generic error to request', () => {
     const { onError } = require('../errors')
-    const req = { nap: { errors:[] } }
+    const req = { nap: { errors: [] } }
     onError(req)('foo')
 
     expect(req.nap.errors[0]).toMatchSnapshot()
@@ -42,7 +44,7 @@ describe('errors', () => {
 
   it('should add code, string as new generic error to request', () => {
     const { onError } = require('../errors')
-    const req = { nap: { errors:[] } }
+    const req = { nap: { errors: [] } }
     onError(req)(403, 'foo')
 
     expect(req.nap.errors[0]).toMatchSnapshot()
@@ -50,7 +52,7 @@ describe('errors', () => {
 
   it('should add code as new generic error to request', () => {
     const { onError } = require('../errors')
-    const req = { nap: { errors:[] } }
+    const req = { nap: { errors: [] } }
     onError(req)(3)
 
     expect(req.nap.errors[0]).toMatchSnapshot()
@@ -58,7 +60,7 @@ describe('errors', () => {
 
   it('should add code with common error as new generic error to request', () => {
     const { onError } = require('../errors')
-    const req = { nap: { errors:[] } }
+    const req = { nap: { errors: [] } }
     onError(req)(403)
 
     expect(req.nap.errors[0]).toMatchSnapshot()

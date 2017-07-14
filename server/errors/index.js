@@ -48,14 +48,23 @@ const onError = req => (...args) => {
   return null
 }
 
+const errorBy = (code, msg) => {
+  const _error = require('./commons')[code]
+  _error.message += msg
+  return _error
+}
+
 const guard = (arg, msg) => {
-  const is = require('is_js')
+  // Wrong params
   if (!arg) {
-    throw new Error('Required : Object e.g. { foo }')
+    throw errorBy('NAP_INVALID_ARGUMENT', 'Required : guard({ foo })')
   }
+
+  // Missing params
+  const is = require('is_js')
   if (is.not.existy(Object.values(arg)[0])) {
-    throw new GenericError(
-      'missing-params',
+    throw errorBy(
+      'NAP_INVALID_ARGUMENT',
       msg || `Required : ${Object.keys(arg)[0]}`
     )
   }
@@ -66,5 +75,6 @@ const guard = (arg, msg) => {
 module.exports = {
   GenericError,
   onError,
-  guard
+  guard,
+  errorBy
 }
