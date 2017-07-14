@@ -42,12 +42,12 @@ describe('authen-facebook', () => {
 
     const authen = require('../authen-facebook')
     const accessToken = 'WRONG_ACCESS_TOKEN'
-    await authen
+    const user = await authen
       .willLoginWithFacebook({ body: {}, nap: { errors: [] } }, accessToken)
       .catch(err => {
         expect(() => {
           throw err
-        }).toThrow('Failed to fetch user profile')
+        }).toThrow(require('../errors/codes').AUTH_FACEBOOK_INVALID_TOKEN)
       })
   })
 

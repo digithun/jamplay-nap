@@ -1,4 +1,4 @@
-const { guard, onError } = require('./errors')
+const { guard } = require('./errors')
 
 // Valid accessToken?
 const willLoginWithFacebook = async (req, accessToken) => {
@@ -14,7 +14,7 @@ const willLoginWithFacebook = async (req, accessToken) => {
 
   // Validate facebook token
   const { willAuthenWithPassport } = require('./passport-authen')
-  return await willAuthenWithPassport('facebook-token', req).catch(onError(req))
+  return await willAuthenWithPassport('facebook-token', req)
 }
 
 module.exports = {

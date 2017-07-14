@@ -205,5 +205,11 @@ module.exports = {
   },
   get AUTH_EMAIL_NOT_SENT () {
     return new GenericError('auth/email-not-sent', "Email can't be send.")
+  },
+  get AUTH_FACEBOOK_INVALID_TOKEN () {
+    return new GenericError(
+      'auth/facebook-invalid-token',
+      'Invalid Facebook token.'
+    )
   }
 }
