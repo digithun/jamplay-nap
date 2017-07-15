@@ -41,6 +41,7 @@
     "graphiql": "docker run -it -p3001:3000 vitalcode/auth-graphiql",
     "test": "jest --watchAll --runInBand",
     "cover": "jest --coverage --no-cache",
+    "release": ". release.sh",
     "seed": "node ./graphql/content/seed.js",
     "gen-seed": "node ./scripts/seeds/gen-seed.js",
     "import-seed": "node ./scripts/seeds/import.js",
