@@ -1,7 +1,6 @@
 {
   "name": "nap",
-  "version": "0.25.1",
-  "clogii_version": "0.0.1",
+  "version": "0.26.0",
   "main": "index.js",
   "docker-registry": "hub.clogii.com",
   "scripts": {
