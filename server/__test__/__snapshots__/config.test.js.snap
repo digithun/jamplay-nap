@@ -2,10 +2,14 @@
 
 exports[`config should return config 1`] = `
 Object {
+  "bigquery_service_endpoint": null,
   "cookie_secret": "foo",
   "dev": true,
+  "e_wallet_api": undefined,
+  "e_wallet_enabled": false,
   "graphiql_enabled": true,
   "graphql_disabled": false,
+  "is_optics_enabled": false,
   "jwt_secret": "foo",
   "mailgun_api_key": "FOO_MAILGUN_API_KEY",
   "mailgun_domain": "BAR_MAILGUN_DOMAIN",

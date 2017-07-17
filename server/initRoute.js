@@ -39,16 +39,36 @@ const initNextRoute = (app, nextjs) => {
   app.all('*', (req, res) => handler(req, res))
 }
 
+// Graceful Shutdown Server
+const gracefulShutdown = (server, signal) => {
+  console.log(`Received kill signal (${signal}), shutting down gracefully.`)
+  server.close(() => {
+    console.log("Closed out remaining connections.")
+    process.exit()
+  })
+}
+
 const init = ({ port }, app, nextjs) => new Promise((resolve, reject) => {
   // Next exist?
   initNextRoute(app, nextjs)
 
   // Server
-  app.listen(port, (err) => {
+  const server = app.listen(port, (err) => {
     if (err) return reject(err)
 
     debug.info(`Express : http://localhost:${port}`)
     resolve(app)
+  })
+
+  // Graceful server shutdown
+  // listen for TERM signal .e.g. kill
+  process.on('SIGTERM', () => {
+    gracefulShutdown(server, 'SIGTERM')
+  })
+
+  // listen for TERM signal .e.g. Ctrl-C
+  process.on('SIGINT', () => {
+    gracefulShutdown(server, 'SIGINT')
   })
 })
 

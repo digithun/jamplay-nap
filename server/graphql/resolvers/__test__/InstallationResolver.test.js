@@ -28,16 +28,17 @@ describe('InstallationResolver', () => {
     // stub
     global.NAP = {}
     NAP.Installation = {
-      findOneAndUpdate: jest.fn().mockImplementationOnce(() =>
-        Promise.resolve(Object.assign(
-          { _id: '592c0bb41b46e001780f00a6' },
-          fieldObject
-        ))
-      )
+      findOneAndUpdate: jest
+        .fn()
+        .mockImplementationOnce(() =>
+          Promise.resolve(
+            Object.assign({ _id: '592c0bb41b46e001780f00a6' }, fieldObject)
+          )
+        )
     }
 
-    const context = { nap : {session: { installationId: 'foo' }}}
-    const args = { foo: 'bar'}
+    const context = { nap: { session: { installationId: 'foo' } } }
+    const args = { foo: 'bar' }
     const { willUpdateField } = require('../InstallationResolver')
     const installation = await willUpdateField(fieldObject)({ context, args })
 
@@ -48,11 +49,13 @@ describe('InstallationResolver', () => {
     // mock
     const fieldObject = { foo: 'bar' }
 
-    const context = { nap : {session: null}}    
-    const args = { foo: 'bar'}
+    const context = { nap: { session: null } }
+    const args = { foo: 'bar' }
     const { willUpdateField } = require('../InstallationResolver')
     await willUpdateField(fieldObject)({ context, args }).catch(err => {
-      expect(() => { throw err }).toThrow('No session found')
+      expect(() => {
+        throw err
+      }).toThrow(require('../../../errors/commons').NAP_SESSION_NOT_FOUND)
     })
   })
 })

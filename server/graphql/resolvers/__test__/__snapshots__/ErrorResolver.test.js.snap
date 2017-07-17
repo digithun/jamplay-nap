@@ -3,7 +3,7 @@
 exports[`AuthenResolver should return errors if has any error 1`] = `
 Array [
   Object {
-    "code": 0,
+    "code": "node-error",
     "message": "foo",
   },
 ]
