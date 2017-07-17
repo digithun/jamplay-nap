@@ -2,15 +2,17 @@ module.exports = () => {
   const { TypeComposer } = require('graphql-compose')
   const { GraphQLList } = require('graphql')
 
-  const ErrorTC = TypeComposer.create(`
+  const ErrorTC = TypeComposer.create(
+    `
     type Error {
-      code: Int,
+      code: String!,
       message: String!,
     }
-  `)
+  `
+  )
 
   const ErrorResolver = require('../resolvers/ErrorResolver')
-  
+
   ErrorTC.addResolver({
     name: 'error',
     kind: 'query',

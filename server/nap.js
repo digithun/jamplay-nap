@@ -6,8 +6,13 @@ const {
   willSignUp,
   willLogin,
   willLogout,
-  willResetPassword
+  willResetPassword,
+  signup
 } = require('./authen-local')
+
+const {
+  willChangePasswordByToken
+} = require('./authen-local-passport')
 
 const {
   willInstallAndAuthen
@@ -16,15 +21,17 @@ const {
 const { willCreateUser } = require('./graphql/resolvers/UserResolver')
 
 class nap {
-  constructor() {
+  constructor () {
     this.session = null
     this.errors = []
 
+    this.signup = signup
     this.willLoginWithFacebook = willLoginWithFacebook
     this.willSignUp = willSignUp
     this.willLogin = willLogin
     this.willLogout = willLogout
     this.willResetPassword = willResetPassword
+    this.willChangePasswordByToken = willChangePasswordByToken
     this.willInstallAndAuthen = willInstallAndAuthen
     this.willCreateUser = willCreateUser
   }

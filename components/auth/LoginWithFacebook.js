@@ -6,7 +6,7 @@ import userProfile from '../userProfile.gql'
 import PropTypes from 'prop-types'
 
 class LoginWithFacebook extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {
       accessToken: '',
@@ -15,11 +15,11 @@ class LoginWithFacebook extends React.Component {
     this.loginWithFacebook = props.loginWithFacebook
   }
 
-  handleChange(event) {
+  handleChange (event) {
     this.setState({ accessToken: event.target.value })
   }
 
-  handleSubmit(e) {
+  handleSubmit (e) {
     e.preventDefault()
 
     const deviceInfo = e.target.elements.deviceInfo.value
@@ -37,19 +37,19 @@ class LoginWithFacebook extends React.Component {
     e.target.elements.accessToken.value = ''
   }
 
-  componentDidMount() {
+  componentDidMount () {
     if (this.isComponentDidMount) return
     this.isComponentDidMount = true
-    
+
     persist.willGetAccessToken().then(accessToken => this.isComponentDidMount && this.setState({ accessToken }))
     this.setState({ deviceInfo: device.info() })
   }
 
-  componentWillUnmount() {
+  componentWillUnmount () {
     this.isComponentDidMount = false
   }
 
-  render() {
+  render () {
     return <form onSubmit={this.handleSubmit.bind(this)}>
       <h1>Login (GraphQL) with Facebook accessToken</h1>
       <input placeholder='deviceInfo' name='deviceInfo' value={this.state.deviceInfo} />
@@ -102,7 +102,7 @@ const withGraphQL = graphql(loginWithFacebook, {
       update: (proxy, { data }) => {
         // Keep session
         persist.willSetSessionToken(data.loginWithFacebook.sessionToken)
-          
+
         // Read the data from our cache for this query.
         let cached = proxy.readQuery({ query: userProfile })
 
@@ -116,7 +116,7 @@ const withGraphQL = graphql(loginWithFacebook, {
         cached.authen = {
           isLoggedIn: data.loginWithFacebook.isLoggedIn,
           sessionToken: data.loginWithFacebook.sessionToken,
-          _typename: 'Authen'
+          __typename: 'Authen'
         }
 
         // Write our data back to the cache.
@@ -127,5 +127,5 @@ const withGraphQL = graphql(loginWithFacebook, {
 })
 
 export default compose(
-  withGraphQL,
+  withGraphQL
 )(LoginWithFacebook)

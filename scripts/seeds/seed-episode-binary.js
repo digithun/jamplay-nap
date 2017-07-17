@@ -1,24 +1,23 @@
-require('dotenv/config');
-const mongoose = require('mongoose');
-const fs = require('fs');
-const path = require('path');
+require('dotenv/config')
+const mongoose = require('mongoose')
+const fs = require('fs')
+const path = require('path')
 
-mongoose.Promise = Promise;
+mongoose.Promise = Promise
 
-mongoose.connect(process.env.DATABASE_URI_FOR_SEED);
+mongoose.connect(process.env.DATABASE_URI_FOR_SEED)
 
-const { models } = require('./models');
+const { models } = require('./models')
 
-const clogHTML = fs.readFileSync(path.resolve(__dirname, 'mock-clog-with-scroll-ratio.html'));
+const bookHTML = fs.readFileSync(path.resolve(__dirname, 'mock-book-with-scroll-ratio.html'))
 
 models.Episode.update({ data: null, isSeed: true }, {
   data: {
-    binary: clogHTML,
-  },
+    binary: bookHTML
+  }
 }, {
-  multi: true,
+  multi: true
 })
 .then(() => console.log('complete'))
 .catch(error => console.error(error.message))
-.then(() => process.exit(0));
-
+.then(() => process.exit(0))

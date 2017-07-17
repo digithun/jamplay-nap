@@ -22,15 +22,15 @@ describe('AuthenResolver', () => {
   it('should able to login with Facebook', async () => {
     const userData = {
       _id: '58d0e20e7ff032b39c2a9a18',
-      role: 'user',
+      role: 'user'
     }
 
-    const context = { 
-      headers : { host: 'localhost:3000'},
-      nap : {
+    const context = {
+      headers: { host: 'localhost:3000'},
+      nap: {
         willLoginWithFacebook: async () => userData,
         willCreateUser: async () => userData,
-        willInstallAndAuthen: async () => userData,
+        willInstallAndAuthen: async () => userData
       }
     }
 
@@ -38,21 +38,21 @@ describe('AuthenResolver', () => {
     const args = { accessToken }
 
     const { loginWithFacebook } = require('../AuthenResolver')
-    const user = await loginWithFacebook({ context, args })    
+    const user = await loginWithFacebook({ context, args })
     expect(user).toMatchSnapshot()
   })
 
   it('should able to login', async () => {
     const userData = {
       _id: '58d0e20e7ff032b39c2a9a18',
-      role: 'user',
+      role: 'user'
     }
 
-    const context = { 
-      headers : { host: 'localhost:3000'},
-      nap : {
+    const context = {
+      headers: { host: 'localhost:3000'},
+      nap: {
         willLogin: async () => userData,
-        willInstallAndAuthen: async () => userData,
+        willInstallAndAuthen: async () => userData
       }
     }
     const email = 'foo@bar.com'
@@ -60,49 +60,44 @@ describe('AuthenResolver', () => {
     const args = { email, password }
 
     const { login } = require('../AuthenResolver')
-    const user = await login({ context, args })    
+    const user = await login({ context, args })
     expect(user).toMatchSnapshot()
   })
 
   it('should able to signup', async () => {
     const userData = {
       _id: '58d0e20e7ff032b39c2a9a18',
-      role: 'user',
+      role: 'user'
     }
 
-    const context = { 
-      headers : { host: 'localhost:3000'},
-      nap : {
+    const context = {
+      headers: { host: 'localhost:3000'},
+      nap: {
         willSignUp: async () => userData,
         willCreateUser: async () => userData,
         willInstallAndAuthen: async () => userData,
+        signup: async () => userData
       }
     }
     const email = 'foo@bar.com'
     const password = 'password'
-    const args = { email, password }
+    const args = {
+      email,
+password,
+record: {
+        name,
+        gender: 'male',
+        first_name: 'foo',
+        last_name: 'bar',
+        dateOfBirth: new Date()
+      }
+    }
 
     // stub
     global.NAP = {}
 
     const { signup } = require('../AuthenResolver')
-    const user = await signup({ context, args })    
-    expect(user).toMatchSnapshot()
-  })
-
-  it('should able to forget password', async () => {
-    const context = { 
-      headers : { host: 'localhost:3000'},
-      nap : {
-        willResetPassword: async () => ({ 
-          status: 'WAIT_FOR_EMAIL_RESET'
-        }),
-      }
-    }
-    const email = 'foo@bar.com'
-    const args = { email }
-    const { forget } = require('../AuthenResolver')
-    const user = await forget({ context, args })    
+    const user = await signup({ context, args })
     expect(user).toMatchSnapshot()
   })
 
@@ -112,12 +107,12 @@ describe('AuthenResolver', () => {
       sessionToken: null
     }
 
-    const context = { 
-      logout:() => {},
+    const context = {
+      logout: () => {},
       session: {
-        destroy:() => {}
+        destroy: () => {}
       },
-      nap : {
+      nap: {
         willLogout: async () => authenData,
         session: authenData
       },
@@ -125,7 +120,7 @@ describe('AuthenResolver', () => {
     }
 
     const { logout } = require('../AuthenResolver')
-    const user = await logout({ context })    
+    const user = await logout({ context })
     expect(user).toMatchSnapshot()
   })
 })

@@ -1,16 +1,11 @@
 module.exports = async (config, nextjs) => {
+  // NAP
+  const nap = require('./initNAP')
+
   // Express
-  const express = require('express')
+  const app = require('./initExpress')(config, nap)
 
-  // Create a new Express application.
-  const app = express()
-
-  // NAP as First class
-  app.use(require('./initNAP'))
-
-  // Static
-  app.use(express.static('public'))
-
+  // MubSub
   config.mubsub_enabled && require('./initMubsub')()
 
   // Mongoose
@@ -28,9 +23,6 @@ module.exports = async (config, nextjs) => {
   // Store
   require('./initStore')(mongoose)
 
-  // Express
-  await require('./initExpress')(config, app, nextjs)
-
-  // Ready
-  debug.info('NAP is ready to use, enjoy! [^._.^]ﾉ彡')
+  // Next+Express
+  return await require('./initRoute')(config, app, nextjs)
 }

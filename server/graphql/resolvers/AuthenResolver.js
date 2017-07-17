@@ -12,19 +12,34 @@ const login = async ({ context, args }) => {
 }
 
 const signup = async ({ context, args }) => {
-  const userData = await context.nap.willSignUp(context, args.email, args.password).catch(onError(context))
-  const user = userData && await context.nap.willCreateUser(userData).catch(onError(context))
+  const user = await context.nap.signup(context, args.record.email, args.record.password, {
+    name: args.record.name,
+    gender: args.record.gender,
+    first_name: args.record.first_name,
+    last_name: args.record.last_name,
+    dateOfBirth: args.record.dateOfBirth
+  })
   return user
+  // const userData = await context.nap.willSignUp(
+  //   context,
+  //   args.record.email,
+  //   args.record.password,
+  //   {
+  //     name: args.record.name,
+  //     gender: args.record.gender,
+  //     first_name: args.record.first_name,
+  //     last_name: args.record.last_name,
+  //     dateOfBirth: args.record.dateOfBirth
+  //   }
+  // ).catch(onError(context))
+  // const user = userData && await context.nap.willCreateUser(userData).catch(onError(context))
+  // return user
 }
-
-const forget = async ({ context, args }) => await context.nap.willResetPassword(context, args.email)
-  .then(({ status }) => ({ user: { status } }))
-  .catch(onError(context))
 
 const logout = async ({ context }) => {
   // Logout from cookie
   context.logout()
-  context.session.destroy()
+  context.session && context.session.destroy()
 
   // Guard
   if (!context.nap.session) {
@@ -62,7 +77,7 @@ const willAuthen = async (installationId, { _id: userId, verified }, provider) =
     userId
   }
 
-  // Create session token  
+  // Create session token
   const { createSessionToken } = require('../../jwt-token')
   const sessionToken = createSessionToken(installationId, userId)
 
@@ -84,7 +99,6 @@ const willAuthen = async (installationId, { _id: userId, verified }, provider) =
 module.exports = {
   loginWithFacebook,
   signup,
-  forget,
   login,
   logout,
   authen,

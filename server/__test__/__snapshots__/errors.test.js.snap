@@ -23,16 +23,16 @@ Object {
 
 exports[`errors should add error new generic error to request 1`] = `
 Object {
-  "code": 0,
+  "code": "node-error",
   "message": "foo",
 }
 `;
 
 exports[`errors should add string as new generic error to request 1`] = `
 Object {
-  "code": 0,
+  "code": "node-error",
   "message": "foo",
 }
 `;
 
-exports[`errors should return SESSION_EMPTY_ERROR 1`] = `[Error: User has no session provide]`;
+exports[`errors should return AUTH_INVALID_USER_TOKEN 1`] = `[Error: The user's credential is no longer valid. The user must sign in again.]`;

@@ -1,12 +1,12 @@
-const { casual, loadSeed, writeSeed } = require('../helpers');
+const { casual, loadSeed, writeSeed } = require('../helpers')
 
-module.exports = function generate() {
-  const clogs = loadSeed('clog');
-  const feedClogs = clogs.map(clog => ({
+module.exports = function generate () {
+  const books = loadSeed('book')
+  const feedBooks = books.map(book => ({
     _id: casual.objectId,
-    authorId: clog.authorId,
-    clogId: clog._id,
-    createdAt: clog.createdAt,
-  }));
-  writeSeed('feed', feedClogs);
+    authorId: book.authorId,
+    bookId: book._id,
+    createdAt: book.createdAt
+  }))
+  writeSeed('feed', feedBooks)
 }

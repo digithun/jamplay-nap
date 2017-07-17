@@ -1,5 +1,7 @@
 node_modules
+dist
 npm-debug.log
 .next
 .env
 coverage
+yarn-error.log

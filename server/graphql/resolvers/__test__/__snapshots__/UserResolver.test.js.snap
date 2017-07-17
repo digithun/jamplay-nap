@@ -1,5 +1,11 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`willReadUser should able to forget password 1`] = `
+Object {
+  "status": "WAIT_FOR_EMAIL_RESET",
+}
+`;
+
 exports[`willReadUser should create user and return user data 1`] = `
 Object {
   "_id": "592c0bb4484d740e0e73798b",
@@ -8,7 +14,7 @@ Object {
 }
 `;
 
-exports[`willReadUser should return error if session not exist 1`] = `[Error: No session found]`;
+exports[`willReadUser should return error if session not exist 1`] = `[Error: A uid identifier is required for the current operation.]`;
 
 exports[`willReadUser should return user data if has session 1`] = `
 Object {
