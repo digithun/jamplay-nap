@@ -2,7 +2,6 @@
   "name": "nap",
   "version": "0.26.0",
   "main": "index.js",
-  "docker-registry": "hub.clogii.com",
   "scripts": {
     "setup": "echo \"# See .env.example for more\" > .env",
     "lint": "eslint . || true",
