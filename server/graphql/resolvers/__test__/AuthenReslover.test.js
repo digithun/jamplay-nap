@@ -83,14 +83,14 @@ describe('AuthenResolver', () => {
     const password = 'password'
     const args = {
       email,
-password,
-record: {
-        name,
-        gender: 'male',
-        first_name: 'foo',
-        last_name: 'bar',
-        dateOfBirth: new Date()
-      }
+      password,
+      record: {
+  name,
+  gender: 'male',
+  first_name: 'foo',
+  last_name: 'bar',
+  birthday: new Date()
+}
     }
 
     // stub

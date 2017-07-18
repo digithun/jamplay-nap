@@ -17,7 +17,7 @@ const signup = async ({ context, args }) => {
     gender: args.record.gender,
     first_name: args.record.first_name,
     last_name: args.record.last_name,
-    dateOfBirth: args.record.dateOfBirth
+    birthday: args.record.birthday
   })
   return user
   // const userData = await context.nap.willSignUp(
@@ -29,7 +29,7 @@ const signup = async ({ context, args }) => {
   //     gender: args.record.gender,
   //     first_name: args.record.first_name,
   //     last_name: args.record.last_name,
-  //     dateOfBirth: args.record.dateOfBirth
+  //     birthday: args.record.birthday
   //   }
   // ).catch(onError(context))
   // const user = userData && await context.nap.willCreateUser(userData).catch(onError(context))
