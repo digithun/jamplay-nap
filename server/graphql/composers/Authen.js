@@ -60,7 +60,7 @@ module.exports = (models) => {
             gender: { type: new GraphQLNonNull(GenderType) },
             first_name: { type: 'String!' },
             last_name: { type: 'String!' },
-            dateOfBirth: { type: 'Date!' }
+            birthday: { type: 'Date!' }
           }
         })
       }
