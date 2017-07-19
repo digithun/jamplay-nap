@@ -75,7 +75,7 @@ const willSignUpNewUser = async (email, password, extraFields, token) => {
   if (user) {
     switch (user.status) {
       case 'WAIT_FOR_EMAIL_VERIFICATION':
-        throw require('./errors/codes').WAIT_FOR_EMAIL_VERIFICATION_ERROR
+        throw require('./errors/codes').AUTH_EMAIL_ALREADY_SENT
       case 'VERIFIED_BY_EMAIL':
         throw require('./errors/codes').AUTH_EMAIL_ALREADY_IN_USE
     }
