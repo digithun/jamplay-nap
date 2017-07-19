@@ -20,7 +20,7 @@
     "serve": "npm run exec -- npm run _serve",
     "prod": "npm run exec -- npm run _prod",
     "local": "npm run stop && REDIS_URI=redis://localhost MONGODB_URI=mongodb://localhost/graphql npm run _serve",
-    "image": "docker build --no-cache -t rabbotio/nap . || true",
+    "build:image": "docker build --no-cache -t digithun/jamplay-nap:$(node -p \"require('./package.json').version\") -f Dockerfile.jamplay . && docker tag digithun/jamplay-nap:$(node -p \"require('./package.json').version\") digithun/jamplay-nap:latest || true",
     "image-dev": "NODE_ENV=development docker build --no-cache -t rabbotio/nap . || true",
     "history": "docker history rabbotio/nap > history.log && cat history.log || true",
     "size": "echo $(docker image inspect rabbotio/nap -f {{.Size}})",
