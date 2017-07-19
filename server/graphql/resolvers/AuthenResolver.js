@@ -9,9 +9,9 @@ const loginWithFacebook = async ({ context, args }) => {
     (await context.nap.willCreateUser(userData).catch(onError(context)))
   return (
     user &&
-    (await context.nap
+    context.nap
       .willInstallAndAuthen(args, user, 'facebook')
-      .catch(onError(context)))
+      .catch(onError(context))
   )
 }
 
@@ -21,19 +21,19 @@ const login = async ({ context, args }) => {
     .catch(onError(context))
   return (
     user &&
-    (await context.nap
+    context.nap
       .willInstallAndAuthen(args, user, 'local')
-      .catch(onError(context)))
+      .catch(onError(context))
   )
 }
 
 const signUpWithEmailAndPassword = async ({ context, args }) =>
-  await context.nap
+  context.nap
     .willSignUp(context, args.email, args.password)
     .catch(onError(context))
 
 const signup = async ({ context, args }) =>
-  await context.nap
+  context.nap
     .willSignUp(context, args.record.email, args.record.password, {
       name: args.record.name,
       gender: args.record.gender,
@@ -58,7 +58,7 @@ const logout = async ({ context }) => {
 
   // Logout
   const { installationId, userId } = context.nap.session
-  return await context.nap
+  return context.nap
     .willLogout(installationId, userId, context.token)
     .catch(onError(context))
 }
@@ -75,7 +75,7 @@ const authen = async ({ context }) => {
   }
 
   const { installationId, userId } = context.nap.session
-  return await NAP.Authen
+  return NAP.Authen
     .findOne({ userId, installationId })
     .catch(err => onError(context)(err) && _noAuthen)
 }
@@ -108,11 +108,10 @@ const willAuthen = async (
   }
 
   // Allow to authen
-  return await NAP.Authen.findOneAndUpdate(
-    { installationId, userId },
-    authenData,
-    { new: true, upsert: true }
-  )
+  return NAP.Authen.findOneAndUpdate({ installationId, userId }, authenData, {
+    new: true,
+    upsert: true
+  })
 }
 
 module.exports = {

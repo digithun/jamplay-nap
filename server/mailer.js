@@ -19,7 +19,7 @@ const willSendVerification = async ({ mailgun_api_key, mailgun_domain, email, ve
   const data = builder(mailgun_domain, email, verification_url)
 
   // Send
-  return await mailgunClient.messages.create(mailgun_domain, data)
+  return mailgunClient.messages.create(mailgun_domain, data)
 }
 
 const willSendPasswordReset = async ({ mailgun_api_key, mailgun_domain, email, password_reset_url, new_password_reset_url }) => {
@@ -42,7 +42,7 @@ const willSendPasswordReset = async ({ mailgun_api_key, mailgun_domain, email, p
   const data = builder(mailgun_domain, email, password_reset_url, new_password_reset_url)
 
   // Send
-  return await mailgunClient.messages.create(mailgun_domain, data)
+  return mailgunClient.messages.create(mailgun_domain, data)
 }
 
 module.exports = { willSendVerification, willSendPasswordReset }
