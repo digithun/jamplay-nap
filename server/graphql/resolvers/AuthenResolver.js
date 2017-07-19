@@ -27,18 +27,13 @@ const login = async ({ context, args }) => {
   )
 }
 
-const signUpWithEmailAndPassword = async ({ context, args }) => {
-  const userData = await context.nap
+const signUpWithEmailAndPassword = async ({ context, args }) =>
+  await context.nap
     .willSignUp(context, args.email, args.password)
     .catch(onError(context))
-  const user = userData
-    ? await context.nap.willCreateUser(userData).catch(onError(context))
-    : null
-  return user
-}
 
-const signup = async ({ context, args }) => {
-  const userData = await context.nap
+const signup = async ({ context, args }) =>
+  await context.nap
     .willSignUp(context, args.record.email, args.record.password, {
       name: args.record.name,
       gender: args.record.gender,
@@ -47,11 +42,6 @@ const signup = async ({ context, args }) => {
       birthday: args.record.birthday
     })
     .catch(onError(context))
-  const user = userData
-    ? await context.nap.willCreateUser(userData).catch(onError(context))
-    : null
-  return user
-}
 
 const logout = async ({ context }) => {
   // Logout from cookie
