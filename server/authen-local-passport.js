@@ -75,7 +75,7 @@ const willSignUpNewUser = async (email, password, extraFields, token) => {
   if (user) {
     switch (user.status) {
       case 'WAIT_FOR_EMAIL_VERIFICATION':
-        throw require('./errors/codes').WAIT_FOR_EMAIL_VERIFICATION_ERROR
+        throw require('./errors/codes').AUTH_EMAIL_ALREADY_SENT
       case 'VERIFIED_BY_EMAIL':
         throw require('./errors/codes').AUTH_EMAIL_ALREADY_IN_USE
     }
@@ -83,7 +83,7 @@ const willSignUpNewUser = async (email, password, extraFields, token) => {
 
   // Create user with email and token, password if any
   const userData = _createNewUserData(email, password, extraFields, token)
-  return await NAP.User.create(userData)
+  return NAP.User.create(userData)
 }
 
 const willResetPasswordExistingUser = async (email, token) => {
@@ -92,7 +92,7 @@ const willResetPasswordExistingUser = async (email, token) => {
   guard({ token })
 
   // Use existing user
-  return await NAP.User.findOneAndUpdate(
+  return NAP.User.findOneAndUpdate(
     {
       email
     },
@@ -174,7 +174,7 @@ const willChangePasswordByToken = async (password, token) => {
   user = _withHashedPassword(user, password)
   user = Object.assign(user, _verifiedByEmailPayload())
 
-  return await user.save()
+  return user.save()
 }
 
 const reset_password_by_token = (req, res) => {

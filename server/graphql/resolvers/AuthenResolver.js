@@ -1,40 +1,47 @@
 const { onError } = require('../../errors')
 
 const loginWithFacebook = async ({ context, args }) => {
-  const userData = await context.nap.willLoginWithFacebook(context, args.accessToken).catch(onError(context))
-  const user = userData && await context.nap.willCreateUser(userData).catch(onError(context))
-  return user && await context.nap.willInstallAndAuthen(args, user, 'facebook').catch(onError(context))
+  const userData = await context.nap
+    .willLoginWithFacebook(context, args.accessToken)
+    .catch(onError(context))
+  const user =
+    userData &&
+    (await context.nap.willCreateUser(userData).catch(onError(context)))
+  return (
+    user &&
+    context.nap
+      .willInstallAndAuthen(args, user, 'facebook')
+      .catch(onError(context))
+  )
 }
 
 const login = async ({ context, args }) => {
-  const user = await context.nap.willLogin(context, args.email, args.password).catch(onError(context))
-  return user && await context.nap.willInstallAndAuthen(args, user, 'local').catch(onError(context))
+  const user = await context.nap
+    .willLogin(context, args.email, args.password)
+    .catch(onError(context))
+  return (
+    user &&
+    context.nap
+      .willInstallAndAuthen(args, user, 'local')
+      .catch(onError(context))
+  )
 }
 
-const signup = async ({ context, args }) => {
-  const user = await context.nap.signup(context, args.record.email, args.record.password, {
-    name: args.record.name,
-    gender: args.record.gender,
-    first_name: args.record.first_name,
-    last_name: args.record.last_name,
-    dateOfBirth: args.record.dateOfBirth
-  })
-  return user
-  // const userData = await context.nap.willSignUp(
-  //   context,
-  //   args.record.email,
-  //   args.record.password,
-  //   {
-  //     name: args.record.name,
-  //     gender: args.record.gender,
-  //     first_name: args.record.first_name,
-  //     last_name: args.record.last_name,
-  //     dateOfBirth: args.record.dateOfBirth
-  //   }
-  // ).catch(onError(context))
-  // const user = userData && await context.nap.willCreateUser(userData).catch(onError(context))
-  // return user
-}
+const signUpWithEmailAndPassword = async ({ context, args }) =>
+  context.nap
+    .willSignUp(context, args.email, args.password)
+    .catch(onError(context))
+
+const signup = async ({ context, args }) =>
+  context.nap
+    .willSignUp(context, args.record.email, args.record.password, {
+      name: args.record.name,
+      gender: args.record.gender,
+      first_name: args.record.first_name,
+      last_name: args.record.last_name,
+      birthday: args.record.birthday
+    })
+    .catch(onError(context))
 
 const logout = async ({ context }) => {
   // Logout from cookie
@@ -51,7 +58,9 @@ const logout = async ({ context }) => {
 
   // Logout
   const { installationId, userId } = context.nap.session
-  return await context.nap.willLogout(installationId, userId, context.token).catch(onError(context))
+  return context.nap
+    .willLogout(installationId, userId, context.token)
+    .catch(onError(context))
 }
 
 const authen = async ({ context }) => {
@@ -66,10 +75,16 @@ const authen = async ({ context }) => {
   }
 
   const { installationId, userId } = context.nap.session
-  return await NAP.Authen.findOne({ userId, installationId }).catch(err => onError(context)(err) && _noAuthen)
+  return NAP.Authen
+    .findOne({ userId, installationId })
+    .catch(err => onError(context)(err) && _noAuthen)
 }
 
-const willAuthen = async (installationId, { _id: userId, verified }, provider) => {
+const willAuthen = async (
+  installationId,
+  { _id: userId, verified },
+  provider
+) => {
   // Base data
   let authenData = {
     isLoggedIn: false,
@@ -82,7 +97,7 @@ const willAuthen = async (installationId, { _id: userId, verified }, provider) =
   const sessionToken = createSessionToken(installationId, userId)
 
   // Guard by user local verification if has
-  const isVerified = (provider === 'local') ? verified : true
+  const isVerified = provider === 'local' ? verified : true
   if (isVerified) {
     authenData = Object.assign(authenData, {
       isLoggedIn: isVerified,
@@ -93,12 +108,16 @@ const willAuthen = async (installationId, { _id: userId, verified }, provider) =
   }
 
   // Allow to authen
-  return await NAP.Authen.findOneAndUpdate({ installationId, userId }, authenData, { new: true, upsert: true })
+  return NAP.Authen.findOneAndUpdate({ installationId, userId }, authenData, {
+    new: true,
+    upsert: true
+  })
 }
 
 module.exports = {
   loginWithFacebook,
   signup,
+  signUpWithEmailAndPassword,
   login,
   logout,
   authen,

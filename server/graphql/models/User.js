@@ -25,7 +25,7 @@ module.exports = (extendedSchema) => {
     hashed_password: String,
     verified: { type: 'boolean', default: false },
     gender: String,
-    dateOfBirth: Date,
+    birthday: Date,
     verifiedAt: { type: Date },
     phones: String,
     facebook: { type: ProviderSchema },

@@ -1,8 +1,7 @@
 {
   "name": "nap",
-  "version": "0.26.0",
+  "version": "0.27.0",
   "main": "index.js",
-  "docker-registry": "hub.clogii.com",
   "scripts": {
     "setup": "echo \"# See .env.example for more\" > .env",
     "lint": "eslint . || true",
@@ -40,6 +39,7 @@
     "attach": "docker attach $(docker ps -a -q --filter ancestor=rabbotio/nap) || true",
     "graphiql": "docker run -it -p3001:3000 vitalcode/auth-graphiql",
     "test": "jest --watchAll --runInBand",
+    "test:once": "jest --runInBand",
     "cover": "jest --coverage --no-cache",
     "release": ". release.sh",
     "seed": "node ./graphql/content/seed.js",

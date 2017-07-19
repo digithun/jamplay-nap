@@ -1,4 +1,4 @@
-const { onError, errorBy } = require('./errors')
+const { errorBy } = require('./errors')
 
 const _emailError = msg => errorBy('AUTH_EMAIL_NOT_SENT', msg)
 
@@ -51,16 +51,6 @@ const willResetPassword = async (req, email) => {
   if (!msg) {
     throw _emailError(` (${email})`)
   }
-  return user
-}
-
-const signup = async (req, email, password, extraFields) => {
-  const userData = await willSignUp(req, email, password, extraFields).catch(
-    onError(req)
-  )
-  const user = userData
-    ? await req.nap.willCreateUser(userData).catch(onError(req))
-    : null
   return user
 }
 
@@ -135,7 +125,7 @@ const willLogin = async (req, email, password) => {
 
   // Validate local
   const { willAuthenWithPassport } = require('./passport-authen')
-  return await willAuthenWithPassport('local', req).catch(onError(req))
+  return willAuthenWithPassport('local', req)
 }
 
 const willLogout = async (installationId, userId, sessionToken) =>
@@ -153,6 +143,5 @@ module.exports = {
   willSignUp,
   willLogin,
   willLogout,
-  willResetPassword,
-  signup
+  willResetPassword
 }

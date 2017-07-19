@@ -11,7 +11,7 @@ const _willGetUserFromSession = async context => {
     throw require('../../errors/codes').AUTH_MISSING_UID
   }
 
-  return await NAP.User.findById(userId).catch(onError(context))
+  return NAP.User.findById(userId).catch(onError(context))
 }
 
 const willCreateUser = async user =>

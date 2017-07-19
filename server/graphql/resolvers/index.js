@@ -7,7 +7,7 @@ const willInstallAndAuthen = async (args, user, provider) => {
   const { willInstall } = require('./InstallationResolver')
   const { willAuthen } = require('./AuthenResolver')
   const installation = await willInstall(args)
-  return await willAuthen(installation.id, user, provider)
+  return willAuthen(installation.id, user, provider)
 }
 
 module.exports = {
