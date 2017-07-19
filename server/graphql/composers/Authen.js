@@ -1,34 +1,28 @@
 const { GraphQLNonNull } = require('graphql')
 const AuthenResolver = require('../resolvers/AuthenResolver')
 const GenderType = require('../types/Gender')
-const { InputTypeComposer, TypeComposer } = require('graphql-compose')
+const { InputTypeComposer } = require('graphql-compose')
 
-module.exports = (models) => {
-  models.AuthenTC.addRelation(
-    'user',
-    () => ({
-      resolver: models.UserTC.getResolver('findById'),
-      args: {
-        _id: (source) => `${source.userId || source._id}`,
-        filter: (source) => ({ userId: source.userId })
-      },
-      projection: { userId: 1 },
-      catchErrors: false
-    })
-  )
+module.exports = models => {
+  models.AuthenTC.addRelation('user', () => ({
+    resolver: models.UserTC.getResolver('findById'),
+    args: {
+      _id: source => `${source.userId || source._id}`,
+      filter: source => ({ userId: source.userId })
+    },
+    projection: { userId: 1 },
+    catchErrors: false
+  }))
 
-  models.AuthenTC.addRelation(
-    'installation',
-    () => ({
-      resolver: models.InstallationTC.getResolver('findById'),
-      args: {
-        _id: (source) => `${source.installationId || source._id}`,
-        filter: (source) => ({ installationId: source.installationId })
-      },
-      projection: { installationId: 1 },
-      catchErrors: false
-    })
-  )
+  models.AuthenTC.addRelation('installation', () => ({
+    resolver: models.InstallationTC.getResolver('findById'),
+    args: {
+      _id: source => `${source.installationId || source._id}`,
+      filter: source => ({ installationId: source.installationId })
+    },
+    projection: { installationId: 1 },
+    catchErrors: false
+  }))
 
   models.AuthenTC.addResolver({
     name: 'loginWithFacebook',
@@ -67,6 +61,17 @@ module.exports = (models) => {
     },
     type: models.UserTC,
     resolve: AuthenResolver.signup
+  })
+
+  models.AuthenTC.addResolver({
+    name: 'signUpWithEmailAndPassword',
+    kind: 'mutation',
+    args: {
+      email: 'String',
+      password: 'String'
+    },
+    type: models.UserTC,
+    resolve: AuthenResolver.signUpWithEmailAndPassword
   })
 
   models.AuthenTC.addResolver({

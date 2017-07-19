@@ -1,11 +1,10 @@
 import React from 'react'
 import { gql, graphql } from 'react-apollo'
-import persist from '../../lib/persist'
 import userProfile from '../userProfile.gql'
 import PropTypes from 'prop-types'
 
-const SignUp = ({ signup }) => {
-  const handleSubmit = (e) => {
+const SignUp = ({ signUpWithEmailAndPassword }) => {
+  const handleSubmit = e => {
     e.preventDefault()
 
     let email = e.target.elements.email.value
@@ -16,7 +15,7 @@ const SignUp = ({ signup }) => {
       return false
     }
 
-    signup(email, password)
+    signUpWithEmailAndPassword(email, password)
   }
 
   return (
@@ -43,16 +42,12 @@ const SignUp = ({ signup }) => {
   )
 }
 
-const signup = gql`
-mutation signup($email: String!, $password: String!) {
-  signup(email: $email, password: $password) {
-    isLoggedIn
-    sessionToken
-    user {
-      _id
-      name
-      status
-    }
+const signUpWithEmailAndPassword = gql`
+mutation signUpWithEmailAndPassword($email: String!, $password: String!) {
+  signUpWithEmailAndPassword(email: $email, password: $password) {
+    _id
+    name
+    status
   }
   errors {
     code
@@ -62,36 +57,29 @@ mutation signup($email: String!, $password: String!) {
 `
 
 SignUp.propTypes = () => ({
-  signup: PropTypes.func.isRequired
+  signUpWithEmailAndPassword: PropTypes.func.isRequired
 })
 
-export default graphql(signup, {
+export default graphql(signUpWithEmailAndPassword, {
   props: ({ mutate }) => ({
-    signup: (email, password) => mutate({
-      variables: { email, password },
-      update: (proxy, { data }) => {
-        // Keep session
-        data.signup && persist.willSetSessionToken(data.signup.sessionToken)
+    signUpWithEmailAndPassword: (email, password) =>
+      mutate({
+        variables: { email, password },
+        update: (proxy, { data }) => {
+          // Read the data from our cache for this query.
+          let cached = proxy.readQuery({ query: userProfile })
 
-        // Read the data from our cache for this query.
-        let cached = proxy.readQuery({ query: userProfile })
+          // Errors
+          cached.errors = data.errors
 
-        // Errors
-        cached.errors = data.errors
+          // User
+          cached.user = data.signUpWithEmailAndPassword
+            ? data.signUpWithEmailAndPassword
+            : { _id: null, name: null, status: null, __typename: 'User' }
 
-        // User
-        cached.user = data.signup ? data.signup.user : { _id: null, name: null, status: null, __typename: 'User' }
-
-        // Authen
-        cached.authen = {
-          isLoggedIn: data.signup ? data.signup.isLoggedIn : null,
-          sessionToken: data.signup ? data.signup.sessionToken : null,
-          __typename: 'Authen'
+          // Write our data back to the cache.
+          proxy.writeQuery({ query: userProfile, data: cached })
         }
-
-        // Write our data back to the cache.
-        proxy.writeQuery({ query: userProfile, data: cached })
-      }
-    })
+      })
   })
 })(SignUp)

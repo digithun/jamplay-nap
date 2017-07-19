@@ -15,6 +15,11 @@ const DEFAULT_CODE = 'node-error'
 const _push = (req, { code, message }) => req.nap.errors.push({ code, message })
 
 const onError = req => (...args) => {
+  // Guard
+  if (!args[0]) {
+    throw new Error('Error is undefined')
+  }
+
   // GenericError
   if (args[0] instanceof GenericError) {
     _push(req, args[0])
