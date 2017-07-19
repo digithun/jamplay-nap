@@ -24,5 +24,5 @@ module.exports = async (config, nextjs) => {
   require('./initStore')(mongoose)
 
   // Next+Express
-  return await require('./initRoute')(config, app, nextjs)
+  return require('./initRoute')(config, app, nextjs)
 }

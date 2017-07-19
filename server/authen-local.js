@@ -125,7 +125,7 @@ const willLogin = async (req, email, password) => {
 
   // Validate local
   const { willAuthenWithPassport } = require('./passport-authen')
-  return await willAuthenWithPassport('local', req)
+  return willAuthenWithPassport('local', req)
 }
 
 const willLogout = async (installationId, userId, sessionToken) =>
