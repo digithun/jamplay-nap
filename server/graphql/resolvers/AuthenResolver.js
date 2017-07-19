@@ -38,18 +38,18 @@ const signUpWithEmailAndPassword = async ({ context, args }) => {
 }
 
 const signup = async ({ context, args }) => {
-  const user = await context.nap.signup(
-    context,
-    args.record.email,
-    args.record.password,
-    {
+  const userData = await context.nap
+    .willSignUp(context, args.record.email, args.record.password, {
       name: args.record.name,
       gender: args.record.gender,
       first_name: args.record.first_name,
       last_name: args.record.last_name,
       birthday: args.record.birthday
-    }
-  )
+    })
+    .catch(onError(context))
+  const user = userData
+    ? await context.nap.willCreateUser(userData).catch(onError(context))
+    : null
   return user
 }
 

@@ -5,7 +5,6 @@ Object {
   "nap": nap {
     "errors": Array [],
     "session": null,
-    "signup": [Function],
     "willChangePasswordByToken": [Function],
     "willCreateUser": [Function],
     "willInstallAndAuthen": [Function],
