@@ -30,26 +30,26 @@ const UserProfile = ({ loading, user, errors, authen }) => {
         break
     }
   }
-  return <div>
-    <p className='error'>{info}</p><LoginWithFacebook /><hr /><SignUp /><hr /><Login /> <Forget />
-    <style jsx>{`
+  return (
+    <div>
+      <p className='error'>{info}</p><LoginWithFacebook /><hr /><SignUp /><hr /><Login /> <Forget />
+      <style jsx>{`
       .error {
         color: #ff0000
       }
       `}</style>
-  </div>
+    </div>
+  )
 }
 
 UserProfile.propTypes = () => ({
-  loading: PropTypes.boolean.isRequired,
+  loading: PropTypes.bool.isRequired,
   user: PropTypes.object.isRequired,
   errors: PropTypes.array.isRequired,
-  authen: PropTypes.object.isRequired,
+  authen: PropTypes.object.isRequired
 })
 
 export default graphql(userProfile, {
   options: { fetchPolicy: 'cache-and-network' },
-  props: ({ data: { loading, user, errors, authen } }) => (
-    { loading, user, errors, authen }
-  )
+  props: ({ data: { loading, user, errors, authen } }) => ({ loading, user, errors, authen })
 })(UserProfile)

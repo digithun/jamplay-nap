@@ -110,6 +110,11 @@
   "author": "katopz@gmail.com",
   "license": "MIT",
   "repository": "https://github.com/rabbotio/nap",
+  "standard": {
+    "globals": [
+      "NAP"
+    ]
+  },
   "devDependencies": {
     "babel-cli": "^6.24.1",
     "babel-eslint": "^7.2.3",
