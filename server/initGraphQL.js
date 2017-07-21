@@ -71,7 +71,7 @@ const init = ({ graphiql_enabled: graphiql, port, e_wallet_enabled }, app) => {
       graphiql,
       formatError: ({ originalError, message, stack }) => ({
         message: message,
-        code: originalError.code,
+        code: originalError ? originalError.code : null,
         stack: dev ? stack.split('\n') : null
       })
     }))
