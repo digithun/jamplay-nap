@@ -2,8 +2,9 @@ const fs = require('fs')
 const path = require('path')
 const bodyParser = require('body-parser')
 const { apolloUploadExpress } = require('apollo-upload-server')
-const { bigquery_service_endpoint, is_optics_enabled } = require('./config')
+const { bigquery_service_endpoint, is_optics_enabled, dev } = require('./config')
 const OpticsAgent = require('optics-agent')
+const { GenericError } = require('./errors')
 
 // isomorphic-fetch
 require('es6-promise').polyfill()
@@ -42,23 +43,23 @@ const init = ({ graphiql_enabled: graphiql, port, e_wallet_enabled }, app) => {
 
   const { authenticate } = require('./jwt-token')
   const schema = is_optics_enabled ? OpticsAgent.instrumentSchema(buildSchema()) : buildSchema()
-is_optics_enabled && app.use(OpticsAgent.middleware())
+  is_optics_enabled && app.use(OpticsAgent.middleware())
 
 // attach middleware
-if (bigquery_service_endpoint) {
-  const { insertQuery, initMiddleWare } = require('../bigquery/queryCollection')
-  app.all('/bigQuery/insert', (req, res) => insertQuery(req, res))
-  app.use(initMiddleWare())
-}
-
-const initEWallet = (req, res, next) => {
-  if (e_wallet_enabled) {
-    req.ewallet = global.NAP.EWallet.getEWallet(req.token)
+  if (bigquery_service_endpoint) {
+    const { insertQuery, initMiddleWare } = require('../bigquery/queryCollection')
+    app.all('/bigQuery/insert', (req, res) => insertQuery(req, res))
+    app.use(initMiddleWare())
   }
-  next()
-}
 
-app.use(
+  const initEWallet = (req, res, next) => {
+    if (e_wallet_enabled) {
+      req.ewallet = global.NAP.EWallet.getEWallet(req.token)
+    }
+    next()
+  }
+
+  app.use(
     '/graphql',
     bodyParser.json(),
     // upload.array('files'),
@@ -68,14 +69,15 @@ app.use(
     graphqlHTTP(() => ({
       schema,
       graphiql,
-      formatError: ({ message, stack }) => ({
+      formatError: ({ originalError, message, stack }) => ({
         message: message,
-        stack: !message.match(/[NOSTACK]/i) ? stack.split('\n') : null,
-      }),
+        code: originalError.code,
+        stack: dev ? stack.split('\n') : null
+      })
     }))
   )
 
-  // Status  
+  // Status
   debug.info(`GraphQL :`, graphiql ? `http://localhost:${port}/graphql` : 'N/A')
 }
 
