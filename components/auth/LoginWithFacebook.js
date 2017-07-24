@@ -41,7 +41,7 @@ class LoginWithFacebook extends React.Component {
     if (this.isComponentDidMount) return
     this.isComponentDidMount = true
 
-    persist.willGetAccessToken().then(accessToken => this.isComponentDidMount && this.setState({ accessToken }))
+    persist.willGetAccessToken().then(accessToken => this.isComponentDidMount && accessToken && this.setState({ accessToken }))
     this.setState({ deviceInfo: device.info() })
   }
 
@@ -50,12 +50,13 @@ class LoginWithFacebook extends React.Component {
   }
 
   render () {
-    return <form onSubmit={this.handleSubmit.bind(this)}>
-      <h1>Login (GraphQL) with Facebook accessToken</h1>
-      <input placeholder='deviceInfo' name='deviceInfo' value={this.state.deviceInfo} />
-      <input placeholder='accessToken' name='accessToken' value={this.state.accessToken} onChange={this.handleChange.bind(this)} />
-      <button type='submit'>Login</button>
-      <style jsx>{`
+    return (
+      <form onSubmit={this.handleSubmit.bind(this)}>
+        <h1>Login (GraphQL) with Facebook accessToken</h1>
+        <input placeholder='deviceInfo' name='deviceInfo' value={this.state.deviceInfo} />
+        <input placeholder='accessToken' name='accessToken' value={this.state.accessToken} onChange={this.handleChange.bind(this)} />
+        <button type='submit'>Login</button>
+        <style jsx>{`
         form {
           border-bottom: 1px solid #ececec;
           padding-bottom: 20px;
@@ -69,7 +70,8 @@ class LoginWithFacebook extends React.Component {
           margin-bottom: 10px;
         }
       `}</style>
-    </form>
+      </form>
+    )
   }
 }
 
@@ -97,35 +99,34 @@ LoginWithFacebook.propTypes = () => ({
 
 const withGraphQL = graphql(loginWithFacebook, {
   props: ({ mutate }) => ({
-    loginWithFacebook: (deviceInfo, accessToken) => mutate({
-      variables: { deviceInfo, accessToken },
-      update: (proxy, { data }) => {
-        // Keep session
-        persist.willSetSessionToken(data.loginWithFacebook.sessionToken)
+    loginWithFacebook: (deviceInfo, accessToken) =>
+      mutate({
+        variables: { deviceInfo, accessToken },
+        update: (proxy, { data }) => {
+          // Keep session
+          persist.willSetSessionToken(data.loginWithFacebook.sessionToken)
 
-        // Read the data from our cache for this query.
-        let cached = proxy.readQuery({ query: userProfile })
+          // Read the data from our cache for this query.
+          let cached = proxy.readQuery({ query: userProfile })
 
-        // Errors
-        cached.errors = data.errors
+          // Errors
+          cached.errors = data.errors
 
-        // User
-        cached.user = data.loginWithFacebook.user
+          // User
+          cached.user = data.loginWithFacebook.user
 
-        // Authen
-        cached.authen = {
-          isLoggedIn: data.loginWithFacebook.isLoggedIn,
-          sessionToken: data.loginWithFacebook.sessionToken,
-          __typename: 'Authen'
+          // Authen
+          cached.authen = {
+            isLoggedIn: data.loginWithFacebook.isLoggedIn,
+            sessionToken: data.loginWithFacebook.sessionToken,
+            __typename: 'Authen'
+          }
+
+          // Write our data back to the cache.
+          proxy.writeQuery({ query: userProfile, data: cached })
         }
-
-        // Write our data back to the cache.
-        proxy.writeQuery({ query: userProfile, data: cached })
-      }
-    })
+      })
   })
 })
 
-export default compose(
-  withGraphQL
-)(LoginWithFacebook)
+export default compose(withGraphQL)(LoginWithFacebook)
