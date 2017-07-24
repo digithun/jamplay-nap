@@ -72,9 +72,7 @@ describe('authen-local-passport', () => {
 
   it('should be true for valid email and password', async () => {
     const { willValidateEmailAndPassword } = require('../authen-local-passport')
-    expect(
-      await willValidateEmailAndPassword('foo@bar.com', 'foofoobarbar')
-    ).toMatchSnapshot()
+    expect(await willValidateEmailAndPassword('foo@bar.com', 'foofoobarbar')).toMatchSnapshot()
   })
 
   it('should throw error if email already in use when signup new user', async () => {
@@ -143,9 +141,7 @@ describe('authen-local-passport', () => {
 
     const { willSignUpNewUser } = require('../authen-local-passport')
     const token = require('uuid/v4')()
-    expect(
-      await willSignUpNewUser('foo@bar.com', 'foofoobarbar', token)
-    ).toMatchSnapshot()
+    expect(await willSignUpNewUser('foo@bar.com', 'foofoobarbar', token)).toMatchSnapshot()
   })
 
   it('should reset password if user exist', async () => {
@@ -177,9 +173,7 @@ describe('authen-local-passport', () => {
       )
     }
 
-    const {
-      willResetPasswordExistingUser
-    } = require('../authen-local-passport')
+    const { willResetPasswordExistingUser } = require('../authen-local-passport')
     expect(await willResetPasswordExistingUser(email, token)).toMatchSnapshot()
   })
 
@@ -227,9 +221,7 @@ describe('authen-local-passport', () => {
       )
     }
 
-    const {
-      reset_password_by_token
-    } = require('../authen-local-passport').handler
+    const { reset_password_by_token } = require('../authen-local-passport').handler
     const req = { body: { token, password } }
     const res = {
       redirect: route => expect(route).toMatchSnapshot(),
@@ -262,8 +254,7 @@ describe('authen-local-passport', () => {
     // mock
     const email = 'foo@bar.com'
     const password = 'password'
-    const hashed_password =
-      '$2a$10$J8sNyptEzgDuQu3b9H8PnuYO85KLnMYF2RjmMeAbt.vpND7NymH/O'
+    const hashed_password = '$2a$10$J8sNyptEzgDuQu3b9H8PnuYO85KLnMYF2RjmMeAbt.vpND7NymH/O'
 
     // stub
     NAP.User = {
@@ -271,15 +262,13 @@ describe('authen-local-passport', () => {
         Promise.resolve({
           _id: '592c0bb4484d740e0e73798b',
           role: 'user',
-          verified: true,
+          emailVerified: true,
           hashed_password
         })
       )
     }
 
     const { validateLocalStrategy } = require('../authen-local-passport')
-    validateLocalStrategy(email, password, (err, result) =>
-      expect(result).toMatchSnapshot()
-    )
+    validateLocalStrategy(email, password, (err, result) => expect(result).toMatchSnapshot())
   })
 })

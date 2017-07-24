@@ -8,14 +8,16 @@ const UserSchema = new mongoose.Schema({
     type: String,
     default: 'user'
   },
-  installations: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Installation'
-  }],
+  installations: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Installation'
+    }
+  ],
   emailVerified: {
     type: Boolean,
     default: false
-  },
+  }
 })
 
 // - - - - - - Plugins - - - - - -
@@ -24,10 +26,10 @@ const role = require('mongoose-role')
 UserSchema.plugin(role, {
   roles: ['public', 'user', 'admin'],
   accessLevels: {
-    'public': ['public', 'user', 'admin'],
-    'anon': ['public'],
-    'user': ['user', 'admin'],
-    'admin': ['admin']
+    public: ['public', 'user', 'admin'],
+    anon: ['public'],
+    user: ['user', 'admin'],
+    admin: ['admin']
   }
 })
 

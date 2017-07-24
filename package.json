@@ -1,6 +1,6 @@
 {
   "name": "nap",
-  "version": "0.26.0",
+  "version": "0.26.1",
   "main": "index.js",
   "scripts": {
     "setup": "echo \"# See .env.example for more\" > .env",
@@ -105,7 +105,8 @@
     "superagent": "^3.5.2",
     "tmp-promise": "^1.0.3",
     "uuid": "^3.1.0",
-    "validator": "^7.0.0"
+    "validator": "^7.0.0",
+    "watchman": "^0.1.8"
   },
   "author": "katopz@gmail.com",
   "license": "MIT",
