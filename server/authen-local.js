@@ -24,10 +24,7 @@ const willResetPassword = async (req, email) => {
   }
 
   // Will send email verification
-  const {
-    createPasswordResetURL,
-    createNewPasswordResetURL
-  } = require('./authen-local-passport')
+  const { createPasswordResetURL, createNewPasswordResetURL } = require('./authen-local-passport')
   const base_url = `${req.protocol}://${req.headers.host}`
   const password_reset_url = createPasswordResetURL(base_url, token)
   const new_password_reset_url = createNewPasswordResetURL(base_url)
@@ -58,10 +55,7 @@ const willResetPassword = async (req, email) => {
 const willSignUp = async (req, email, password, extraFields) => {
   // Guard
   const { willValidateEmailAndPassword } = require('./authen-local-passport')
-  const isValidEmailAndPassword = await willValidateEmailAndPassword(
-    email,
-    password
-  )
+  const isValidEmailAndPassword = await willValidateEmailAndPassword(email, password)
   if (!isValidEmailAndPassword) {
     throw require('./errors/codes').AUTH_WRONG_PASSWORD
   }
@@ -80,10 +74,7 @@ const willSignUp = async (req, email, password, extraFields) => {
 
   // Will send email verification
   const { createVerificationURL } = require('./authen-local-passport')
-  const verification_url = createVerificationURL(
-    `${req.protocol}://${req.headers.host}`,
-    token
-  )
+  const verification_url = createVerificationURL(`${req.protocol}://${req.headers.host}`, token)
 
   // New user, will need verification by email
   const config = require('./config')
@@ -111,10 +102,7 @@ const willSignUp = async (req, email, password, extraFields) => {
 const willLogin = async (req, email, password) => {
   // Guard
   const { willValidateEmailAndPassword } = require('./authen-local-passport')
-  const isValidEmailAndPassword = await willValidateEmailAndPassword(
-    email,
-    password
-  )
+  const isValidEmailAndPassword = await willValidateEmailAndPassword(email, password)
   if (!isValidEmailAndPassword) {
     throw require('./errors/codes').AUTH_WRONG_PASSWORD
   }
@@ -129,7 +117,7 @@ const willLogin = async (req, email, password) => {
 }
 
 const willLogout = async (installationId, userId, sessionToken) =>
-  await NAP.Authen.findOneAndUpdate(
+  NAP.Authen.findOneAndUpdate(
     { installationId, userId, sessionToken, isLoggedIn: true },
     {
       loggedOutAt: new Date().toISOString(),
