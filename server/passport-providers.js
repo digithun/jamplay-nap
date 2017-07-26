@@ -20,7 +20,7 @@ const init = (app, passport) => {
     passport.use(
       new Strategy(strategyOptions, (req, accessToken, refreshToken, profile, done) => {
         try {
-          // Normalise the provider specific profile into a User object
+          // Normalize the provider specific profile into a User object
           const _profile = getUserFromProfile(profile)
 
           // See if we have this oAuth account in the database associated with a user
@@ -43,7 +43,8 @@ const init = (app, passport) => {
                       name: (user && user.name) || _profile.name,
                       [provider]: new NAP.Provider({
                         id: _profile.id,
-                        token: accessToken
+                        token: accessToken,
+                        profile
                       })
                     },
                     { new: true, upsert: true },
@@ -95,7 +96,8 @@ const init = (app, passport) => {
                       email: _profile.email,
                       [provider]: new NAP.Provider({
                         id: _profile.id,
-                        token: accessToken
+                        token: accessToken,
+                        profile
                       }),
                       role: 'user'
                     },

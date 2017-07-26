@@ -16,6 +16,7 @@ const init = (app, passport) => {
         clientSecret: process.env.FACEBOOK_APP_SECRET
       },
       (accessToken, refreshToken, profile, done) => {
+        // No use
         delete profile._raw
         delete profile._json
 
@@ -30,31 +31,17 @@ const init = (app, passport) => {
         const payload = {
           email,
           name: profile.displayName,
-          facebook: {
+          facebook: new NAP.Provider({
             id: profile.id,
             token: accessToken,
             profile
-          }
+          })
         }
 
-        // Will find someone that has this email and update token
-        NAP.User.findOneAndUpdate(
-          {
-            email: payload.email
-          },
-          payload,
-          { new: true, upsert: true },
-          (err, user) => (err ? done(err, null) : done(err, user))
-        )
+        done(null, payload)
       }
     )
   )
-
-  // Route
-  app.post('/auth/facebook/token', passport.authenticate('facebook-token'), (req, res) => {
-    // do something with req.user
-    res.json(req.user)
-  })
 }
 
 module.exports = init

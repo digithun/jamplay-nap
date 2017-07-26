@@ -59,11 +59,10 @@ describe('authen-local', () => {
     // stub
     global.NAP = {}
     NAP.User = {
-      findOne: jest.fn().mockImplementationOnce(() =>
+      findOneAndUpdate: jest.fn().mockImplementationOnce(() =>
         Promise.resolve({
-          _id: '592c0bb4484d740e0e73798b',
-          emailVerified: true,
-          role: 'user'
+          _id: '58d0e20e7ff032b39c2a9a18',
+          name: 'bar'
         })
       )
     }

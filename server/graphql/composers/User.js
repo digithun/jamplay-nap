@@ -1,6 +1,6 @@
 const UserResolver = require('../resolvers/UserResolver')
 
-module.exports = (models) => {
+module.exports = models => {
   models.UserTC.addResolver({
     name: 'user',
     kind: 'query',
@@ -9,25 +9,25 @@ module.exports = (models) => {
   })
 
   models.UserTC.addResolver({
-    name: 'unlinkFacebook',
+    name: 'unlinkFromFacebook',
     type: models.UserTC,
-    resolve: UserResolver.unlinkFacebook
+    resolve: UserResolver.unlinkFromFacebook
   })
 
   models.UserTC.addResolver({
-    name: 'linkFacebook',
+    name: 'linkWithFacebook',
     type: models.UserTC,
     args: {
       accessToken: 'String!'
     },
-    resolve: UserResolver.linkFacebook
+    resolve: UserResolver.linkWithFacebook
   })
 
   models.UserTC.addResolver({
     name: 'changeEmail',
     type: models.UserTC,
     args: {
-      email: 'String!',
+      email: 'String!'
     },
     resolve: UserResolver.changeEmail
   })

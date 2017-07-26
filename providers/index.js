@@ -1,4 +1,4 @@
-const init = (providers) => {
+const init = providers => {
   // Facebook
   if (process.env.FACEBOOK_APP_ID && process.env.FACEBOOK_APP_SECRET) {
     providers.push({
@@ -10,10 +10,10 @@ const init = (providers) => {
         profileFields: ['id', 'displayName', 'emails', 'name']
       },
       scope: process.env.FACEBOOK_SCOPE ? process.env.FACEBOOK_SCOPE.split(',') : ['email', 'user_location'],
-      getUserFromProfile: (profile) => ({
+      getUserFromProfile: profile => ({
         id: profile.id,
         name: profile.displayName,
-        email: profile._json.email
+        email: profile.emails[0].value
       })
     })
   }
@@ -28,7 +28,7 @@ const init = (providers) => {
         consumerSecret: process.env.TWITTER_API_SECRET
       },
       scope: null,
-      getUserFromProfile: (profile) => ({
+      getUserFromProfile: profile => ({
         id: profile.id,
         name: profile.displayName,
         email: profile.username + '@twitter'
@@ -46,7 +46,7 @@ const init = (providers) => {
         clientSecret: process.env.GOOGLE_CLIENT_SECRET
       },
       scope: 'profile email',
-      getUserFromProfile: (profile) => ({
+      getUserFromProfile: profile => ({
         id: profile.id,
         name: profile.displayName,
         email: profile.emails[0].value
@@ -64,7 +64,7 @@ const init = (providers) => {
         clientSecret: process.env.GITHUB_CLIENT_SECRET
       },
       scope: null,
-      getUserFromProfile: (profile) => ({
+      getUserFromProfile: profile => ({
         id: profile.id,
         name: profile.displayName,
         email: profile.emails[0].value

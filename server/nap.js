@@ -1,11 +1,6 @@
-const { willLoginWithFacebook } = require('./authen-facebook')
+const { willLoginWithFacebook, willGetFacebookProfile } = require('./authen-facebook')
 
-const {
-  willSignUp,
-  willLogin,
-  willLogout,
-  willResetPassword
-} = require('./authen-local')
+const { willSignUp, willLogin, willLogout, willResetPassword } = require('./authen-local')
 
 const { willChangePasswordByToken } = require('./authen-local-passport')
 
@@ -19,6 +14,7 @@ class nap {
     this.errors = []
 
     this.willLoginWithFacebook = willLoginWithFacebook
+    this.willGetFacebookProfile = willGetFacebookProfile
     this.willSignUp = willSignUp
     this.willLogin = willLogin
     this.willLogout = willLogout
