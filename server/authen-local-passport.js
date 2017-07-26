@@ -1,10 +1,8 @@
 const { guard } = require('./errors')
 const { AUTH_WEAK_PASSWORD } = require('./errors/codes')
 
-const createVerificationURL = (base_url, token) =>
-  `${base_url}/auth/local/${token}`
-const createPasswordResetURL = (base_url, token) =>
-  `${base_url}/auth/reset/${token}`
+const createVerificationURL = (base_url, token) => `${base_url}/auth/local/${token}`
+const createPasswordResetURL = (base_url, token) => `${base_url}/auth/reset/${token}`
 const createNewPasswordResetURL = base_url => `${base_url}/auth/reset`
 
 const willValidateEmail = async email => {
@@ -47,8 +45,8 @@ const _withHashedPassword = (user, password) => {
 
 const _verifiedByEmailPayload = () => ({
   token: null,
-  verified: true,
-  verifiedAt: new Date().toISOString(),
+  emailVerified: true,
+  emailVerifiedAt: new Date().toISOString(),
   status: 'VERIFIED_BY_EMAIL'
 })
 
@@ -60,7 +58,7 @@ const _createNewUserData = (email, password, extraFields, token) =>
         name: email.split('@')[0],
         token,
         role: 'user',
-        verified: false,
+        emailVerified: false,
         status: 'WAIT_FOR_EMAIL_VERIFICATION'
       },
       extraFields
@@ -68,18 +66,37 @@ const _createNewUserData = (email, password, extraFields, token) =>
     password
   )
 
+const _guardUnverifiedUserForSignUp = user => {
+  // No user, which is great
+  if (!user) {
+    return
+  }
+
+  // User, but...
+  switch (user.status) {
+    case 'WAIT_FOR_EMAIL_VERIFICATION':
+      throw require('./errors/codes').AUTH_EMAIL_ALREADY_SENT
+    case 'VERIFIED_BY_EMAIL':
+      throw require('./errors/codes').AUTH_EMAIL_ALREADY_IN_USE
+  }
+}
+
+const _guardUnverifiedUserForLoginWithLocal = user => {
+  // No user
+  if (!user) {
+    throw require('./errors/codes').AUTH_USER_NOT_FOUND
+  }
+
+  // User, but...
+  if (!user.emailVerified) {
+    throw require('./errors/codes').AUTH_EMAIL_NOT_VERIFIED
+  }
+}
+
 const willSignUpNewUser = async (email, password, extraFields, token) => {
   // Guard existing user
   const user = await NAP.User.findOne({ email })
-
-  if (user) {
-    switch (user.status) {
-      case 'WAIT_FOR_EMAIL_VERIFICATION':
-        throw require('./errors/codes').AUTH_EMAIL_ALREADY_SENT
-      case 'VERIFIED_BY_EMAIL':
-        throw require('./errors/codes').AUTH_EMAIL_ALREADY_IN_USE
-    }
-  }
+  _guardUnverifiedUserForSignUp(user)
 
   // Create user with email and token, password if any
   const userData = _createNewUserData(email, password, extraFields, token)
@@ -113,10 +130,7 @@ const _willMarkUserAsVerifiedByToken = async token => {
   guard(token)
 
   // Look up user by token
-  const user = await NAP.User.findOneAndUpdate(
-    { token },
-    _verifiedByEmailPayload()
-  )
+  const user = await NAP.User.findOneAndUpdate({ token }, _verifiedByEmailPayload())
   if (!user) {
     throw require('./errors/codes').AUTH_INVALID_USER_TOKEN
   }
@@ -137,14 +151,14 @@ const _willValidatePassword = async (password, hashed_password) => {
 const validateLocalStrategy = (email, password, done) => {
   // Find by email
   ;(async () => {
-    const user = await NAP.User
-      .findOne({ email, verified: true })
-      .catch(err => err)
-    const isPasswordMatch =
-      user &&
-      (await _willValidatePassword(password, user.hashed_password).catch(
-        err => err
-      ))
+    const user = await NAP.User.findOne({ email }).catch(err => err)
+    try {
+      _guardUnverifiedUserForLoginWithLocal(user)
+    } catch (err) {
+      // Silently failed
+    }
+
+    const isPasswordMatch = user && (await _willValidatePassword(password, user.hashed_password).catch(err => err))
     return done(null, isPasswordMatch ? user : false)
   })()
 }
@@ -157,11 +171,9 @@ const auth_local_token = (req, res) => {
   }
 
   // Verify
-  _willMarkUserAsVerifiedByToken(token)
-    .then(() => res.redirect('/auth/verified'))
-    .catch(() => {
-      res.redirect('/auth/error/token-not-exist')
-    })
+  _willMarkUserAsVerifiedByToken(token).then(() => res.redirect('/auth/verified')).catch(() => {
+    res.redirect('/auth/error/token-not-exist')
+  })
 }
 
 const willChangePasswordByToken = async (password, token) => {
@@ -180,9 +192,7 @@ const willChangePasswordByToken = async (password, token) => {
 const reset_password_by_token = (req, res) => {
   const { token, password } = req.body
   ;(async () => {
-    const result = await willChangePasswordByToken(password, token).catch(err =>
-      res.json({ errors: [err.message] })
-    )
+    const result = await willChangePasswordByToken(password, token).catch(err => res.json({ errors: [err.message] }))
 
     return res.json({ data: { isReset: !!result } })
   })()

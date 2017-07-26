@@ -51,14 +51,10 @@ const init = (app, passport) => {
   )
 
   // Route
-  app.post(
-    '/auth/facebook/token',
-    passport.authenticate('facebook-token'),
-    (req, res) => {
-      // do something with req.user
-      res.json(req.user)
-    }
-  )
+  app.post('/auth/facebook/token', passport.authenticate('facebook-token'), (req, res) => {
+    // do something with req.user
+    res.json(req.user)
+  })
 }
 
 module.exports = init

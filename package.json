@@ -105,16 +105,12 @@
     "superagent": "^3.5.2",
     "tmp-promise": "^1.0.3",
     "uuid": "^3.1.0",
-    "validator": "^7.0.0"
+    "validator": "^7.0.0",
+    "watchman": "^0.1.8"
   },
   "author": "katopz@gmail.com",
   "license": "MIT",
   "repository": "https://github.com/rabbotio/nap",
-  "standard": {
-    "globals": [
-      "NAP"
-    ]
-  },
   "devDependencies": {
     "babel-cli": "^6.24.1",
     "babel-eslint": "^7.2.3",

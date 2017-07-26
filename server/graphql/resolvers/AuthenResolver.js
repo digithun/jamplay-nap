@@ -1,36 +1,18 @@
 const { onError } = require('../../errors')
+const { AUTH_EMAIL_NOT_VERIFIED } = require('../../errors/codes')
 
 const loginWithFacebook = async ({ context, args }) => {
-  const userData = await context.nap
-    .willLoginWithFacebook(context, args.accessToken)
-    .catch(onError(context))
-  const user =
-    userData &&
-    (await context.nap.willCreateUser(userData).catch(onError(context)))
-  return (
-    user &&
-    context.nap
-      .willInstallAndAuthen(args, user, 'facebook')
-      .catch(onError(context))
-  )
+  const userData = await context.nap.willLoginWithFacebook(context, args.accessToken).catch(onError(context))
+  const user = userData && (await context.nap.willCreateUser(userData).catch(onError(context)))
+  return user && context.nap.willInstallAndAuthen(args, user, 'facebook').catch(onError(context))
 }
 
 const login = async ({ context, args }) => {
-  const user = await context.nap
-    .willLogin(context, args.email, args.password)
-    .catch(onError(context))
-  return (
-    user &&
-    context.nap
-      .willInstallAndAuthen(args, user, 'local')
-      .catch(onError(context))
-  )
+  const user = await context.nap.willLogin(context, args.email, args.password).catch(onError(context))
+  return user && context.nap.willInstallAndAuthen(args, user, 'local').catch(onError(context))
 }
 
-const signUpWithEmailAndPassword = async ({ context, args }) =>
-  context.nap
-    .willSignUp(context, args.email, args.password)
-    .catch(onError(context))
+const signUpWithEmailAndPassword = async ({ context, args }) => context.nap.willSignUp(context, args.email, args.password).catch(onError(context))
 
 const signup = async ({ context, args }) =>
   context.nap
@@ -58,9 +40,7 @@ const logout = async ({ context }) => {
 
   // Logout
   const { installationId, userId } = context.nap.session
-  return context.nap
-    .willLogout(installationId, userId, context.token)
-    .catch(onError(context))
+  return context.nap.willLogout(installationId, userId, context.token).catch(onError(context))
 }
 
 const authen = async ({ context }) => {
@@ -75,16 +55,10 @@ const authen = async ({ context }) => {
   }
 
   const { installationId, userId } = context.nap.session
-  return NAP.Authen
-    .findOne({ userId, installationId })
-    .catch(err => onError(context)(err) && _noAuthen)
+  return NAP.Authen.findOne({ userId, installationId }).catch(err => onError(context)(err) && _noAuthen)
 }
 
-const willAuthen = async (
-  installationId,
-  { _id: userId, verified },
-  provider
-) => {
+const willAuthen = async (installationId, { _id: userId, emailVerified, facebook }, provider) => {
   // Base data
   let authenData = {
     isLoggedIn: false,
@@ -96,16 +70,26 @@ const willAuthen = async (
   const { createSessionToken } = require('../../jwt-token')
   const sessionToken = createSessionToken(installationId, userId)
 
-  // Guard by user local verification if has
-  const isVerified = provider === 'local' ? verified : true
-  if (isVerified) {
-    authenData = Object.assign(authenData, {
-      isLoggedIn: isVerified,
-      loggedInAt: new Date().toISOString(),
-      loggedInWith: provider,
-      sessionToken
-    })
+  // Guard by verifications
+  switch (provider) {
+    case 'local':
+      // User use local strategy, but not verify by email yet.
+      if (!emailVerified) {
+        throw AUTH_EMAIL_NOT_VERIFIED
+      }
+      break
+    default:
+      // User use some other provider, will do nothing.
+      break
   }
+
+  // Define authen data
+  authenData = Object.assign(authenData, {
+    isLoggedIn: true,
+    loggedInAt: new Date().toISOString(),
+    loggedInWith: provider,
+    sessionToken
+  })
 
   // Allow to authen
   return NAP.Authen.findOneAndUpdate({ installationId, userId }, authenData, {

@@ -15,7 +15,9 @@ describe('authen-local', () => {
 
     const { willLogin } = require('../authen-local')
     await willLogin(req, email, password).catch(err => {
-      expect(() => { throw err }).toThrow('Required : email')
+      expect(() => {
+        throw err
+      }).toThrow('Required : email')
     })
   })
 
@@ -30,7 +32,9 @@ describe('authen-local', () => {
 
     const { willLogin } = require('../authen-local')
     await willLogin(req, email, password).catch(err => {
-      expect(() => { throw err }).toThrow('Required : email')
+      expect(() => {
+        throw err
+      }).toThrow('Required : email')
     })
   })
 
@@ -45,14 +49,28 @@ describe('authen-local', () => {
 
     const { willLogin } = require('../authen-local')
     await willLogin(req, email, password).catch(err => {
-      expect(() => { throw err }).toThrow('Required : password')
+      expect(() => {
+        throw err
+      }).toThrow('Required : password')
     })
   })
-  
+
   it('should login with user and password', async () => {
+    // stub
+    global.NAP = {}
+    NAP.User = {
+      findOne: jest.fn().mockImplementationOnce(() =>
+        Promise.resolve({
+          _id: '592c0bb4484d740e0e73798b',
+          emailVerified: true,
+          role: 'user'
+        })
+      )
+    }
+
     // mock
     const req = {
-      nap: { errors : [] },
+      nap: { errors: [] },
       body: {}
     }
     const email = 'katopz@gmail.com'
@@ -67,15 +85,17 @@ describe('authen-local', () => {
     // stub
     global.NAP = {}
     NAP.Authen = {
-      findOneAndUpdate: jest.fn().mockImplementationOnce(() => Promise.resolve({
-        loggedOutAt: '2017-06-01T06:22:01.596Z',
-        isLoggedIn: false,
-        sessionToken: null
-      }))
+      findOneAndUpdate: jest.fn().mockImplementationOnce(() =>
+        Promise.resolve({
+          loggedOutAt: '2017-06-01T06:22:01.596Z',
+          isLoggedIn: false,
+          sessionToken: null
+        })
+      )
     }
 
     // mock
-    const { createSessionToken} = require('../jwt-token')
+    const { createSessionToken } = require('../jwt-token')
     const installationId = '58d119431e2107009b2cad55'
     const userId = '58d0e20e7ff032b39c2a9a18'
     const sessionToken = createSessionToken(installationId, userId)
@@ -87,7 +107,7 @@ describe('authen-local', () => {
 
   it('should reset password', async () => {
     // mock
-    const req = { headers : { host: 'localhost:3000'} }
+    const req = { headers: { host: 'localhost:3000' } }
     const email = 'foo@bar.com'
     const token = 'aa90f9ca-ced9-4cad-b4a2-948006bf000d'
 
@@ -105,13 +125,13 @@ describe('authen-local', () => {
     }
 
     const { willResetPassword } = require('../authen-local')
-    const result = await willResetPassword(req, email)    
+    const result = await willResetPassword(req, email)
     expect(result).toMatchSnapshot()
   })
 
   it('should able to signup', async () => {
     // mock
-    const req = { headers : { host: 'localhost:3000'} }
+    const req = { headers: { host: 'localhost:3000' } }
     const email = 'foo@bar.com'
     const password = 'password'
 
@@ -119,14 +139,16 @@ describe('authen-local', () => {
     global.NAP = {}
     NAP.User = {
       findOne: jest.fn().mockImplementationOnce(() => null),
-      create: jest.fn().mockImplementationOnce(() => Promise.resolve({
-        _id: '592c0bb4484d740e0e73798b',
-        role: 'user',
-      }))
+      create: jest.fn().mockImplementationOnce(() =>
+        Promise.resolve({
+          _id: '592c0bb4484d740e0e73798b',
+          role: 'user'
+        })
+      )
     }
 
     const { willSignUp } = require('../authen-local')
-    const result = await willSignUp(req, email, password)    
+    const result = await willSignUp(req, email, password)
     expect(result).toMatchSnapshot()
   })
 })
