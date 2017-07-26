@@ -1,7 +1,7 @@
 /* eslint-env jest */
-describe('authen-providers', () => {
+describe('authen-link', () => {
   it('should throw `Required : token` error if no accessToken has been provide', async () => {
-    const { willLinkWithFacebook } = require('../authen-providers')
+    const { willLinkWithFacebook } = require('../authen-link')
     await willLinkWithFacebook({}, {}).catch(err => {
       expect(() => {
         throw err
@@ -10,7 +10,7 @@ describe('authen-providers', () => {
   })
 
   it('should throw AUTH_INVALID_EMAIL error if invalid email has been provide', async () => {
-    const { willLinkWithFacebook } = require('../authen-providers')
+    const { willLinkWithFacebook } = require('../authen-link')
     await willLinkWithFacebook({}, {}, 'VALID_TOKEN').catch(err => {
       expect(() => {
         throw err
@@ -19,7 +19,7 @@ describe('authen-providers', () => {
   })
 
   it('should throw AUTH_EMAIL_NOT_VERIFIED error if emailVerified is false', async () => {
-    const { willLinkWithFacebook } = require('../authen-providers')
+    const { willLinkWithFacebook } = require('../authen-link')
     await willLinkWithFacebook({ email: 'foo@bar.com', emailVerified: false }, {}, 'VALID_TOKEN').catch(err => {
       expect(() => {
         throw err
@@ -36,7 +36,7 @@ describe('authen-providers', () => {
       }))
     }
 
-    const { willLinkWithFacebook } = require('../authen-providers')
+    const { willLinkWithFacebook } = require('../authen-link')
     await willLinkWithFacebook(
       {
         email: 'foo@bar.com',
@@ -63,7 +63,7 @@ describe('authen-providers', () => {
       }))
     }
 
-    const { willLinkWithFacebook } = require('../authen-providers')
+    const { willLinkWithFacebook } = require('../authen-link')
     await willLinkWithFacebook(
       {
         email: 'foo@bar.com',
@@ -101,7 +101,7 @@ describe('authen-providers', () => {
       save: () => {}
     }
 
-    const { willLinkWithFacebook } = require('../authen-providers')
+    const { willLinkWithFacebook } = require('../authen-link')
     const user = await willLinkWithFacebook(
       userData,
       {
@@ -128,7 +128,7 @@ describe('authen-providers', () => {
       save: () => {}
     }
 
-    const { willUnlinkFromFacebook } = require('../authen-providers')
+    const { willUnlinkFromFacebook } = require('../authen-link')
     expect(userData['facebook']).toBeDefined()
 
     const user = await willUnlinkFromFacebook(userData)

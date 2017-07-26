@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`authen-providers should link to current user. 1`] = `
+exports[`authen-link should link to current user. 1`] = `
 Object {
   "email": "foo@bar.com",
   "emailVerified": true,
@@ -14,7 +14,7 @@ Object {
 }
 `;
 
-exports[`authen-providers should unlink from current user. 1`] = `
+exports[`authen-link should unlink from current user. 1`] = `
 Object {
   "_id": "592c0bb4484d740e0e73798b",
   "email": "foo@bar.com",

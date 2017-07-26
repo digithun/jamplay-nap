@@ -1,14 +1,5 @@
 const { guard } = require('../server/errors')
 
-const willLinkWithFacebook = async (user, profile, token) => {
-  // Guard
-  guard({ user })
-  guard({ profile })
-  guard({ token })
-
-  return _willLink('facebook', user, profile, token)
-}
-
 const _willLink = async (provider, user, profile, token) => {
   // Guard
   guard({ provider })
@@ -42,10 +33,6 @@ const _willLink = async (provider, user, profile, token) => {
   return user
 }
 
-const willUnlinkFromFacebook = async user => {
-  return _willUnlink('facebook', user)
-}
-
 const _willUnlink = async (provider, user) => {
   // Guard
   guard({ user })
@@ -56,6 +43,19 @@ const _willUnlink = async (provider, user) => {
   await user.save()
 
   return user
+}
+
+const willLinkWithFacebook = async (user, profile, token) => {
+  // Guard
+  guard({ user })
+  guard({ profile })
+  guard({ token })
+
+  return _willLink('facebook', user, profile, token)
+}
+
+const willUnlinkFromFacebook = async user => {
+  return _willUnlink('facebook', user)
 }
 
 module.exports = { willLinkWithFacebook, willUnlinkFromFacebook }

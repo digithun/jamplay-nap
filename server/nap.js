@@ -1,5 +1,5 @@
 const { willLoginWithFacebook, willGetFacebookProfile } = require('./authen-facebook')
-const { willLinkWithFacebook, willUnlinkFromFacebook } = require('./authen-providers')
+const { willLinkWithFacebook, willUnlinkFromFacebook } = require('./authen-link')
 const { willSignUp, willLogin, willLogout, willResetPassword } = require('./authen-local')
 const { willChangePasswordByToken } = require('./authen-local-passport')
 const { willInstallAndAuthen } = require('./graphql/resolvers')
