@@ -18,25 +18,14 @@ const willReadUser = async ({ context }) => _willGetUserFromSession(context)
 
 const unlinkFromFacebook = async ({ context }) => {
   const user = await _willGetUserFromSession(context)
-  return unlinkUserFromProvider(user, 'facebook')
-}
-
-const unlinkUserFromProvider = async (user, provider) => {
-  // Guard
-  guard({ user })
-  guard({ provider })
-
-  // Unlink
-  delete user[provider]
-  await user.save()
-
-  return user
+  return context.nap.willUnlinkUserFrom('facebook', user)
 }
 
 const linkWithFacebook = async ({ args, context }) => {
   const user = await _willGetUserFromSession(context)
-  const profile = await context.nap.willGetFacebookProfile(context, args.accessToken).catch(onError(context))
-  return context.nap.willLinkWithFacebook(user, profile, args.accessToken)
+  const token = args.accessToken
+  const profile = await context.nap.willGetFacebookProfile(context, token).catch(onError(context))
+  return context.nap.willLinkWithFacebook(user, profile, token)
 }
 
 const changeEmail = async ({ args, context }) => {

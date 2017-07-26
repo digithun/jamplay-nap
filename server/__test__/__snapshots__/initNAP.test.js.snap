@@ -9,11 +9,13 @@ Object {
     "willCreateUser": [Function],
     "willGetFacebookProfile": [Function],
     "willInstallAndAuthen": [Function],
+    "willLinkWithFacebook": [Function],
     "willLogin": [Function],
     "willLoginWithFacebook": [Function],
     "willLogout": [Function],
     "willResetPassword": [Function],
     "willSignUp": [Function],
+    "willUnlinkFromFacebook": [Function],
   },
 }
 `;

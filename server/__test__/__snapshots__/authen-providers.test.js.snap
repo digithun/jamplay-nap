@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`authen-providers should link to current user. 1`] = `
+Object {
+  "email": "foo@bar.com",
+  "emailVerified": true,
+  "facebook": Provider {
+    "id": 123456,
+    "profile": Object {
+      "id": 123456,
+    },
+    "token": "VALID_TOKEN",
+  },
+}
+`;
