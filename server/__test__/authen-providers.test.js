@@ -95,15 +95,15 @@ describe('authen-providers', () => {
     }
 
     // mock
-    const user = {
+    const userData = {
       email: 'foo@bar.com',
       emailVerified: true,
       save: () => {}
     }
 
     const { willLinkWithFacebook } = require('../authen-providers')
-    await willLinkWithFacebook(
-      user,
+    const user = await willLinkWithFacebook(
+      userData,
       {
         id: 123456
       },
@@ -113,5 +113,28 @@ describe('authen-providers', () => {
     delete user.save
 
     expect(user).toMatchSnapshot()
+  })
+
+  it('should unlink from current user.', async () => {
+    // mock
+    const userData = {
+      _id: '592c0bb4484d740e0e73798b',
+      email: 'foo@bar.com',
+      facebook: {
+        id: 123456,
+        token: 'VALID_TOKEN',
+        profile: { id: 123456 }
+      },
+      save: () => {}
+    }
+
+    const { willUnlinkFromFacebook } = require('../authen-providers')
+    expect(userData['facebook']).toBeDefined()
+
+    const user = await willUnlinkFromFacebook(userData)
+    delete user.save
+
+    expect(user).toMatchSnapshot()
+    expect(user['facebook']).toBeUndefined()
   })
 })

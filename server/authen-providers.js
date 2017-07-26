@@ -43,7 +43,7 @@ const _willLink = async (provider, user, profile, token) => {
 }
 
 const willUnlinkFromFacebook = async user => {
-  return _willUnlink(user, 'facebook')
+  return _willUnlink('facebook', user)
 }
 
 const _willUnlink = async (provider, user) => {

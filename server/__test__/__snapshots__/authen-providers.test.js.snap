@@ -13,3 +13,10 @@ Object {
   },
 }
 `;
+
+exports[`authen-providers should unlink from current user. 1`] = `
+Object {
+  "_id": "592c0bb4484d740e0e73798b",
+  "email": "foo@bar.com",
+}
+`;
