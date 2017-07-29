@@ -7,6 +7,7 @@ const _willGetUserFromSession = async context => {
 
   // Guard
   if (!userId) {
+    // TOFIX : onError(context)(require('../../errors/codes').AUTH_MISSING_UID)
     throw require('../../errors/codes').AUTH_MISSING_UID
   }
 
@@ -17,15 +18,15 @@ const willCreateUser = async user => NAP.User.create(Object.assign(user, { role:
 const willReadUser = async ({ context }) => _willGetUserFromSession(context)
 
 const unlinkFromFacebook = async ({ context }) => {
-  const user = await _willGetUserFromSession(context)
-  return context.nap.willUnlinkUserFrom('facebook', user)
+  const user = await _willGetUserFromSession(context).catch(onError(context))
+  return context.nap.willUnlinkFromFacebook(user).catch(onError(context))
 }
 
 const linkWithFacebook = async ({ args, context }) => {
   const user = await _willGetUserFromSession(context)
   const token = args.accessToken
   const profile = await context.nap.willGetFacebookProfile(context, token).catch(onError(context))
-  return context.nap.willLinkWithFacebook(user, profile, token)
+  return context.nap.willLinkWithFacebook(user, profile, token).catch(onError(context))
 }
 
 const changeEmail = async ({ args, context }) => {

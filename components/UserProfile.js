@@ -1,6 +1,8 @@
 import { graphql } from 'react-apollo'
 import React from 'react'
 import LoginWithFacebook from '../components/auth/LoginWithFacebook'
+import LinkWithFacebook from '../components/auth/LinkWithFacebook'
+import UnlinkFromFacebook from '../components/auth/UnlinkFromFacebook'
 import SignUp from '../components/auth/SignUp'
 import Login from '../components/auth/Login'
 import Logout from '../components/auth/Logout'
@@ -15,8 +17,15 @@ const UserProfile = ({ loading, user, errors, authen }) => {
 
   // Logged in
   if (authen && authen.isLoggedIn) {
+    const actions = user.isLinkedWithFacebook ? <UnlinkFromFacebook /> : <LinkWithFacebook />
+
     if (user) {
-      return <div>Welcome : {user.name}<Logout /><hr /></div>
+      return (
+        <div>
+          Welcome : {user.name}<Logout /><hr />
+          {actions}<hr />
+        </div>
+      )
     }
   }
 
@@ -32,7 +41,11 @@ const UserProfile = ({ loading, user, errors, authen }) => {
   }
   return (
     <div>
-      <p className='error'>{info}</p><LoginWithFacebook /><hr /><SignUp /><hr /><Login /> <Forget />
+      <p className='error'>{info}</p>
+      <LoginWithFacebook /><hr />
+      <SignUp /><hr />
+      <Login /><hr />
+      <Forget />
       <style jsx>{`
       .error {
         color: #ff0000
