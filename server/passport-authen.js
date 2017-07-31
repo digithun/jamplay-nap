@@ -22,7 +22,7 @@ const willAuthenWithPassport = (strategy, req) =>
     })(req)
   })
 
-const willGetProfileWithPassport = (strategy, req) =>
+const willGetProfileWithPassport = (provider, strategy, req) =>
   new Promise((resolve, reject) => {
     const passport = require('passport')
     // @ts-ignore
@@ -33,7 +33,8 @@ const willGetProfileWithPassport = (strategy, req) =>
       }
 
       // Payload?
-      return payload ? resolve(payload) : reject(require('./errors/codes').AUTH_PASSPORT_FAILED)
+      const { profile } = payload[provider]
+      return profile ? resolve(profile) : reject(require('./errors/codes').AUTH_PASSPORT_FAILED)
     })(req)
   })
 

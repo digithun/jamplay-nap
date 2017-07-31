@@ -69,7 +69,9 @@ describe('authen-link', () => {
         email: 'foo@bar.com',
         emailVerified: true
       },
-      {},
+      {
+        id: 123456
+      },
       'VALID_TOKEN'
     ).catch(err => {
       expect(() => {

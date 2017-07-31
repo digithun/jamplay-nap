@@ -18,7 +18,7 @@ const _willLink = async (provider, user, profile, token) => {
   if (current_user_provider_id) throw require('../server/errors/codes').AUTH_PROVIDER_ALREADY_LINKED
 
   // Already link to other user?
-  const profile_id = profile[provider] && profile[provider].id
+  const profile_id = profile.id
   guard({ profile_id })
 
   const linkedAccount = await NAP.User.findOne({ [[provider] + '.id']: profile_id })
@@ -44,6 +44,8 @@ const _willUnlink = async (provider, user) => {
   user[provider] = undefined
   await user.save()
 
+  // Ensure return null instead of undefined
+  delete user[provider]
   return user
 }
 
