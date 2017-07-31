@@ -59,7 +59,7 @@ const errorBy = (code, msg) => {
   return _error
 }
 
-const guard = (arg, msg) => {
+const guard = (arg, err) => {
   // Wrong params
   if (!arg) {
     throw errorBy('NAP_INVALID_ARGUMENT', 'Required : guard({ foo })')
@@ -68,10 +68,11 @@ const guard = (arg, msg) => {
   // Missing params
   const is = require('is_js')
   if (is.not.existy(Object.values(arg)[0])) {
-    throw errorBy(
-      'NAP_INVALID_ARGUMENT',
-      msg || `Required : ${Object.keys(arg)[0]}`
-    )
+    if (err instanceof Error) {
+      throw err
+    }
+
+    throw errorBy('NAP_INVALID_ARGUMENT', err || `Required : ${Object.keys(arg)[0]}`)
   }
 
   return false

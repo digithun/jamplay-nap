@@ -8,8 +8,7 @@ module.exports = extendedSchema => {
     {
       id: String,
       token: String,
-      profile: {},
-      isUnlink: Boolean
+      profile: {}
     },
     {
       _id: false // disable `_id` field for `Provider` schema
@@ -56,12 +55,7 @@ module.exports = extendedSchema => {
   UserTC.addFields({
     isLinkedWithFacebook: {
       type: 'Boolean!',
-      resolve: source => {
-        if (source.facebook && !source.facebook.isUnlink) {
-          return true
-        }
-        return false
-      },
+      resolve: source => !!source.facebook,
       projection: { facebook: true }
     }
   })

@@ -1,4 +1,4 @@
-FROM node:8.1.3-alpine
+FROM node:8.2.1-alpine
 MAINTAINER Todsaporn Banjerdkit <katopz@gmail.com>
 
 # Use development environments
@@ -8,6 +8,8 @@ ENV NODE_ENV development
 # use changes to package.json to force Docker not to use the cache
 # when we change our application's nodejs dependencies:
 COPY package.json /tmp/package.json
+# npm 5 has bug, will use npm 4 for now... https://github.com/npm/npm/issues/17146
+RUN npm i -g npm@4
 RUN npm config set registry https://registry.npmjs.org/ && \
     cd /tmp && \
     npm i --quiet --depth 0 && \

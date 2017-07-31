@@ -1,4 +1,4 @@
-FROM node:8.1.3-alpine
+FROM node:8.2.1-alpine
 MAINTAINER Todsaporn Banjerdkit <katopz@gmail.com>
 
 # Use production environments

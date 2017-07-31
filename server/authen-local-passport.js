@@ -81,6 +81,13 @@ const _guardUnverifiedUserForSignUp = user => {
   }
 }
 
+const _guardDuplicatedUserForSignUp = user => {
+  // No user, which is great
+  if (user) {
+    throw require('./errors/codes').AUTH_EMAIL_ALREADY_IN_USE
+  }
+}
+
 const _guardUnverifiedUserForLoginWithLocal = user => {
   // No user
   if (!user) {
@@ -96,6 +103,7 @@ const _guardUnverifiedUserForLoginWithLocal = user => {
 const willSignUpNewUser = async (email, password, extraFields, token) => {
   // Guard existing user
   const user = await NAP.User.findOne({ email })
+  _guardDuplicatedUserForSignUp(user)
   _guardUnverifiedUserForSignUp(user)
 
   // Create user with email and token, password if any

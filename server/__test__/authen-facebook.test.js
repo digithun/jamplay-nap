@@ -29,6 +29,17 @@ describe('authen-facebook', () => {
     process.env.FACEBOOK_APP_ID = 'FOO_FACEBOOK_APP_ID'
     process.env.FACEBOOK_APP_SECRET = 'BAR_FACEBOOK_APP_SECRET'
 
+    // stub
+    global.NAP = {}
+    NAP.User = {
+      findOneAndUpdate: jest.fn().mockImplementationOnce(() =>
+        Promise.resolve({
+          _id: '58d0e20e7ff032b39c2a9a18',
+          name: 'bar'
+        })
+      )
+    }
+
     const authen = require('../authen-facebook')
     const accessToken = 'FOO_BAR_TOKEN'
     const user = await authen.willLoginWithFacebook({ body: {} }, accessToken)
@@ -42,13 +53,11 @@ describe('authen-facebook', () => {
 
     const authen = require('../authen-facebook')
     const accessToken = 'WRONG_ACCESS_TOKEN'
-    const user = await authen
-      .willLoginWithFacebook({ body: {}, nap: { errors: [] } }, accessToken)
-      .catch(err => {
-        expect(() => {
-          throw err
-        }).toThrow(require('../errors/codes').AUTH_FACEBOOK_INVALID_TOKEN)
-      })
+    const user = await authen.willLoginWithFacebook({ body: {}, nap: { errors: [] } }, accessToken).catch(err => {
+      expect(() => {
+        throw err
+      }).toThrow(require('../errors/codes').AUTH_FACEBOOK_INVALID_TOKEN)
+    })
   })
 
   it('should attach current user from session token after authenticate', async () => {

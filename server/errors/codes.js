@@ -123,6 +123,9 @@ module.exports = {
   // Provider
   // Ref : https://firebase.google.com/docs/reference/js/firebase.User
   get AUTH_CREDENTIAL_ALREADY_IN_USE () {
-    return new GenericError('auth/credential-already-in-use', 'Thrown if the account corresponding to the credential already exists among your users, or is already linked to a NAP User.')
+    return new GenericError('auth/credential-already-in-use', 'The account corresponding to the credential already exists among your users, or is already linked to a NAP User.')
+  },
+  get AUTH_PROVIDER_ALREADY_LINKED () {
+    return new GenericError('auth/provider-already-linked', "The provider has already been linked to the user. This error is thrown even if this is not the same provider's account that is currently linked to the user.")
   }
 }
