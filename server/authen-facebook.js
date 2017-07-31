@@ -31,7 +31,7 @@ const willGetFacebookProfile = async (req, accessToken) => {
 
   // Validate facebook token
   const { willGetProfileWithPassport } = require('./passport-authen')
-  return willGetProfileWithPassport('facebook-token', req)
+  return willGetProfileWithPassport('facebook', 'facebook-token', req)
 }
 
 module.exports = {

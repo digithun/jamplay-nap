@@ -125,15 +125,13 @@ npm run cover
 ## Client example
 - [x] Login/Logout with `Facebook` from [React Native](https://github.com/rabbotio/nap-react-native).
 - [x] Login/Logout with `Facebook` from [NextJS](#passport---cookie).
+- [x] Link/Unlink with `Facebook` from `NextJS`
 
 ## DOING
-- [ ] Optional asking for user from facebook graph query.
-- [ ] Link `facebook-token` with `auth/facebook` user.
-- [ ] Link `facebook-token` with `auth/email` user.
-- [ ] Unlink `Facebook` via `React` web.
-- [ ] Handle cookies via [React Native](https://mockingbot.com/posts/287)
+- [ ] [User can logged in with limited device numbers](https://github.com/digithun/jamplay-nap/issues/9)
 
 ## TODO
+- [ ] Handle cookies via [React Native](https://mockingbot.com/posts/287)
 - [ ] Add [HOC](https://github.com/bosung90/HOCExample) to [nap-react-native](https://github.com/rabbotio/nap-react-native)
 - [ ] Create doc separated from this `README` as github page.
 - [ ] Add [Swarm mode stack](https://gist.githubusercontent.com/katopz/e4d5cf402a53c4a002a657c4c4f67a3f/raw/077ac9057c789f49a366563941dd749827d52e3d/setup-swarm-stack.sh)
