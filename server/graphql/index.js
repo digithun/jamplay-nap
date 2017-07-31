@@ -49,9 +49,7 @@ module.exports.buildSchema = () => {
     Object.keys(resolvers).forEach(k => {
       resolvers[k] = resolvers[k].wrapResolve(next => rp => {
         if (!rp.context.nap.session) {
-          onError(rp.context)(
-            require('../errors/commons').NAP_SESSION_NOT_FOUND
-          )
+          onError(rp.context)(require('../errors/commons').NAP_SESSION_NOT_FOUND)
           return null
         }
         return next(rp)
@@ -63,11 +61,7 @@ module.exports.buildSchema = () => {
   if (config.mubsub_enabled) {
     authenChannel = NAP.mubsub.client.channel('authen')
 
-    models.AuthenTC = compose(
-      addResolverMiddleware('login', loginMiddleware),
-      addResolverMiddleware('loginWithFacebook', loginMiddleware),
-      addResolverMiddleware('logout', logoutMiddleware)
-    )(models.AuthenTC)
+    models.AuthenTC = compose(addResolverMiddleware('login', loginMiddleware), addResolverMiddleware('loginWithFacebook', loginMiddleware), addResolverMiddleware('logout', logoutMiddleware))(models.AuthenTC)
   }
 
   GQC.rootQuery().addFields(
@@ -87,13 +81,11 @@ module.exports.buildSchema = () => {
     login: models.AuthenTC.getResolver('login'),
     logout: models.AuthenTC.getResolver('logout'),
     loginWithFacebook: models.AuthenTC.getResolver('loginWithFacebook'),
-    signUpWithEmailAndPassword: models.AuthenTC.getResolver(
-      'signUpWithEmailAndPassword'
-    ),
+    signUpWithEmailAndPassword: models.AuthenTC.getResolver('signUpWithEmailAndPassword'),
     forget: models.UserTC.getResolver('forget'),
     resetPassword: models.UserTC.getResolver('resetPassword'),
-    unlinkFacebook: models.UserTC.getResolver('unlinkFacebook'),
-    linkFacebook: models.UserTC.getResolver('linkFacebook'),
+    unlinkFromFacebook: models.UserTC.getResolver('unlinkFromFacebook'),
+    linkWithFacebook: models.UserTC.getResolver('linkWithFacebook'),
     changeEmail: models.UserTC.getResolver('changeEmail'),
     update_GCMSenderId: models.InstallationTC.getResolver('update_GCMSenderId'),
     update_deviceToken: models.InstallationTC.getResolver('update_deviceToken'),

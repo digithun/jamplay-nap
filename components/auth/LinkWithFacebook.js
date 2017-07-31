@@ -1,18 +1,16 @@
 import React from 'react'
 import { gql, graphql, compose } from 'react-apollo'
 import persist from '../../lib/persist'
-import device from '../../lib/device'
 import userProfile from '../userProfile.gql'
 import PropTypes from 'prop-types'
 
-class LoginWithFacebook extends React.Component {
+class LinkWithFacebook extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      accessToken: '',
-      deviceInfo: ''
+      accessToken: ''
     }
-    this.loginWithFacebook = props.loginWithFacebook
+    this.linkWithFacebook = props.linkWithFacebook
   }
 
   handleChange (event) {
@@ -22,18 +20,16 @@ class LoginWithFacebook extends React.Component {
   handleSubmit (e) {
     e.preventDefault()
 
-    const deviceInfo = e.target.elements.deviceInfo.value
     const accessToken = e.target.elements.accessToken.value
 
-    if (deviceInfo === '' || accessToken === '') {
+    if (accessToken === '') {
       window.alert('All fields are required.')
       return false
     }
 
-    this.loginWithFacebook(deviceInfo, accessToken)
+    this.linkWithFacebook(accessToken)
 
     // reset form
-    e.target.elements.deviceInfo.value = ''
     e.target.elements.accessToken.value = ''
   }
 
@@ -42,7 +38,6 @@ class LoginWithFacebook extends React.Component {
     this.isComponentDidMount = true
 
     persist.willGetAccessToken().then(accessToken => this.isComponentDidMount && accessToken && this.setState({ accessToken }))
-    this.setState({ deviceInfo: device.info() })
   }
 
   componentWillUnmount () {
@@ -52,10 +47,9 @@ class LoginWithFacebook extends React.Component {
   render () {
     return (
       <form onSubmit={this.handleSubmit.bind(this)}>
-        <h1>Login (GraphQL) with Facebook accessToken</h1>
-        <input placeholder='deviceInfo' name='deviceInfo' value={this.state.deviceInfo} />
+        <h1>Link (GraphQL) with Facebook accessToken</h1>
         <input placeholder='accessToken' name='accessToken' value={this.state.accessToken} onChange={this.handleChange.bind(this)} />
-        <button type='submit'>Login</button>
+        <button type='submit'>Link</button>
         <style jsx>{`
         form {
           border-bottom: 1px solid #ececec;
@@ -75,16 +69,13 @@ class LoginWithFacebook extends React.Component {
   }
 }
 
-const loginWithFacebook = gql`
-mutation loginWithFacebook($deviceInfo: String!, $accessToken: String!) {
-  loginWithFacebook(deviceInfo: $deviceInfo, accessToken: $accessToken) {
-    isLoggedIn
-    sessionToken
-    user {
-      _id
-      name
-      status
-    }
+const linkWithFacebook = gql`
+mutation linkWithFacebook($accessToken: String!) {
+  linkWithFacebook(accessToken: $accessToken) {
+    _id
+    name
+    status
+    isLinkedWithFacebook
   }
   errors {
     code
@@ -93,34 +84,31 @@ mutation loginWithFacebook($deviceInfo: String!, $accessToken: String!) {
 }
 `
 
-LoginWithFacebook.propTypes = () => ({
-  loginWithFacebook: PropTypes.func.isRequired
+LinkWithFacebook.propTypes = () => ({
+  linkWithFacebook: PropTypes.func.isRequired
 })
 
-const withGraphQL = graphql(loginWithFacebook, {
+const withGraphQL = graphql(linkWithFacebook, {
   props: ({ mutate }) => ({
-    loginWithFacebook: (deviceInfo, accessToken) =>
+    linkWithFacebook: accessToken =>
       mutate({
-        variables: { deviceInfo, accessToken },
+        variables: { accessToken },
         update: (proxy, { data }) => {
-          // Keep session
-          persist.willSetSessionToken(data.loginWithFacebook.sessionToken)
+          // Guard
+          const { errors } = data
+          if (errors) {
+            window.alert(errors[0].message)
+            return
+          }
 
           // Read the data from our cache for this query.
           let cached = proxy.readQuery({ query: userProfile })
 
           // Errors
-          cached.errors = data.errors
+          cached.errors = errors
 
           // User
-          cached.user = data.loginWithFacebook.user
-
-          // Authen
-          cached.authen = {
-            isLoggedIn: data.loginWithFacebook.isLoggedIn,
-            sessionToken: data.loginWithFacebook.sessionToken,
-            __typename: 'Authen'
-          }
+          cached.user = data.linkWithFacebook
 
           // Write our data back to the cache.
           proxy.writeQuery({ query: userProfile, data: cached })
@@ -129,4 +117,4 @@ const withGraphQL = graphql(loginWithFacebook, {
   })
 })
 
-export default compose(withGraphQL)(LoginWithFacebook)
+export default compose(withGraphQL)(LinkWithFacebook)

@@ -3,13 +3,12 @@ const { composeWithMongoose } = require('graphql-compose-mongoose')
 
 const { buildMongooseSchema } = require('./helpers')
 
-module.exports = (extendedSchema) => {
+module.exports = extendedSchema => {
   const ProviderSchema = new mongoose.Schema(
     {
       id: String,
       token: String,
-      profile: {},
-      isUnlink: Boolean
+      profile: {}
     },
     {
       _id: false // disable `_id` field for `Provider` schema
@@ -23,10 +22,10 @@ module.exports = (extendedSchema) => {
     token: String,
     status: String,
     hashed_password: String,
-    verified: { type: 'boolean', default: false },
+    emailVerified: { type: 'boolean', default: false },
     gender: String,
     birthday: Date,
-    verifiedAt: { type: Date },
+    emailVerifiedAt: { type: Date },
     phones: String,
     facebook: { type: ProviderSchema },
     twitter: { type: ProviderSchema },
@@ -35,22 +34,18 @@ module.exports = (extendedSchema) => {
     role: { type: String, default: 'user' }
   }
 
-  const UserSchema = new mongoose.Schema(
-    Object.assign(
-      buildMongooseSchema(UserSchemaObject, extendedSchema)
-    ), {
-      timestamps: true
-    }
-  )
+  const UserSchema = new mongoose.Schema(Object.assign(buildMongooseSchema(UserSchemaObject, extendedSchema)), {
+    timestamps: true
+  })
 
   const role = require('mongoose-role')
   UserSchema.plugin(role, {
     roles: ['public', 'user', 'admin'],
     accessLevels: {
-      'public': ['public', 'user', 'admin'],
-      'anon': ['public'],
-      'user': ['user', 'admin'],
-      'admin': ['admin']
+      public: ['public', 'user', 'admin'],
+      anon: ['public'],
+      user: ['user', 'admin'],
+      admin: ['admin']
     }
   })
 
@@ -60,12 +55,7 @@ module.exports = (extendedSchema) => {
   UserTC.addFields({
     isLinkedWithFacebook: {
       type: 'Boolean!',
-      resolve: (source) => {
-        if (source.facebook && !source.facebook.isUnlink) {
-          return true
-        }
-        return false
-      },
+      resolve: source => !!source.facebook,
       projection: { facebook: true }
     }
   })

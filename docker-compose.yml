@@ -6,7 +6,7 @@ services:
     env_file: .env
     environment:
       - PORT=${PORT:-3000}
-    image: rabbotio/nap
+    image: digithun/jamplay-nap
     restart: on-failure
     links:
       - redis

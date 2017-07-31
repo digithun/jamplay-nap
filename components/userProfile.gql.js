@@ -8,6 +8,7 @@ query userProfile {
     _id
     name
     status
+    isLinkedWithFacebook
   }
   errors {
     code

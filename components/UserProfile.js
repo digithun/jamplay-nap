@@ -1,6 +1,8 @@
 import { graphql } from 'react-apollo'
 import React from 'react'
 import LoginWithFacebook from '../components/auth/LoginWithFacebook'
+import LinkWithFacebook from '../components/auth/LinkWithFacebook'
+import UnlinkFromFacebook from '../components/auth/UnlinkFromFacebook'
 import SignUp from '../components/auth/SignUp'
 import Login from '../components/auth/Login'
 import Logout from '../components/auth/Logout'
@@ -15,8 +17,15 @@ const UserProfile = ({ loading, user, errors, authen }) => {
 
   // Logged in
   if (authen && authen.isLoggedIn) {
+    const actions = user.isLinkedWithFacebook ? <UnlinkFromFacebook /> : <LinkWithFacebook />
+
     if (user) {
-      return <div>Welcome : {user.name}<Logout /><hr /></div>
+      return (
+        <div>
+          Welcome : {user.name}<Logout /><hr />
+          {actions}<hr />
+        </div>
+      )
     }
   }
 
@@ -30,26 +39,30 @@ const UserProfile = ({ loading, user, errors, authen }) => {
         break
     }
   }
-  return <div>
-    <p className='error'>{info}</p><LoginWithFacebook /><hr /><SignUp /><hr /><Login /> <Forget />
-    <style jsx>{`
+  return (
+    <div>
+      <p className='error'>{info}</p>
+      <LoginWithFacebook /><hr />
+      <SignUp /><hr />
+      <Login /><hr />
+      <Forget />
+      <style jsx>{`
       .error {
         color: #ff0000
       }
       `}</style>
-  </div>
+    </div>
+  )
 }
 
 UserProfile.propTypes = () => ({
-  loading: PropTypes.boolean.isRequired,
+  loading: PropTypes.bool.isRequired,
   user: PropTypes.object.isRequired,
   errors: PropTypes.array.isRequired,
-  authen: PropTypes.object.isRequired,
+  authen: PropTypes.object.isRequired
 })
 
 export default graphql(userProfile, {
   options: { fetchPolicy: 'cache-and-network' },
-  props: ({ data: { loading, user, errors, authen } }) => (
-    { loading, user, errors, authen }
-  )
+  props: ({ data: { loading, user, errors, authen } }) => ({ loading, user, errors, authen })
 })(UserProfile)
