@@ -111,7 +111,7 @@ const willSignUpNewUser = async (email, password, extraFields, token) => {
   return NAP.User.create(userData)
 }
 
-const willResetPasswordExistingUser = async (email, token) => {
+const willSetUserStatusAsWaitForEmailReset = async (email, token) => {
   // Guard
   guard({ email })
   guard({ token })
@@ -179,17 +179,20 @@ const auth_local_token = (req, res) => {
   }
 
   // Verify
-  _willMarkUserAsVerifiedByToken(token).then(() => res.redirect('/auth/verified')).catch(() => {
-    res.redirect('/auth/error/token-not-exist')
+  const { verified_url, token_not_exist_url } = require('./config')
+  _willMarkUserAsVerifiedByToken(token).then(() => res.redirect(verified_url)).catch(() => {
+    res.redirect(token_not_exist_url)
   })
 }
 
-const willChangePasswordByToken = async (password, token) => {
-  const isValid = await willValidatePassword(password)
-  if (!isValid) throw require('./errors/codes').AUTH_INVALID_PASSWORD
-
+const willUpdatePasswordByToken = async (token, password) => {
+  // Guard token
   let user = await NAP.User.findOne({ token })
   if (!user) throw require('./errors/codes').AUTH_USER_NOT_FOUND
+
+  // Guard email
+  const isValid = await willValidatePassword(password)
+  if (!isValid) throw require('./errors/codes').AUTH_INVALID_PASSWORD
 
   user = _withHashedPassword(user, password)
   user = Object.assign(user, _verifiedByEmailPayload())
@@ -200,7 +203,7 @@ const willChangePasswordByToken = async (password, token) => {
 const reset_password_by_token = (req, res) => {
   const { token, password } = req.body
   ;(async () => {
-    const result = await willChangePasswordByToken(password, token).catch(err => res.json({ errors: [err.message] }))
+    const result = await willUpdatePasswordByToken(token, password).catch(err => res.json({ errors: [err.message] }))
 
     return res.json({ data: { isReset: !!result } })
   })()
@@ -222,8 +225,8 @@ module.exports = {
   willValidateEmail,
   willValidatePassword,
   willValidateEmailAndPassword,
-  willResetPasswordExistingUser,
-  willChangePasswordByToken,
+  willSetUserStatusAsWaitForEmailReset,
+  willUpdatePasswordByToken,
   validateLocalStrategy,
   handler
 }

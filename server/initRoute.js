@@ -14,10 +14,10 @@ const initNextRoute = (app, nextjs) => {
     debug.info('NextJS  : No custom routes found')
   }
 
-  // Handler  
+  // Handler
   const handler = nextjs.getRequestHandler()
 
-  // Authen.reset  
+  // Authen.reset
   app.get('/auth/reset/*', (req, res) => {
     const { parse } = require('url')
     const pathMatch = require('path-match')
@@ -43,33 +43,34 @@ const initNextRoute = (app, nextjs) => {
 const gracefulShutdown = (server, signal) => {
   console.log(`Received kill signal (${signal}), shutting down gracefully.`)
   server.close(() => {
-    console.log("Closed out remaining connections.")
+    console.log('Closed out remaining connections.')
     process.exit()
   })
 }
 
-const init = ({ port }, app, nextjs) => new Promise((resolve, reject) => {
-  // Next exist?
-  initNextRoute(app, nextjs)
+const init = ({ port }, app, nextjs) =>
+  new Promise((resolve, reject) => {
+    // Next exist?
+    initNextRoute(app, nextjs)
 
-  // Server
-  const server = app.listen(port, (err) => {
-    if (err) return reject(err)
+    // Server
+    const server = app.listen(port, err => {
+      if (err) return reject(err)
 
-    debug.info(`Express : http://localhost:${port}`)
-    resolve(app)
+      debug.info(`Express : http://localhost:${port}`)
+      resolve(app)
+    })
+
+    // Graceful server shutdown
+    // listen for TERM signal .e.g. kill
+    process.on('SIGTERM', () => {
+      gracefulShutdown(server, 'SIGTERM')
+    })
+
+    // listen for TERM signal .e.g. Ctrl-C
+    process.on('SIGINT', () => {
+      gracefulShutdown(server, 'SIGINT')
+    })
   })
-
-  // Graceful server shutdown
-  // listen for TERM signal .e.g. kill
-  process.on('SIGTERM', () => {
-    gracefulShutdown(server, 'SIGTERM')
-  })
-
-  // listen for TERM signal .e.g. Ctrl-C
-  process.on('SIGINT', () => {
-    gracefulShutdown(server, 'SIGINT')
-  })
-})
 
 module.exports = init

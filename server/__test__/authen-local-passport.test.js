@@ -173,8 +173,8 @@ describe('authen-local-passport', () => {
       )
     }
 
-    const { willResetPasswordExistingUser } = require('../authen-local-passport')
-    expect(await willResetPasswordExistingUser(email, token)).toMatchSnapshot()
+    const { willSetUserStatusAsWaitForEmailReset } = require('../authen-local-passport')
+    expect(await willSetUserStatusAsWaitForEmailReset(email, token)).toMatchSnapshot()
   })
 
   it('should redirect null token to /auth/error/token-not-provided', async () => {

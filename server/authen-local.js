@@ -3,7 +3,7 @@ const { errorBy } = require('./errors')
 const _emailError = msg => errorBy('AUTH_EMAIL_NOT_SENT', msg)
 
 // Forget password
-const willResetPassword = async (req, email) => {
+const willResetPasswordViaEmail = async (req, email) => {
   // Guard
   const { willValidateEmail } = require('./authen-local-passport')
   const isValidEmail = await willValidateEmail(email)
@@ -15,8 +15,8 @@ const willResetPassword = async (req, email) => {
   const token = require('uuid/v4')()
 
   // Validate receiver
-  const { willResetPasswordExistingUser } = require('./authen-local-passport')
-  const user = await willResetPasswordExistingUser(email, token)
+  const { willSetUserStatusAsWaitForEmailReset } = require('./authen-local-passport')
+  const user = await willSetUserStatusAsWaitForEmailReset(email, token)
 
   // Guard
   if (!user) {
@@ -24,8 +24,9 @@ const willResetPassword = async (req, email) => {
   }
 
   // Will send email verification
+  const { password_reset_base_url } = require('./config')
+  const base_url = password_reset_base_url || `${req.protocol}://${req.headers.host}`
   const { createPasswordResetURL, createNewPasswordResetURL } = require('./authen-local-passport')
-  const base_url = `${req.protocol}://${req.headers.host}`
   const password_reset_url = createPasswordResetURL(base_url, token)
   const new_password_reset_url = createNewPasswordResetURL(base_url)
 
@@ -41,6 +42,7 @@ const willResetPassword = async (req, email) => {
       new_password_reset_url
     })
     .catch(err => {
+      console.log(err.message)
       throw _emailError(` (${email}) : ${err.message}`)
     })
 
@@ -131,5 +133,5 @@ module.exports = {
   willSignUp,
   willLogin,
   willLogout,
-  willResetPassword
+  willResetPasswordViaEmail
 }

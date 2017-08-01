@@ -35,7 +35,7 @@ const linkWithFacebook = async ({ args, context }) => {
   return context.nap.willLinkWithFacebook(user, profile, token).catch(onError(context))
 }
 
-const changeEmail = async ({ args, context }) => {
+const updateEmail = async ({ args, context }) => {
   const user = await _willGetUserFromSession(context)
 
   // Guard
@@ -52,16 +52,16 @@ const changeEmail = async ({ args, context }) => {
   return user
 }
 
-const forget = async ({ context, args }) => context.nap.willResetPassword(context, args.email).catch(onError(context))
+const forget = async ({ context, args }) => context.nap.willResetPasswordViaEmail(context, args.email).catch(onError(context))
 
-const resetPassword = async ({ context, args }) => context.nap.willChangePasswordByToken(args.email, args.token).catch(onError(context))
+const updatePassword = async ({ context, args }) => context.nap.willUpdatePasswordByToken(args.token, args.password).catch(onError(context))
 
 module.exports = {
   willCreateUser,
   user: willReadUser,
   linkWithFacebook,
   unlinkFromFacebook,
-  changeEmail,
+  updateEmail,
   forget,
-  resetPassword
+  updatePassword
 }

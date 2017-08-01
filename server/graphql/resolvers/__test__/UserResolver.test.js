@@ -65,7 +65,7 @@ describe('willReadUser', () => {
     const context = {
       headers: { host: 'localhost:3000' },
       nap: {
-        willResetPassword: async () => ({
+        willResetPasswordViaEmail: async () => ({
           status: 'WAIT_FOR_EMAIL_RESET'
         })
       }
