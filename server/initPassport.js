@@ -1,13 +1,10 @@
-const init = ({ cookie_secret: secret, redis_url: url }, app) => {
-  // Constants
-  const ONE_WEEK = 7 * 24 * 60 * 60 * 1000
-
+const init = ({ cookie_secret: secret, redis_url: url, sessions_ttl: maxAge }, app) => {
   // Passport
   const passport = require('passport')
 
   // Configure Passport authenticated session persistence.
   passport.serializeUser((user, done) => done(null, user.id))
-  passport.deserializeUser((id, done) => id ? NAP.User.findOne({ _id: id }, { id: 1, name: 1 }, done) : done(null, null))
+  passport.deserializeUser((id, done) => (id ? NAP.User.findOne({ _id: id }, { id: 1, name: 1 }, done) : done(null, null)))
 
   app.use(require('cookie-parser')(secret))
 
@@ -27,7 +24,7 @@ const init = ({ cookie_secret: secret, redis_url: url }, app) => {
       secret,
       resave: false, // do not automatically write to the session store
       saveUninitialized: false,
-      cookie: { httpOnly: true, maxAge: ONE_WEEK } // configure when sessions expires
+      cookie: { httpOnly: true, maxAge } // configure when sessions expires
     })
   )
 

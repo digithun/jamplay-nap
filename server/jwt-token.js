@@ -38,7 +38,7 @@ const authenticate = (req, res, next) => {
 const createSessionToken = (installationId, userId) => {
   const config = require('./config')
   const jwt = require('jsonwebtoken')
-  const expires = new Date().valueOf() + 1000 * 60 * 60 // ms * s * m
+  const expires = config.session_ttl || -1
   const createdAt = new Date().toISOString()
   const expireAt = new Date(expires).toISOString()
 
