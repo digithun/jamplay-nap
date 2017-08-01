@@ -1,9 +1,10 @@
-const { guard, onError } = require('../../errors')
+const { onError } = require('../../errors')
 
 // Guard
-const _getUserIdFromSession = context => (context.nap.session ? context.nap.session.userId : null)
+const _getUserIdFromSession = session => (session ? session.userId : null)
 const _willGetUserFromSession = async context => {
-  const userId = _getUserIdFromSession(context)
+  const { session } = context.nap
+  const userId = _getUserIdFromSession(session)
 
   // Guard
   if (!userId) {
@@ -11,6 +12,11 @@ const _willGetUserFromSession = async context => {
     throw require('../../errors/codes').AUTH_MISSING_UID
   }
 
+  // Expire?
+  const { validateSession } = require('../../../server/authen-sessions')
+  validateSession(session)
+
+  // User
   return NAP.User.findById(userId).catch(onError(context))
 }
 

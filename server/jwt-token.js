@@ -1,33 +1,34 @@
 const { onError } = require('./errors')
 
-const _willAttachCurrentUserFromSessionToken = req => new Promise((resolve, reject) => {
-  // Ensure no session
-  req.nap.session = null
+const _willAttachSessionFromSessionToken = req =>
+  new Promise((resolve, reject) => {
+    // Ensure no session
+    req.nap.session = null
 
-  //Guard
-  if (!req.token) {
-    // Ignore empty token
-    return resolve(req)
-  }
-
-  const config = require('./config')
-  const jwt = require('jsonwebtoken')
-  jwt.verify(req.token, config.jwt_secret, (err, decoded) => {
-    // Error?
-    if (err) {
-      return reject(err)
+    // Guard
+    if (!req.token) {
+      // Ignore empty token
+      return resolve(req)
     }
 
-    // Succeed
-    req.nap.session = decoded
-    return resolve(req)
+    const config = require('./config')
+    const jwt = require('jsonwebtoken')
+    jwt.verify(req.token, config.jwt_secret, (err, decoded) => {
+      // Error?
+      if (err) {
+        return reject(err)
+      }
+
+      // Succeed
+      req.nap.session = decoded
+      return resolve(req)
+    })
   })
-})
 
 const authenticate = (req, res, next) => {
-  (async () => {
+  ;(async () => {
     // Validate and decode sessionToken
-    await _willAttachCurrentUserFromSessionToken(req).catch(onError(req))
+    await _willAttachSessionFromSessionToken(req).catch(onError(req))
 
     // Done
     next()
@@ -37,11 +38,17 @@ const authenticate = (req, res, next) => {
 const createSessionToken = (installationId, userId) => {
   const config = require('./config')
   const jwt = require('jsonwebtoken')
-  const sessionToken = jwt.sign({
-    installationId,
-    userId,
-    createdAt: new Date().toISOString()
-  },
+  const expires = config.session_ttl || -1
+  const createdAt = new Date().toISOString()
+  const expireAt = new Date(expires).toISOString()
+
+  const sessionToken = jwt.sign(
+    {
+      installationId,
+      userId,
+      createdAt,
+      expireAt
+    },
     config.jwt_secret
   )
 

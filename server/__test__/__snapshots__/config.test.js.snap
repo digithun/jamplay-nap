@@ -20,5 +20,6 @@ Object {
   "passport_disabled": false,
   "port": 3000,
   "redis_url": "redis://redis",
+  "sessions_ttl": 60000,
 }
 `;
