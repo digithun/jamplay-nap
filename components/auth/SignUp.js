@@ -48,6 +48,7 @@ mutation signUpWithEmailAndPassword($email: String!, $password: String!) {
     _id
     name
     status
+    isLinkedWithFacebook
   }
   errors {
     code
@@ -75,7 +76,13 @@ export default graphql(signUpWithEmailAndPassword, {
           // User
           cached.user = data.signUpWithEmailAndPassword
             ? data.signUpWithEmailAndPassword
-            : { _id: null, name: null, status: null, __typename: 'User' }
+            : {
+              _id: null,
+              name: null,
+              status: null,
+              isLinkedWithFacebook: null,
+              __typename: 'User'
+            }
 
           // Write our data back to the cache.
           proxy.writeQuery({ query: userProfile, data: cached })

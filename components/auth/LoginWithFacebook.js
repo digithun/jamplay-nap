@@ -84,6 +84,7 @@ mutation loginWithFacebook($deviceInfo: String!, $accessToken: String!) {
       _id
       name
       status
+      isLinkedWithFacebook
     }
   }
   errors {

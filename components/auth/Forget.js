@@ -4,7 +4,7 @@ import { gql, graphql } from 'react-apollo'
 import userProfile from '../userProfile.gql'
 
 const Forget = ({ forget }) => {
-  const handleSubmit = (e) => {
+  const handleSubmit = e => {
     e.preventDefault()
     let email = e.target.elements.email.value
 
@@ -57,22 +57,29 @@ Forget.propTypes = () => ({
 
 export default graphql(forget, {
   props: ({ mutate }) => ({
-    forget: (email) => mutate({
-      variables: { email },
-      update: (proxy, { data }) => {
-        // Read the data from our cache for this query.
-        let cached = proxy.readQuery({ query: userProfile })
+    forget: email =>
+      mutate({
+        variables: { email },
+        update: (proxy, { data }) => {
+          // Read the data from our cache for this query.
+          let cached = proxy.readQuery({ query: userProfile })
 
-        // Errors
-        cached.errors = data.errors
+          // Errors
+          cached.errors = data.errors
 
-        // User
-        cached.user = cached.user || { _id: null, name: null, status: null, __typename: 'User' }
-        cached.user.status = data.forget.status
+          // User
+          cached.user = cached.user || {
+            _id: null,
+            name: null,
+            status: null,
+            isLinkedWithFacebook: null,
+            __typename: 'User'
+          }
+          cached.user.status = data.forget.status
 
-        // Write our data back to the cache.
-        proxy.writeQuery({ query: userProfile, data: cached })
-      }
-    })
+          // Write our data back to the cache.
+          proxy.writeQuery({ query: userProfile, data: cached })
+        }
+      })
   })
 })(Forget)
