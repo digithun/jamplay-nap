@@ -232,6 +232,7 @@ describe('authen-local-passport', () => {
 
   it('should redirect valid token to /auth/verified', async () => {
     // stub
+    global.NAP = {}
     NAP.User = {
       findOneAndUpdate: jest.fn().mockImplementationOnce(() =>
         Promise.resolve({
@@ -257,6 +258,7 @@ describe('authen-local-passport', () => {
     const hashed_password = '$2a$10$J8sNyptEzgDuQu3b9H8PnuYO85KLnMYF2RjmMeAbt.vpND7NymH/O'
 
     // stub
+    global.NAP = {}
     NAP.User = {
       findOne: jest.fn().mockImplementationOnce(() =>
         Promise.resolve({

@@ -1,5 +1,5 @@
 /* eslint-env jest */
-describe('willReadUser', () => {
+describe('UserResolver', () => {
   it('should return error if session not exist', async () => {
     const { user: willReadUser } = require('../UserResolver')
     const context = { nap: { errors: [] } }
@@ -75,5 +75,65 @@ describe('willReadUser', () => {
     const { forget } = require('../UserResolver')
     const user = await forget({ context, args })
     expect(user).toMatchSnapshot()
+  })
+
+  it('should able to update email', async () => {
+    const context = {
+      nap: {
+        session: {
+          userId: '592c0bb4484d740e0e73798b',
+          expireAt: -1
+        },
+        willUpdateEmail: require('../../../../server/authen-local-passport').willUpdateEmail
+      }
+    }
+    const args = { email: 'foo@bar.com' }
+
+    // stub
+    global.NAP = {}
+    NAP.User = {
+      findById: jest.fn().mockImplementationOnce(async () => ({
+        _id: '592c0bb4484d740e0e73798b',
+        save: async () => ({
+          _id: '592c0bb4484d740e0e73798b'
+        })
+      })),
+      findOne: jest.fn().mockImplementationOnce(async () => null)
+    }
+
+    const { updateEmail } = require('../UserResolver')
+    const user = await updateEmail({ context, args })
+    delete user.save
+    expect(user).toMatchSnapshot()
+  })
+
+  it('should not able to update existing email', async () => {
+    const context = {
+      nap: {
+        session: {
+          userId: '592c0bb4484d740e0e73798b',
+          expireAt: -1
+        },
+        willUpdateEmail: require('../../../../server/authen-local-passport').willUpdateEmail
+      }
+    }
+    const args = { email: 'foo@bar.com' }
+
+    // stub
+    global.NAP = {}
+    NAP.User = {
+      findById: jest.fn().mockImplementationOnce(async () => ({
+        _id: '592c0bb4484d740e0e73798b',
+        save: async () => ({
+          _id: '592c0bb4484d740e0e73798b'
+        })
+      })),
+      findOne: jest.fn().mockImplementationOnce(async () => ({
+        _id: '592c0bb4484d740e0e73798c'
+      }))
+    }
+
+    const { updateEmail } = require('../UserResolver')
+    expect(updateEmail({ context, args })).rejects.toMatchObject(require('../../../errors/codes').AUTH_EMAIL_ALREADY_IN_USE)
   })
 })

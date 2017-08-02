@@ -1,5 +1,4 @@
 const { onError } = require('../../errors')
-const { AUTH_EMAIL_NOT_VERIFIED } = require('../../errors/codes')
 
 const loginWithFacebook = async ({ context, args }) => {
   const userData = await context.nap.willLoginWithFacebook(context, args.accessToken).catch(onError(context))
@@ -75,7 +74,7 @@ const willAuthen = async (installationId, { _id: userId, emailVerified, facebook
     case 'local':
       // User use local strategy, but not verify by email yet.
       if (!emailVerified) {
-        throw AUTH_EMAIL_NOT_VERIFIED
+        throw require('../../errors/codes').AUTH_EMAIL_NOT_VERIFIED
       }
       break
     default:

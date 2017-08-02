@@ -1,4 +1,4 @@
-const { onError } = require('../../errors')
+const { guard, onError } = require('../../errors')
 
 // Guard
 const _getUserIdFromSession = session => (session ? session.userId : null)
@@ -29,7 +29,7 @@ const unlinkFromFacebook = async ({ context }) => {
 }
 
 const linkWithFacebook = async ({ args, context }) => {
-  const user = await _willGetUserFromSession(context)
+  const user = await _willGetUserFromSession(context).catch(onError(context))
   const token = args.accessToken
   const profile = await context.nap.willGetFacebookProfile(context, token).catch(onError(context))
   return context.nap.willLinkWithFacebook(user, profile, token).catch(onError(context))
@@ -37,19 +37,10 @@ const linkWithFacebook = async ({ args, context }) => {
 
 const updateEmail = async ({ args, context }) => {
   const user = await _willGetUserFromSession(context)
+  const { email } = args
+  guard({ email })
 
-  // Guard
-  const is = require('is_js')
-  if (is.not.email(args.email)) {
-    throw require('../../errors/codes').AUTH_INVALID_EMAIL
-  }
-
-  if (user) {
-    user.email = args.email
-    await user.save()
-  }
-
-  return user
+  return context.nap.willUpdateEmail(user, email)
 }
 
 const forget = async ({ context, args }) => context.nap.willResetPasswordViaEmail(context, args.email).catch(onError(context))
