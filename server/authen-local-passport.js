@@ -81,8 +81,7 @@ const _guardUnverifiedUserForSignUp = user => {
   }
 }
 
-const _guardDuplicatedUserForSignUp = user => {
-  // No user, which is great
+const _guardDuplicatedUserByEmail = user => {
   if (user) {
     throw require('./errors/codes').AUTH_EMAIL_ALREADY_IN_USE
   }
@@ -103,7 +102,7 @@ const _guardUnverifiedUserForLoginWithLocal = user => {
 const willSignUpNewUser = async (email, password, extraFields, token) => {
   // Guard existing user
   const user = await NAP.User.findOne({ email })
-  _guardDuplicatedUserForSignUp(user)
+  _guardDuplicatedUserByEmail(user)
   _guardUnverifiedUserForSignUp(user)
 
   // Create user with email and token, password if any
@@ -200,6 +199,23 @@ const willUpdatePasswordByToken = async (token, password) => {
   return user.save()
 }
 
+const willUpdateEmail = async (user, email) => {
+  // Guard
+  guard({ user })
+  guard({ email })
+
+  // Guard : valid email
+  willValidateEmail(email)
+
+  // Guard : unique
+  const existingUser = await NAP.User.findOne({ email })
+  _guardDuplicatedUserByEmail(existingUser)
+
+  // Update email
+  user.email = email
+  return user.save()
+}
+
 const reset_password_by_token = (req, res) => {
   const { token, password } = req.body
   ;(async () => {
@@ -227,6 +243,7 @@ module.exports = {
   willValidateEmailAndPassword,
   willSetUserStatusAsWaitForEmailReset,
   willUpdatePasswordByToken,
+  willUpdateEmail,
   validateLocalStrategy,
   handler
 }
