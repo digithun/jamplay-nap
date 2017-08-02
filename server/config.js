@@ -1,14 +1,21 @@
 // Helper
 const dev = process.env.NODE_ENV !== 'production'
-const isTrue = (value) => {
+const isTrue = value => {
   switch (value) {
-    case true: return true
-    case 'true': return true
-    case 1: return true
-    case '1': return true
-    default: return false
+    case true:
+      return true
+    case 'true':
+      return true
+    case 1:
+      return true
+    case '1':
+      return true
+    default:
+      return false
   }
 }
+// Constants
+const _SESSIONS_TTL_ONE_WEEK = 7 * 24 * 60 * 60 * 1000
 
 const config = {
   // Environments
@@ -26,6 +33,10 @@ const config = {
   // Security
   cookie_secret: process.env.COOKIE_SECRET || 'foo',
   jwt_secret: process.env.JWT_SECRET || 'foo',
+  sessions_ttl: parseInt(process.env.SESSIONS_TTL) || _SESSIONS_TTL_ONE_WEEK,
+  password_reset_base_url: process.env.PASSWORD_RESET_BASE_URL,
+  verified_url: process.env.VERIFIED_URL || '/auth/verified',
+  token_not_exist_url: process.env.TOKEN_NOT_EXIST_URL || '/auth/error/token-not-exist',
 
   next_disabled: isTrue(process.env.NEXT_DISABLED),
   passport_disabled: isTrue(process.env.PASSPORT_DISABLED),
@@ -38,7 +49,7 @@ const config = {
   e_wallet_api: process.env.E_WALLET_API,
   e_wallet_enabled: process.env.E_WALLET_API !== undefined && !!process.env.E_WALLET_API,
 
-  // appolo optics
+  // Apollo optics
   is_optics_enabled: isTrue(process.env.IS_OPTICS_ENABLED),
 
   // BigQuery

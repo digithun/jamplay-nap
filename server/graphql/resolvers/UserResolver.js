@@ -1,9 +1,10 @@
-const { guard, onError } = require('../../errors')
+const { onError } = require('../../errors')
 
 // Guard
-const _getUserIdFromSession = context => (context.nap.session ? context.nap.session.userId : null)
+const _getUserIdFromSession = session => (session ? session.userId : null)
 const _willGetUserFromSession = async context => {
-  const userId = _getUserIdFromSession(context)
+  const { session } = context.nap
+  const userId = _getUserIdFromSession(session)
 
   // Guard
   if (!userId) {
@@ -11,6 +12,11 @@ const _willGetUserFromSession = async context => {
     throw require('../../errors/codes').AUTH_MISSING_UID
   }
 
+  // Expire?
+  const { validateSession } = require('../../../server/authen-sessions')
+  validateSession(session)
+
+  // User
   return NAP.User.findById(userId).catch(onError(context))
 }
 
@@ -29,7 +35,7 @@ const linkWithFacebook = async ({ args, context }) => {
   return context.nap.willLinkWithFacebook(user, profile, token).catch(onError(context))
 }
 
-const changeEmail = async ({ args, context }) => {
+const updateEmail = async ({ args, context }) => {
   const user = await _willGetUserFromSession(context)
 
   // Guard
@@ -46,16 +52,16 @@ const changeEmail = async ({ args, context }) => {
   return user
 }
 
-const forget = async ({ context, args }) => context.nap.willResetPassword(context, args.email).catch(onError(context))
+const forget = async ({ context, args }) => context.nap.willResetPasswordViaEmail(context, args.email).catch(onError(context))
 
-const resetPassword = async ({ context, args }) => context.nap.willChangePasswordByToken(args.email, args.token).catch(onError(context))
+const updatePassword = async ({ context, args }) => context.nap.willUpdatePasswordByToken(args.token, args.password).catch(onError(context))
 
 module.exports = {
   willCreateUser,
   user: willReadUser,
   linkWithFacebook,
   unlinkFromFacebook,
-  changeEmail,
+  updateEmail,
   forget,
-  resetPassword
+  updatePassword
 }

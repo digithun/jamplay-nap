@@ -18,7 +18,11 @@ Object {
   "mubsub_enabled": false,
   "next_disabled": false,
   "passport_disabled": false,
+  "password_reset_base_url": "http://localhost:3000",
   "port": 3000,
   "redis_url": "redis://redis",
+  "sessions_ttl": 60000,
+  "token_not_exist_url": "/auth/error/token-not-exist",
+  "verified_url": "/auth/verified",
 }
 `;

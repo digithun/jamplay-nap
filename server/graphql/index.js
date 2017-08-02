@@ -83,10 +83,10 @@ module.exports.buildSchema = () => {
     loginWithFacebook: models.AuthenTC.getResolver('loginWithFacebook'),
     signUpWithEmailAndPassword: models.AuthenTC.getResolver('signUpWithEmailAndPassword'),
     forget: models.UserTC.getResolver('forget'),
-    resetPassword: models.UserTC.getResolver('resetPassword'),
+    updatePassword: models.UserTC.getResolver('updatePassword'),
     unlinkFromFacebook: models.UserTC.getResolver('unlinkFromFacebook'),
     linkWithFacebook: models.UserTC.getResolver('linkWithFacebook'),
-    changeEmail: models.UserTC.getResolver('changeEmail'),
+    updateEmail: models.UserTC.getResolver('updateEmail'),
     update_GCMSenderId: models.InstallationTC.getResolver('update_GCMSenderId'),
     update_deviceToken: models.InstallationTC.getResolver('update_deviceToken'),
     errors: models.ErrorTC.getResolver('error')

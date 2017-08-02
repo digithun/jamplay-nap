@@ -6,7 +6,7 @@ import userProfile from '../userProfile.gql'
 import PropTypes from 'prop-types'
 
 class Login extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {
       deviceInfo: ''
@@ -14,7 +14,7 @@ class Login extends React.Component {
     this.login = props.login
   }
 
-  handleSubmit(e) {
+  handleSubmit (e) {
     e.preventDefault()
 
     const deviceInfo = e.target.elements.deviceInfo.value
@@ -34,11 +34,11 @@ class Login extends React.Component {
     e.target.elements.password.value = ''
   }
 
-  componentDidMount() {
+  componentDidMount () {
     this.setState({ deviceInfo: device.info() })
   }
 
-  render() {
+  render () {
     return (
       <form onSubmit={this.handleSubmit.bind(this)}>
         <h1>Login (GraphQL)</h1>
@@ -74,6 +74,7 @@ mutation login($deviceInfo: String!, $email: String!, $password: String!) {
       _id
       name
       status
+      isLinkedWithFacebook
     }
     installation {
       _id
@@ -93,33 +94,34 @@ Login.propTypes = () => ({
 
 export default graphql(login, {
   props: ({ mutate }) => ({
-    login: (deviceInfo, email, password) => mutate({
-      variables: { deviceInfo, email, password },
-      update: (proxy, { data }) => {
-        // Keep session
-        data.login && persist.willSetSessionToken(data.login.sessionToken)
+    login: (deviceInfo, email, password) =>
+      mutate({
+        variables: { deviceInfo, email, password },
+        update: (proxy, { data }) => {
+          // Keep session
+          data.login && persist.willSetSessionToken(data.login.sessionToken)
 
-        // Read the data from our cache for this query.
-        let cached = proxy.readQuery({ query: userProfile })
+          // Read the data from our cache for this query.
+          let cached = proxy.readQuery({ query: userProfile })
 
-        // Errors
-        cached.errors = data.errors
+          // Errors
+          cached.errors = data.errors
 
-        // User
-        if (data.login) {
-          cached.user = data.login.user
+          // User
+          if (data.login) {
+            cached.user = data.login.user
 
-          // Authen
-          cached.authen = {
-            isLoggedIn: data.login.isLoggedIn,
-            sessionToken: data.login.sessionToken,
-            __typename: 'Authen'
+            // Authen
+            cached.authen = {
+              isLoggedIn: data.login.isLoggedIn,
+              sessionToken: data.login.sessionToken,
+              __typename: 'Authen'
+            }
           }
-        }
 
-        // Write our data back to the cache.
-        proxy.writeQuery({ query: userProfile, data: cached })
-      }
-    })
+          // Write our data back to the cache.
+          proxy.writeQuery({ query: userProfile, data: cached })
+        }
+      })
   })
 })(Login)

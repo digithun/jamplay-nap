@@ -5,9 +5,7 @@ import userProfile from '../userProfile.gql'
 import PropTypes from 'prop-types'
 
 const Logout = ({ logout }) => {
-  return (
-    <button onClick={logout}>LogOut (GraphQL)</button>
-  )
+  return <button onClick={logout}>LogOut (GraphQL)</button>
 }
 
 const logout = gql`
@@ -29,30 +27,39 @@ Logout.propTypes = () => ({
 
 export default graphql(logout, {
   props: ({ mutate }) => ({
-    logout: () => mutate({
-      update: (proxy, { data }) => {
-        // Clear session
-        persist.willRemoveSessionToken()
+    logout: () =>
+      mutate({
+        update: (proxy, { data }) => {
+          // Clear session
+          persist.willRemoveSessionToken()
 
-        // Read the data from our cache for this query.
-        let cached = proxy.readQuery({ query: userProfile })
+          // Read the data from our cache for this query.
+          let cached = proxy.readQuery({ query: userProfile })
 
-        // Errors
-        cached.errors = data.errors
+          // Errors
+          cached.errors = data.errors
 
-        // User
-        cached.user = data.logout.user ? data.logout.user : { _id: null, name: null, status: null, __typename: 'User' }
+          // User
+          cached.user = data.logout.user
+            ? data.logout.user
+            : {
+              _id: null,
+              name: null,
+              status: null,
+              isLinkedWithFacebook: null,
+              __typename: 'User'
+            }
 
-        // Authen
-        cached.authen = {
-          isLoggedIn: data.logout.isLoggedIn,
-          sessionToken: data.logout.sessionToken,
-          __typename: 'Authen'
+          // Authen
+          cached.authen = {
+            isLoggedIn: data.logout.isLoggedIn,
+            sessionToken: data.logout.sessionToken,
+            __typename: 'Authen'
+          }
+
+          // Write our data back to the cache.
+          proxy.writeQuery({ query: userProfile, data: cached })
         }
-
-        // Write our data back to the cache.
-        proxy.writeQuery({ query: userProfile, data: cached })
-      }
-    })
+      })
   })
 })(Logout)

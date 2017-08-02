@@ -24,12 +24,12 @@ module.exports = models => {
   })
 
   models.UserTC.addResolver({
-    name: 'changeEmail',
+    name: 'updateEmail',
     type: models.UserTC,
     args: {
       email: 'String!'
     },
-    resolve: UserResolver.changeEmail
+    resolve: UserResolver.updateEmail
   })
 
   models.UserTC.addResolver({
@@ -43,13 +43,13 @@ module.exports = models => {
   })
 
   models.UserTC.addResolver({
-    name: 'resetPassword',
+    name: 'updatePassword',
     kind: 'mutation',
     args: {
-      email: 'String!',
-      token: 'String!'
+      token: 'String!',
+      password: 'String!'
     },
     type: models.UserTC,
-    resolve: UserResolver.resetPassword
+    resolve: UserResolver.updatePassword
   })
 }

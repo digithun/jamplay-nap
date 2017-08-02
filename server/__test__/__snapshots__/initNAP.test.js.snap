@@ -5,7 +5,6 @@ Object {
   "nap": nap {
     "errors": Array [],
     "session": null,
-    "willChangePasswordByToken": [Function],
     "willCreateUser": [Function],
     "willGetFacebookProfile": [Function],
     "willInstallAndAuthen": [Function],
@@ -13,9 +12,10 @@ Object {
     "willLogin": [Function],
     "willLoginWithFacebook": [Function],
     "willLogout": [Function],
-    "willResetPassword": [Function],
+    "willResetPasswordViaEmail": [Function],
     "willSignUp": [Function],
     "willUnlinkFromFacebook": [Function],
+    "willUpdatePasswordByToken": [Function],
   },
 }
 `;

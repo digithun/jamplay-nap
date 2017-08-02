@@ -123,8 +123,8 @@ describe('authen-local', () => {
       )
     }
 
-    const { willResetPassword } = require('../authen-local')
-    const result = await willResetPassword(req, email)
+    const { willResetPasswordViaEmail } = require('../authen-local')
+    const result = await willResetPasswordViaEmail(req, email)
     expect(result).toMatchSnapshot()
   })
 

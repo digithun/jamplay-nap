@@ -1,8 +1,8 @@
 /* eslint-env jest */
 describe('willReadUser', () => {
   it('should return error if session not exist', async () => {
-    const { user : willReadUser } = require('../UserResolver')
-    const context = { nap : { errors: []} }
+    const { user: willReadUser } = require('../UserResolver')
+    const context = { nap: { errors: [] } }
     await willReadUser({ context }).catch(err => {
       expect(err).toMatchSnapshot()
     })
@@ -16,18 +16,20 @@ describe('willReadUser', () => {
     global.NAP = {}
     NAP.User = {
       findById: jest.fn().mockImplementationOnce(() =>
-        Promise.resolve(Object.assign(
-          {
-            _id: '592c0bb4484d740e0e73798b',
-            role: 'user'
-          },
-          userData
-        ))
+        Promise.resolve(
+          Object.assign(
+            {
+              _id: '592c0bb4484d740e0e73798b',
+              role: 'user'
+            },
+            userData
+          )
+        )
       )
     }
 
-    const { user : willReadUser } = require('../UserResolver')
-    const context = { nap: { session: { userId: 'foo' }}}
+    const { user: willReadUser } = require('../UserResolver')
+    const context = { nap: { session: { userId: 'foo', expireAt: -1 } } }
     const user = await willReadUser({ context })
 
     expect(user).toMatchSnapshot()
@@ -41,13 +43,15 @@ describe('willReadUser', () => {
     global.NAP = {}
     NAP.User = {
       create: jest.fn().mockImplementationOnce(() =>
-        Promise.resolve(Object.assign(
-          {
-            _id: '592c0bb4484d740e0e73798b',
-            role: 'user'
-          },
-          userData
-        ))
+        Promise.resolve(
+          Object.assign(
+            {
+              _id: '592c0bb4484d740e0e73798b',
+              role: 'user'
+            },
+            userData
+          )
+        )
       )
     }
 
@@ -58,18 +62,18 @@ describe('willReadUser', () => {
   })
 
   it('should able to forget password', async () => {
-    const context = { 
-      headers : { host: 'localhost:3000'},
-      nap : {
-        willResetPassword: async () => ({ 
+    const context = {
+      headers: { host: 'localhost:3000' },
+      nap: {
+        willResetPasswordViaEmail: async () => ({
           status: 'WAIT_FOR_EMAIL_RESET'
-        }),
+        })
       }
     }
     const email = 'foo@bar.com'
     const args = { email }
     const { forget } = require('../UserResolver')
-    const user = await forget({ context, args })    
+    const user = await forget({ context, args })
     expect(user).toMatchSnapshot()
   })
 })
