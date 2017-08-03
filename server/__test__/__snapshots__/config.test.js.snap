@@ -2,6 +2,7 @@
 
 exports[`config should return config 1`] = `
 Object {
+  "auth_verified_path": "/auth/verified",
   "bigquery_service_endpoint": null,
   "cookie_secret": "foo",
   "dev": true,
@@ -23,6 +24,5 @@ Object {
   "redis_url": "redis://redis",
   "sessions_ttl": 60000,
   "token_not_exist_url": "/auth/error/token-not-exist",
-  "verified_url": "/auth/verified",
 }
 `;

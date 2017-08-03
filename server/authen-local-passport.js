@@ -188,8 +188,8 @@ const auth_local_token = (req, res) => {
   }
 
   // Verify
-  const { verified_url, token_not_exist_url } = require('./config')
-  _willMarkUserAsVerifiedByToken(token).then(() => res.redirect(verified_url)).catch(() => {
+  const { auth_verified_path, token_not_exist_url } = require('./config')
+  _willMarkUserAsVerifiedByToken(token).then(() => res.redirect(auth_verified_path)).catch(() => {
     res.redirect(token_not_exist_url)
   })
 }

@@ -35,7 +35,7 @@ const config = {
   jwt_secret: process.env.JWT_SECRET || 'foo',
   sessions_ttl: parseInt(process.env.SESSIONS_TTL) || _SESSIONS_TTL_ONE_WEEK,
   password_reset_base_url: process.env.PASSWORD_RESET_BASE_URL,
-  verified_url: process.env.VERIFIED_URL || '/auth/verified',
+  auth_verified_path: process.env.AUTH_VERIFIED_PATH || '/auth/verified',
   token_not_exist_url: process.env.TOKEN_NOT_EXIST_URL || '/auth/error/token-not-exist',
 
   next_disabled: isTrue(process.env.NEXT_DISABLED),
