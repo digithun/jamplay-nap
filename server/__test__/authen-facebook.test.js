@@ -35,7 +35,8 @@ describe('authen-facebook', () => {
       findOneAndUpdate: jest.fn().mockImplementationOnce(() =>
         Promise.resolve({
           _id: '58d0e20e7ff032b39c2a9a18',
-          name: 'bar'
+          name: 'bar',
+          email: 'foo@bar.com'
         })
       )
     }
