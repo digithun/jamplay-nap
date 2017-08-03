@@ -1,4 +1,4 @@
-const { errorBy } = require('./errors')
+const { guard, errorBy } = require('./errors')
 
 const _emailError = msg => errorBy('AUTH_EMAIL_NOT_SENT', msg)
 
@@ -31,12 +31,15 @@ const willResetPasswordViaEmail = async (req, email) => {
   const new_password_reset_url = createNewPasswordResetURL(auth_new_reset_uri, base_url)
 
   // New user, will need verification by email
-  const config = require('./config')
+  const { mailgun_api_key, mailgun_domain } = require('./config')
+  guard({ mailgun_api_key })
+  guard({ mailgun_domain })
+
   const mailer = require('./mailer')
   const msg = await mailer
     .willSendPasswordReset({
-      mailgun_api_key: config.mailgun_api_key,
-      mailgun_domain: config.mailgun_domain,
+      mailgun_api_key,
+      mailgun_domain,
       email,
       password_reset_url,
       new_password_reset_url
