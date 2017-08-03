@@ -175,7 +175,6 @@ const validateLocalStrategy = (email, password, done) => {
         done(null, user)
       }
     } catch (err) {
-      console.log(err)
       done(err, null)
     }
   })()
