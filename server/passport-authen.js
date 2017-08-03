@@ -1,3 +1,6 @@
+const { guard, errorBy } = require('./errors')
+const AUTH_PASSPORT_FAILED = require('./errors/codes').AUTH_PASSPORT_FAILED
+
 const willAuthenWithPassport = (strategy, req) =>
   new Promise((resolve, reject) => {
     const passport = require('passport')
@@ -8,23 +11,41 @@ const willAuthenWithPassport = (strategy, req) =>
         return reject(err)
       }
 
-      // Will find someone that has this email and update token
-      const user = NAP.User.findOneAndUpdate(
-        {
-          email: payload.email
-        },
-        payload,
-        { new: true, upsert: true }
-      )
+      switch (strategy) {
+        case 'local':
+          return payload ? resolve(payload) : reject(AUTH_PASSPORT_FAILED)
+        default:
+          const { email } = payload
+          guard({ email })
 
-      // User?
-      return user ? resolve(user) : reject(require('./errors/codes').AUTH_PASSPORT_FAILED)
+          // Will find someone that has this email and update token
+          const user = NAP.User
+            .findOneAndUpdate(
+            {
+              email
+            },
+              payload,
+              { new: true, upsert: true }
+            )
+            .catch(err => {
+              reject(errorBy('AUTH_PASSPORT_FAILED', err.message))
+            })
+
+          // User?
+          return user ? resolve(user) : reject(AUTH_PASSPORT_FAILED)
+      }
     })(req)
   })
 
 const willGetProfileWithPassport = (provider, strategy, req) =>
   new Promise((resolve, reject) => {
     const passport = require('passport')
+
+    // Guard : Not support local
+    if (strategy === 'local') {
+      throw Error('Not support local strategy')
+    }
+
     // @ts-ignore
     passport.authenticate(strategy, (err, payload) => {
       // Error?

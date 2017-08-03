@@ -17,6 +17,7 @@ exports[`authen-facebook should create session token 1`] = `"FOO_BAR_SESSION_TOK
 exports[`authen-facebook should login with Facebook and return user 1`] = `
 Object {
   "_id": "58d0e20e7ff032b39c2a9a18",
+  "email": "foo@bar.com",
   "name": "bar",
 }
 `;

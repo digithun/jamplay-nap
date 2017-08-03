@@ -87,7 +87,7 @@ const _guardDuplicatedUserByEmail = user => {
   }
 }
 
-const _guardUnverifiedUserForLoginWithLocal = user => {
+const _guardInvalidUserForLoginWithLocal = user => {
   // No user
   if (!user) {
     throw require('./errors/codes').AUTH_USER_NOT_FOUND
@@ -152,21 +152,32 @@ const _willValidatePassword = async (password, hashed_password) => {
 
   // Password matched?
   const bcrypt = require('bcryptjs')
-  return bcrypt.compareSync(password, hashed_password)
+  const isPasswordMatch = bcrypt.compareSync(password, hashed_password)
+  if (!isPasswordMatch) {
+    throw require('./errors/codes').AUTH_WRONG_PASSWORD
+  }
+
+  return true
 }
 
 const validateLocalStrategy = (email, password, done) => {
   // Find by email
   ;(async () => {
-    const user = await NAP.User.findOne({ email }).catch(err => err)
     try {
-      _guardUnverifiedUserForLoginWithLocal(user)
-    } catch (err) {
-      // Silently failed
-    }
+      // Guard unverified or not existing user
+      const user = await NAP.User.findOne({ email })
+      _guardInvalidUserForLoginWithLocal(user)
 
-    const isPasswordMatch = user && (await _willValidatePassword(password, user.hashed_password).catch(err => err))
-    return done(null, isPasswordMatch ? user : false)
+      const isPasswordMatch = await _willValidatePassword(password, user.hashed_password)
+      if (!isPasswordMatch) {
+        throw require('./errors/codes').AUTH_WRONG_PASSWORD
+      } else {
+        done(null, user)
+      }
+    } catch (err) {
+      console.log(err)
+      done(err, null)
+    }
   })()
 }
 

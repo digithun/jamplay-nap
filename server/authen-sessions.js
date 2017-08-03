@@ -21,4 +21,13 @@ const validateSession = async ({ expireAt }) => {
   return true
 }
 
-module.exports = { validateSession }
+const listSessionByUser = async userId => {
+  // Guard
+  const { guard } = require('./errors')
+  guard({ userId })
+
+  const users = await NAP.Authen.find({ userId, isLoggedIn: true }).sort({ loggedInAt: -1 })
+  return users
+}
+
+module.exports = { validateSession, listSessionByUser }
