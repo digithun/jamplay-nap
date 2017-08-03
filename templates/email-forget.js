@@ -29,7 +29,7 @@ module.exports = (domain, email, password_reset_url, new_password_reset_url) => 
   from: 'noreply@' + domain,
   to: [email],
   subject: `[${domain}] Please reset your password`,
-  text: `
+  html: `
   
   <img src='http://static.jamplay.world:3002/static/logo-orange@2x.png' style='width:150px;margin-bottom:10px' /> 
   <div style='font-size:26px;font-weight:bold;color:white;background-color:#df6336;padding: 20px;text-align:center;'>เปลี่ยนรหัสผ่านใหม่</div> 

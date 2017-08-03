@@ -1,26 +1,43 @@
 /* eslint-env jest */
 describe('authen-local-passport', () => {
+  const base_url = 'http://localhost:3000'
+  const other_base_url = 'http://localhost:4000'
+  const token = 'FOO_TOKEN'
+
   it('should create email verification url', async () => {
     const { createVerificationURL } = require('../authen-local-passport')
-    const base_url = 'http://localhost:3000'
-    const token = 'FOO_TOKEN'
-    const verification_url = createVerificationURL(base_url, token)
+    const auth_local_uri = '/auth/local'
+    const verification_url = createVerificationURL(auth_local_uri, base_url, token)
+
+    // URL
     expect(verification_url).toMatchSnapshot()
+
+    // Path
+    expect(createVerificationURL(`${other_base_url}/${auth_local_uri}`, base_url, token)).toMatchSnapshot()
   })
 
   it('should create password reset url', async () => {
     const { createPasswordResetURL } = require('../authen-local-passport')
-    const base_url = 'http://localhost:3000'
-    const token = 'FOO_TOKEN'
-    const password_reset_url = createPasswordResetURL(base_url, token)
+    const auth_reset_uri = '/auth/reset'
+    const password_reset_url = createPasswordResetURL(auth_reset_uri, base_url, token)
+
+    // URL
     expect(password_reset_url).toMatchSnapshot()
+
+    // Path
+    expect(createPasswordResetURL(`${other_base_url}/${auth_reset_uri}`, base_url, token)).toMatchSnapshot()
   })
 
   it('should create new password reset url', async () => {
     const { createNewPasswordResetURL } = require('../authen-local-passport')
-    const base_url = 'http://localhost:3000'
-    const new_password_reset_url = createNewPasswordResetURL(base_url)
+    const auth_new_reset_uri = '/auth/reset'
+    const new_password_reset_url = createNewPasswordResetURL(auth_new_reset_uri, base_url)
+
+    // URL
     expect(new_password_reset_url).toMatchSnapshot()
+
+    // Path
+    expect(createNewPasswordResetURL(`${other_base_url}/${auth_new_reset_uri}`, base_url)).toMatchSnapshot()
   })
 
   it('should throw error for empty email', async () => {

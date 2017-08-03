@@ -24,11 +24,11 @@ const willResetPasswordViaEmail = async (req, email) => {
   }
 
   // Will send email verification
-  const { password_reset_base_url } = require('./config')
-  const base_url = password_reset_base_url || `${req.protocol}://${req.headers.host}`
+  const { auth_reset_uri, auth_new_reset_uri } = require('./config')
+  const base_url = `${req.protocol}://${req.headers.host}`
   const { createPasswordResetURL, createNewPasswordResetURL } = require('./authen-local-passport')
-  const password_reset_url = createPasswordResetURL(base_url, token)
-  const new_password_reset_url = createNewPasswordResetURL(base_url)
+  const password_reset_url = createPasswordResetURL(auth_reset_uri, base_url, token)
+  const new_password_reset_url = createNewPasswordResetURL(auth_new_reset_uri, base_url)
 
   // New user, will need verification by email
   const config = require('./config')
@@ -75,8 +75,10 @@ const willSignUp = async (req, email, password, extraFields) => {
   }
 
   // Will send email verification
+  const base_url = `${req.protocol}://${req.headers.host}`
+  const { auth_local_uri } = require('./config')
   const { createVerificationURL } = require('./authen-local-passport')
-  const verification_url = createVerificationURL(`${req.protocol}://${req.headers.host}`, token)
+  const verification_url = createVerificationURL(auth_local_uri, base_url, token)
 
   // New user, will need verification by email
   const config = require('./config')

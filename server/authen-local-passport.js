@@ -1,9 +1,22 @@
 const { guard } = require('./errors')
 const { AUTH_WEAK_PASSWORD } = require('./errors/codes')
 
-const createVerificationURL = (base_url, token) => `${base_url}/auth/local/${token}`
-const createPasswordResetURL = (base_url, token) => `${base_url}/auth/reset/${token}`
-const createNewPasswordResetURL = base_url => `${base_url}/auth/reset`
+const { URL } = require('url')
+
+const createVerificationURL = (auth_local_uri, base_url, token) => {
+  const url = new URL(auth_local_uri, base_url)
+  url.pathname += `/${token}`
+  return url.toString()
+}
+const createPasswordResetURL = (auth_reset_uri, base_url, token) => {
+  const url = new URL(auth_reset_uri, base_url)
+  url.pathname += `/${token}`
+  return url.toString()
+}
+const createNewPasswordResetURL = (auth_new_reset_uri, base_url) => {
+  const url = new URL(auth_new_reset_uri, base_url)
+  return url.toString()
+}
 
 const willValidateEmail = async email => {
   const is = require('is_js')
@@ -181,16 +194,17 @@ const validateLocalStrategy = (email, password, done) => {
 }
 
 const auth_local_token = (req, res) => {
+  const { auth_verified_uri, auth_error_uri } = require('./config')
+
   // Guard
   const token = req.params.token
   if (!token || token.trim() === '') {
-    return res.redirect('/auth/error/token-not-provided')
+    return res.redirect(`${auth_error_uri}?code=token-not-provided`)
   }
 
   // Verify
-  const { auth_verified_path, token_not_exist_url } = require('./config')
-  _willMarkUserAsVerifiedByToken(token).then(() => res.redirect(auth_verified_path)).catch(() => {
-    res.redirect(token_not_exist_url)
+  _willMarkUserAsVerifiedByToken(token).then(() => res.redirect(auth_verified_uri)).catch(() => {
+    res.redirect(`${auth_error_uri}?code=token-not-exist`)
   })
 }
 
