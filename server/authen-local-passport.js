@@ -173,24 +173,30 @@ const _willValidatePassword = async (password, hashed_password) => {
   return true
 }
 
-const validateLocalStrategy = (email, password, done) => {
-  // Find by email
-  ;(async () => {
-    try {
-      // Guard unverified or not existing user
-      const user = await NAP.User.findOne({ email })
-      _guardInvalidUserForLoginWithLocal(user)
+const _getUserByEmailAndPassword = async (email, password) => {
+  // Guard
+  willValidateEmailAndPassword(email, password)
 
-      const isPasswordMatch = await _willValidatePassword(password, user.hashed_password)
-      if (!isPasswordMatch) {
-        throw require('./errors/codes').AUTH_WRONG_PASSWORD
-      } else {
-        done(null, user)
-      }
-    } catch (err) {
+  // Guard unverified or not existing user
+  const user = await NAP.User.findOne({ email })
+  _guardInvalidUserForLoginWithLocal(user)
+
+  const isPasswordMatch = await _willValidatePassword(password, user.hashed_password)
+  if (!isPasswordMatch) {
+    throw require('./errors/codes').AUTH_WRONG_PASSWORD
+  } else {
+    return user
+  }
+}
+
+const validateLocalStrategy = (email, password, done) => {
+  _getUserByEmailAndPassword(email, password)
+    .then(user => {
+      done(null, user)
+    })
+    .catch(err => {
       done(err, null)
-    }
-  })()
+    })
 }
 
 const auth_local_token = (req, res) => {

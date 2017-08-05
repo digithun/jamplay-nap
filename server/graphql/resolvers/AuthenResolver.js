@@ -57,52 +57,11 @@ const authen = async ({ context }) => {
   return NAP.Authen.findOne({ userId, installationId }).catch(err => onError(context)(err) && _noAuthen)
 }
 
-const willAuthen = async (installationId, { _id: userId, emailVerified, facebook }, provider) => {
-  // Base data
-  let authenData = {
-    isLoggedIn: false,
-    installationId,
-    userId
-  }
-
-  // Create session token
-  const { createSessionToken } = require('../../jwt-token')
-  const sessionToken = createSessionToken(installationId, userId)
-
-  // Guard by verifications
-  switch (provider) {
-    case 'local':
-      // User use local strategy, but not verify by email yet.
-      if (!emailVerified) {
-        throw require('../../errors/codes').AUTH_EMAIL_NOT_VERIFIED
-      }
-      break
-    default:
-      // User use some other provider, will do nothing.
-      break
-  }
-
-  // Define authen data
-  authenData = Object.assign(authenData, {
-    isLoggedIn: true,
-    loggedInAt: new Date().toISOString(),
-    loggedInWith: provider,
-    sessionToken
-  })
-
-  // Allow to authen
-  return NAP.Authen.findOneAndUpdate({ installationId, userId }, authenData, {
-    new: true,
-    upsert: true
-  })
-}
-
 module.exports = {
   loginWithFacebook,
   signup,
   signUpWithEmailAndPassword,
   login,
   logout,
-  authen,
-  willAuthen
+  authen
 }

@@ -43,14 +43,14 @@ describe('UserResolver', () => {
     global.NAP = {}
     NAP.User = {
       create: jest.fn().mockImplementationOnce(async () =>
-          Object.assign(
-            {
-              _id: '592c0bb4484d740e0e73798b',
-              role: 'user'
-            },
-            userData
-          )
+        Object.assign(
+          {
+            _id: '592c0bb4484d740e0e73798b',
+            role: 'user'
+          },
+          userData
         )
+      )
     }
 
     const { willCreateUser } = require('../UserResolver')
@@ -133,6 +133,7 @@ describe('UserResolver', () => {
     }
 
     const { updateEmail } = require('../UserResolver')
-    expect(updateEmail({ context, args })).rejects.toMatchObject(require('../../../errors/codes').AUTH_EMAIL_ALREADY_IN_USE)
+    await updateEmail({ context, args })
+    expect(context.nap.errors[0]).toMatchObject(require('../../../errors/codes').AUTH_EMAIL_ALREADY_IN_USE)
   })
 })

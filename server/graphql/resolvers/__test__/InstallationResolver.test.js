@@ -15,7 +15,7 @@ describe('InstallationResolver', () => {
       )
     }
 
-    const { willInstall } = require('../InstallationResolver')
+    const { willInstall } = require('../../../authen-sessions')
     const installation = await willInstall(deviceInfo)
 
     expect(installation).toMatchSnapshot()

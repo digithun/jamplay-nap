@@ -36,11 +36,11 @@ const linkWithFacebook = async ({ args, context }) => {
 }
 
 const updateEmail = async ({ args, context }) => {
-  const user = await _willGetUserFromSession(context)
+  const user = await _willGetUserFromSession(context).catch(onError(context))
   const { email } = args
   guard({ email })
 
-  return context.nap.willUpdateEmail(user, email)
+  return context.nap.willUpdateEmail(user, email).catch(onError(context))
 }
 
 const forget = async ({ context, args }) => context.nap.willResetPasswordViaEmail(context, args.email).catch(onError(context))

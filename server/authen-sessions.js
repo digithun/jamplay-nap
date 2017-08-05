@@ -26,8 +26,78 @@ const listSessionByUser = async userId => {
   const { guard } = require('./errors')
   guard({ userId })
 
-  const users = await NAP.Authen.find({ userId, isLoggedIn: true }).sort({ loggedInAt: -1 })
-  return users
+  return NAP.Authen.find({ userId, isLoggedIn: true }).sort({ loggedInAt: -1 })
 }
 
-module.exports = { validateSession, listSessionByUser }
+const _killOldestAuthen = async userId =>
+  NAP.Authen.findOneAndUpdate(
+    {
+      userId
+    },
+    {
+      projection: { _id: 1 },
+      isLoggedIn: false,
+      sessionToken: undefined,
+      loggedOutAt: new Date().toISOString()
+    },
+    {
+      sort: { loggedInAt: -1 }
+    }
+  )
+
+const willLimitAuthen = async (installationId, user, provider) => {
+  // Expire oldest one
+  await _killOldestAuthen(user._id)
+
+  return willAuthen(installationId, user, provider)
+}
+
+const willAuthen = async (installationId, { _id: userId, emailVerified, facebook }, provider) => {
+  // Base data
+  let authenData = {
+    isLoggedIn: false,
+    installationId,
+    userId
+  }
+
+  // Create session token
+  const { createSessionToken } = require('./jwt-token')
+  const sessionToken = createSessionToken(installationId, userId)
+
+  // Guard by verifications
+  switch (provider) {
+    case 'local':
+      // User use local strategy, but not verify by email yet.
+      if (!emailVerified) {
+        throw require('./errors/codes').AUTH_EMAIL_NOT_VERIFIED
+      }
+      break
+    default:
+      // User use some other provider, will do nothing.
+      break
+  }
+
+  // Define authen data
+  authenData = Object.assign(authenData, {
+    isLoggedIn: true,
+    loggedInAt: new Date().toISOString(),
+    loggedInWith: provider,
+    sessionToken
+  })
+
+  // Allow to authen
+  return NAP.Authen.findOneAndUpdate({ installationId, userId }, authenData, {
+    new: true,
+    upsert: true
+  })
+}
+
+const willInstall = async device => NAP.Installation.create(device)
+
+module.exports = {
+  validateSession,
+  listSessionByUser,
+  willInstall,
+  willAuthen,
+  willLimitAuthen
+}

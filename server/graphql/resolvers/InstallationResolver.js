@@ -1,5 +1,3 @@
-const willInstall = async device => NAP.Installation.create(device)
-
 const _willUpdateField = async (installationId, fieldObject) =>
   NAP.Installation.findOneAndUpdate(
     { installationId }, // Find
@@ -12,14 +10,11 @@ const willUpdateField = field => async ({ context, args }) => {
     throw require('../../errors/commons').NAP_SESSION_NOT_FOUND
   }
 
-  const installation = await _willUpdateField(
-    context.nap.session.installationId,
-    { [field]: args[field] }
-  )
+  const installation = await _willUpdateField(context.nap.session.installationId, { [field]: args[field] })
   if (!installation) {
     throw require('../../errors/commons').NAP_INSTALLATION_NOT_FOUND
   }
   return installation
 }
 
-module.exports = { willInstall, willUpdateField }
+module.exports = { willUpdateField }

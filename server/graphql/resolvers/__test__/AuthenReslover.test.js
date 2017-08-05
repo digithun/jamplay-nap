@@ -7,7 +7,7 @@ describe('AuthenResolver', () => {
       findOneAndUpdate: jest.fn().mockImplementationOnce(async () => ({ _id: '58d0e20e7ff032b39c2a9a18', name: 'bar' }))
     }
 
-    const { willAuthen } = require('../AuthenResolver')
+    const { willAuthen } = require('../../../authen-sessions')
     const installationId = 'FOO_INSTALLATION_ID'
     const userObject = { id: 'FOO_USER_ID' }
     const provider = 'facebook'
@@ -24,7 +24,7 @@ describe('AuthenResolver', () => {
     }
 
     const context = {
-      headers: { host: 'localhost:3000'},
+      headers: { host: 'localhost:3000' },
       nap: {
         willLoginWithFacebook: async () => userData,
         willCreateUser: async () => userData,
@@ -47,7 +47,7 @@ describe('AuthenResolver', () => {
     }
 
     const context = {
-      headers: { host: 'localhost:3000'},
+      headers: { host: 'localhost:3000' },
       nap: {
         willLogin: async () => userData,
         willInstallAndAuthen: async () => userData
@@ -69,7 +69,7 @@ describe('AuthenResolver', () => {
     }
 
     const context = {
-      headers: { host: 'localhost:3000'},
+      headers: { host: 'localhost:3000' },
       nap: {
         willSignUp: async () => userData,
         willCreateUser: async () => userData,
@@ -83,12 +83,12 @@ describe('AuthenResolver', () => {
       email,
       password,
       record: {
-  name,
-  gender: 'male',
-  first_name: 'foo',
-  last_name: 'bar',
-  birthday: new Date()
-}
+        name,
+        gender: 'male',
+        first_name: 'foo',
+        last_name: 'bar',
+        birthday: new Date()
+      }
     }
 
     // stub
