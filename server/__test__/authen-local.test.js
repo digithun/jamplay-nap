@@ -59,12 +59,10 @@ describe('authen-local', () => {
     // stub
     global.NAP = {}
     NAP.User = {
-      findOneAndUpdate: jest.fn().mockImplementationOnce(() =>
-        Promise.resolve({
-          _id: '58d0e20e7ff032b39c2a9a18',
-          name: 'bar'
-        })
-      )
+      findOneAndUpdate: jest.fn().mockImplementationOnce(async () => ({
+        _id: '58d0e20e7ff032b39c2a9a18',
+        name: 'bar'
+      }))
     }
 
     // mock
@@ -84,13 +82,11 @@ describe('authen-local', () => {
     // stub
     global.NAP = {}
     NAP.Authen = {
-      findOneAndUpdate: jest.fn().mockImplementationOnce(() =>
-        Promise.resolve({
-          loggedOutAt: '2017-06-01T06:22:01.596Z',
-          isLoggedIn: false,
-          sessionToken: null
-        })
-      )
+      findOneAndUpdate: jest.fn().mockImplementationOnce(async () => ({
+        loggedOutAt: '2017-06-01T06:22:01.596Z',
+        isLoggedIn: false,
+        sessionToken: null
+      }))
     }
 
     // mock
@@ -113,14 +109,12 @@ describe('authen-local', () => {
     // stub
     global.NAP = {}
     NAP.User = {
-      findOneAndUpdate: jest.fn().mockImplementationOnce(() =>
-        Promise.resolve({
-          _id: '592c0bb4484d740e0e73798b',
-          email,
-          role: 'user',
-          token
-        })
-      )
+      findOneAndUpdate: jest.fn().mockImplementationOnce(async () => ({
+        _id: '592c0bb4484d740e0e73798b',
+        email,
+        role: 'user',
+        token
+      }))
     }
 
     const { willResetPasswordViaEmail } = require('../authen-local')
@@ -138,12 +132,10 @@ describe('authen-local', () => {
     global.NAP = {}
     NAP.User = {
       findOne: jest.fn().mockImplementationOnce(() => null),
-      create: jest.fn().mockImplementationOnce(() =>
-        Promise.resolve({
-          _id: '592c0bb4484d740e0e73798b',
-          role: 'user'
-        })
-      )
+      create: jest.fn().mockImplementationOnce(async () => ({
+        _id: '592c0bb4484d740e0e73798b',
+        role: 'user'
+      }))
     }
 
     const { willSignUp } = require('../authen-local')

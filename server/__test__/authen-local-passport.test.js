@@ -99,27 +99,23 @@ describe('authen-local-passport', () => {
     // stub
     global.NAP = {}
     NAP.User = {
-      findOne: jest.fn().mockImplementationOnce(() =>
-        Promise.resolve(
-          Object.assign(
-            {
-              _id: '592c0bb4484d740e0e73798b',
-              status: 'VERIFIED_BY_EMAIL',
-              role: 'user'
-            },
-            userData
-          )
+      findOne: jest.fn().mockImplementationOnce(async () =>
+        Object.assign(
+          {
+            _id: '592c0bb4484d740e0e73798b',
+            status: 'VERIFIED_BY_EMAIL',
+            role: 'user'
+          },
+          userData
         )
       ),
-      _create: jest.fn().mockImplementationOnce(() =>
-        Promise.resolve(
-          Object.assign(
-            {
-              _id: '592c0bb4484d740e0e73798b',
-              role: 'user'
-            },
-            userData
-          )
+      _create: jest.fn().mockImplementationOnce(async () =>
+        Object.assign(
+          {
+            _id: '592c0bb4484d740e0e73798b',
+            role: 'user'
+          },
+          userData
         )
       )
     }
@@ -143,15 +139,13 @@ describe('authen-local-passport', () => {
     global.NAP = {}
     NAP.User = {
       findOne: jest.fn().mockImplementationOnce(() => null),
-      create: jest.fn().mockImplementationOnce(() =>
-        Promise.resolve(
-          Object.assign(
-            {
-              _id: '592c0bb4484d740e0e73798b',
-              role: 'user'
-            },
-            userData
-          )
+      create: jest.fn().mockImplementationOnce(async () =>
+        Object.assign(
+          {
+            _id: '592c0bb4484d740e0e73798b',
+            role: 'user'
+          },
+          userData
         )
       )
     }
@@ -169,25 +163,20 @@ describe('authen-local-passport', () => {
     // stub
     global.NAP = {}
     NAP.User = {
-      findOne: jest.fn().mockImplementationOnce(() =>
-        Promise.resolve({
-          save: () =>
-            Promise.resolve({
-              _id: '592c0bb4484d740e0e73798b',
-              role: 'user',
-              email,
-              token
-            })
-        })
-      ),
-      findOneAndUpdate: jest.fn().mockImplementationOnce(() =>
-        Promise.resolve({
+      findOne: jest.fn().mockImplementationOnce(async () => ({
+        save: async () => ({
           _id: '592c0bb4484d740e0e73798b',
           role: 'user',
           email,
           token
         })
-      )
+      })),
+      findOneAndUpdate: jest.fn().mockImplementationOnce(async () => ({
+        _id: '592c0bb4484d740e0e73798b',
+        role: 'user',
+        email,
+        token
+      }))
     }
 
     const { willSetUserStatusAsWaitForEmailReset } = require('../authen-local-passport')
@@ -207,7 +196,7 @@ describe('authen-local-passport', () => {
     // stub
     global.NAP = {}
     NAP.User = {
-      findOne: jest.fn().mockImplementationOnce(() => Promise.resolve(null))
+      findOne: jest.fn().mockImplementationOnce(async () => null)
     }
 
     const { auth_local_token } = require('../authen-local-passport').handler
@@ -226,16 +215,13 @@ describe('authen-local-passport', () => {
     // stub
     global.NAP = {}
     NAP.User = {
-      findOne: jest.fn().mockImplementationOnce(() =>
-        Promise.resolve({
-          save: () =>
-            Promise.resolve({
-              _id: '592c0bb4484d740e0e73798b',
-              role: 'user',
-              token
-            })
+      findOne: jest.fn().mockImplementationOnce(async () => ({
+        save: async () => ({
+          _id: '592c0bb4484d740e0e73798b',
+          role: 'user',
+          token
         })
-      )
+      }))
     }
 
     const { reset_password_by_token } = require('../authen-local-passport').handler
@@ -251,13 +237,11 @@ describe('authen-local-passport', () => {
     // stub
     global.NAP = {}
     NAP.User = {
-      findOneAndUpdate: jest.fn().mockImplementationOnce(() =>
-        Promise.resolve({
-          _id: '592c0bb4484d740e0e73798b',
-          role: 'user',
-          status: 'VERIFIED_BY_EMAIL'
-        })
-      )
+      findOneAndUpdate: jest.fn().mockImplementationOnce(async () => ({
+        _id: '592c0bb4484d740e0e73798b',
+        role: 'user',
+        status: 'VERIFIED_BY_EMAIL'
+      }))
     }
 
     const { auth_local_token } = require('../authen-local-passport').handler
@@ -277,14 +261,12 @@ describe('authen-local-passport', () => {
     // stub
     global.NAP = {}
     NAP.User = {
-      findOne: jest.fn().mockImplementationOnce(() =>
-        Promise.resolve({
-          _id: '592c0bb4484d740e0e73798b',
-          role: 'user',
-          emailVerified: true,
-          hashed_password
-        })
-      )
+      findOne: jest.fn().mockImplementationOnce(async () => ({
+        _id: '592c0bb4484d740e0e73798b',
+        role: 'user',
+        emailVerified: true,
+        hashed_password
+      }))
     }
 
     const { validateLocalStrategy } = require('../authen-local-passport')

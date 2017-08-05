@@ -28,13 +28,7 @@ describe('InstallationResolver', () => {
     // stub
     global.NAP = {}
     NAP.Installation = {
-      findOneAndUpdate: jest
-        .fn()
-        .mockImplementationOnce(() =>
-          Promise.resolve(
-            Object.assign({ _id: '592c0bb41b46e001780f00a6' }, fieldObject)
-          )
-        )
+      findOneAndUpdate: jest.fn().mockImplementationOnce(async () => Object.assign({ _id: '592c0bb41b46e001780f00a6' }, fieldObject))
     }
 
     const context = { nap: { session: { installationId: 'foo' } } }

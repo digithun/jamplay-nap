@@ -4,15 +4,11 @@ describe('index', () => {
     // stub
     global.NAP = {}
     NAP.Authen = {
-      findOneAndUpdate: jest.fn().mockImplementationOnce(() =>
-        Promise.resolve({ _id: '58d0e20e7ff032b39c2a9a18', name: 'bar' })
-      )
+      findOneAndUpdate: jest.fn().mockImplementationOnce(async () => ({ _id: '58d0e20e7ff032b39c2a9a18', name: 'bar' }))
     }
 
     NAP.Installation = {
-      create: jest.fn().mockImplementationOnce(() =>
-        Promise.resolve({ _id: '58d0e20e7ff032b39c2a9a19' })
-      )
+      create: jest.fn().mockImplementationOnce(async () => ({ _id: '58d0e20e7ff032b39c2a9a19' }))
     }
 
     const { willInstallAndAuthen } = require('../index')

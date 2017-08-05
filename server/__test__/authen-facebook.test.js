@@ -32,13 +32,11 @@ describe('authen-facebook', () => {
     // stub
     global.NAP = {}
     NAP.User = {
-      findOneAndUpdate: jest.fn().mockImplementationOnce(() =>
-        Promise.resolve({
-          _id: '58d0e20e7ff032b39c2a9a18',
-          name: 'bar',
-          email: 'foo@bar.com'
-        })
-      )
+      findOneAndUpdate: jest.fn().mockImplementationOnce(async () => ({
+        _id: '58d0e20e7ff032b39c2a9a18',
+        name: 'bar',
+        email: 'foo@bar.com'
+      }))
     }
 
     const authen = require('../authen-facebook')

@@ -42,8 +42,7 @@ describe('UserResolver', () => {
     // stub
     global.NAP = {}
     NAP.User = {
-      create: jest.fn().mockImplementationOnce(() =>
-        Promise.resolve(
+      create: jest.fn().mockImplementationOnce(async () =>
           Object.assign(
             {
               _id: '592c0bb4484d740e0e73798b',
@@ -52,7 +51,6 @@ describe('UserResolver', () => {
             userData
           )
         )
-      )
     }
 
     const { willCreateUser } = require('../UserResolver')
@@ -114,7 +112,8 @@ describe('UserResolver', () => {
           userId: '592c0bb4484d740e0e73798b',
           expireAt: -1
         },
-        willUpdateEmail: require('../../../../server/authen-local-passport').willUpdateEmail
+        willUpdateEmail: require('../../../../server/authen-local-passport').willUpdateEmail,
+        errors: []
       }
     }
     const args = { email: 'foo@bar.com' }
