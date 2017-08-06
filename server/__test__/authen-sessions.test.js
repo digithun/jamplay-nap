@@ -11,6 +11,24 @@ jasmine.DEFAULT_TIMEOUT_INTERVAL = 60000
 
 let mongoServer
 
+// Seeder
+const _seedUserWithManyDevices = (userId, authens) => {
+  // Me with many devices
+  const installs = authens.map(authen => authen.installationId)
+  let i = 0
+  const loggedInAts = authens.map(authen => authen.loggedInAts)
+  installs.map(installationId =>
+    mongoose.connection.collection('authens').insert({
+      userId,
+      isLoggedIn: true,
+      installationId: new mongoose.Types.ObjectId(installationId),
+      loggedInAt: loggedInAts[i++]
+    })
+  )
+
+  return userId
+}
+
 describe('authen-sessions', async () => {
   beforeAll(async () => {
     mongoServer = new MongodbMemoryServer.default()
@@ -28,7 +46,27 @@ describe('authen-sessions', async () => {
     mongoServer.stop()
   })
 
-  describe('Multiple sessions', () => {
+  describe('Single sessions', () => {
+    it('should create user and return user data', async () => {
+      // mock
+      const userData = { name: 'foo' }
+
+      const { willCreateUser } = require('../authen-sessions')
+      const user = await willCreateUser(userData)
+
+      expect(user).toEqual(
+        expect.objectContaining({
+          _id: expect.any(mongoose.Types.ObjectId),
+          __v: 0,
+          name: 'foo',
+          role: 'user',
+          emailVerified: false,
+          createdAt: expect.any(Date),
+          updatedAt: expect.any(Date)
+        })
+      )
+    })
+
     it('should provide sessionToken that never expire', async () => {
       const { validateSession } = require('../authen-sessions')
 
@@ -46,28 +84,13 @@ describe('authen-sessions', async () => {
         })
       ).rejects.toMatchObject(require('../errors/codes').AUTH_USER_TOKEN_EXPIRED)
     })
+  })
 
-    const _seed1UserWith2Devices = (userId, authens) => {
-      // Me with many devices
-      const installs = authens.map(authen => authen.installationId)
-      let i = 0
-      const loggedInAts = authens.map(authen => authen.loggedInAts)
-      installs.map(installationId =>
-        mongoose.connection.collection('authens').insert({
-          userId,
-          isLoggedIn: true,
-          installationId: new mongoose.Types.ObjectId(installationId),
-          loggedInAt: loggedInAts[i++]
-        })
-      )
-
-      return userId
-    }
-
+  describe('Multiple sessions', () => {
     it('should provide latest logged in device list sort by loggedInAt.', async () => {
       // Seed
       const userId = new mongoose.Types.ObjectId('597c695ae60d9000711f4131')
-      _seed1UserWith2Devices(userId, [
+      _seedUserWithManyDevices(userId, [
         {
           installationId: '597c6478d5901c0062984128',
           loggedInAts: new Date('2017-08-02T12:45:59.928Z')
@@ -107,7 +130,7 @@ describe('authen-sessions', async () => {
     it('should let sessionToken expire if user logged in more than 5 devices.', async () => {
       // Seed authens
       const userId = new mongoose.Types.ObjectId('597c695ae60d9000711f4131')
-      _seed1UserWith2Devices(userId, [
+      _seedUserWithManyDevices(userId, [
         {
           installationId: '597c6478d5901c0062984128',
           loggedInAts: new Date('2017-08-02T12:45:00.928Z')

@@ -3,7 +3,7 @@ const { willLinkWithFacebook, willUnlinkFromFacebook } = require('./authen-link'
 const { willSignUp, willLogin, willLogout, willResetPasswordViaEmail } = require('./authen-local')
 const { willUpdatePasswordByToken, willUpdateEmail } = require('./authen-local-passport')
 const { willInstallAndAuthen } = require('./graphql/resolvers')
-const { willCreateUser } = require('./graphql/resolvers/UserResolver')
+const { willCreateUser } = require('./authen-sessions')
 
 class nap {
   constructor () {

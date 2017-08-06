@@ -94,10 +94,32 @@ const willAuthen = async (installationId, { _id: userId, emailVerified, facebook
 
 const willInstall = async device => NAP.Installation.create(device)
 
+const _getUserIdFromSession = session => (session ? session.userId : null)
+const willGetUserFromSession = async context => {
+  const { session } = context.nap
+  const userId = _getUserIdFromSession(session)
+
+  // Guard
+  if (!userId) {
+    // TOFIX : onError(context)(require('../../errors/codes').AUTH_MISSING_UID)
+    throw require('./errors/codes').AUTH_MISSING_UID
+  }
+
+  // Expire?
+  validateSession(session)
+
+  // User
+  return NAP.User.findById(userId)
+}
+
+const willCreateUser = async user => NAP.User.create(Object.assign(user, { role: 'user' }))
+
 module.exports = {
   validateSession,
   listSessionByUser,
   willInstall,
   willAuthen,
-  willLimitAuthen
+  willLimitAuthen,
+  willGetUserFromSession,
+  willCreateUser
 }

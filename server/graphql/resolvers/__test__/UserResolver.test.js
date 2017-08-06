@@ -35,30 +35,6 @@ describe('UserResolver', () => {
     expect(user).toMatchSnapshot()
   })
 
-  it('should create user and return user data', async () => {
-    // mock
-    const userData = { foo: 'bar' }
-
-    // stub
-    global.NAP = {}
-    NAP.User = {
-      create: jest.fn().mockImplementationOnce(async () =>
-        Object.assign(
-          {
-            _id: '592c0bb4484d740e0e73798b',
-            role: 'user'
-          },
-          userData
-        )
-      )
-    }
-
-    const { willCreateUser } = require('../UserResolver')
-    const user = await willCreateUser(userData)
-
-    expect(user).toMatchSnapshot()
-  })
-
   it('should able to forget password', async () => {
     const context = {
       headers: { host: 'localhost:3000' },
