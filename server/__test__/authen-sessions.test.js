@@ -16,13 +16,13 @@ const _seedUserWithManyDevices = (userId, authens) => {
   // Me with many devices
   const installs = authens.map(authen => authen.installationId)
   let i = 0
-  const loggedInAts = authens.map(authen => authen.loggedInAts)
+  const loggedInAt = authens.map(authen => authen.loggedInAt)
   installs.map(installationId =>
     mongoose.connection.collection('authens').insert({
       userId,
       isLoggedIn: true,
       installationId: new mongoose.Types.ObjectId(installationId),
-      loggedInAt: loggedInAts[i++]
+      loggedInAt: loggedInAt[i++]
     })
   )
 
@@ -93,11 +93,11 @@ describe('authen-sessions', async () => {
       _seedUserWithManyDevices(userId, [
         {
           installationId: '597c6478d5901c0062984128',
-          loggedInAts: new Date('2017-08-02T12:45:59.928Z')
+          loggedInAt: new Date('2017-08-02T12:45:59.928Z')
         },
         {
           installationId: '597c6973e60d9000711f4132',
-          loggedInAts: new Date('2017-08-03T12:45:59.928Z')
+          loggedInAt: new Date('2017-08-03T12:45:59.928Z')
         }
       ])
 
@@ -105,23 +105,31 @@ describe('authen-sessions', async () => {
       mongoose.connection.collection('authens').insert({
         userId: new mongoose.Types.ObjectId('597c695ae60d9000711f4132'),
         isLoggedIn: true,
-        installationId: new mongoose.Types.ObjectId('597c6973e60d9000711f4133')
+        installationId: new mongoose.Types.ObjectId('597c6973e60d9000711f4133'),
+        loggedInAt: new Date('2017-08-04T12:45:59.928Z')
       })
 
       // Gimme users
       const { listSessionByUser } = require('../authen-sessions')
       const _authens = await listSessionByUser(userId)
 
-      // Avoid no match _id
-      let users = _authens.map(user => ({
-        userId: user.userId,
-        isLoggedIn: user.isLoggedIn,
-        installationId: user.installationId,
-        loggedInAt: user.loggedInAt
-      }))
+      // Validate
+      const _loggedInAt = _authens[0].loggedInAt
+      _authens.map(authen => {
+        // Is valid format
+        expect(authen).toEqual(
+          expect.objectContaining({
+            _id: expect.any(mongoose.Types.ObjectId),
+            installationId: expect.any(mongoose.Types.ObjectId),
+            userId: expect.any(mongoose.Types.ObjectId),
+            isLoggedIn: true,
+            loggedInAt: expect.any(Date)
+          })
+        )
 
-      // Viola!
-      expect(users).toMatchSnapshot()
+        // Is correctly sorted by _loggedInAt
+        expect(+_loggedInAt).toBeGreaterThanOrEqual(+authen.loggedInAt)
+      })
 
       // Dispose
       await mongoose.connection.collection('authens').drop()
@@ -133,23 +141,23 @@ describe('authen-sessions', async () => {
       _seedUserWithManyDevices(userId, [
         {
           installationId: '597c6478d5901c0062984128',
-          loggedInAts: new Date('2017-08-02T12:45:00.928Z')
+          loggedInAt: new Date('2017-08-02T12:45:00.928Z')
         },
         {
           installationId: '597c6973e60d9000711f4132',
-          loggedInAts: new Date('2017-08-03T12:45:01.928Z')
+          loggedInAt: new Date('2017-08-03T12:45:01.928Z')
         },
         {
           installationId: '597c6973e60d9000711f4133',
-          loggedInAts: new Date('2017-08-03T12:45:02.928Z')
+          loggedInAt: new Date('2017-08-03T12:45:02.928Z')
         },
         {
           installationId: '597c6973e60d9000711f4134',
-          loggedInAts: new Date('2017-08-03T12:45:03.928Z')
+          loggedInAt: new Date('2017-08-03T12:45:03.928Z')
         },
         {
           installationId: '597c6973e60d9000711f4135',
-          loggedInAts: new Date('2017-08-03T12:45:04.928Z')
+          loggedInAt: new Date('2017-08-03T12:45:04.928Z')
         }
       ])
 

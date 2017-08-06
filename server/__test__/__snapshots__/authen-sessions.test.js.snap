@@ -8,20 +8,3 @@ Object {
   "hashed_password": "$2a$10$r9yAY4TYm88cpIOzyaaIJOjEz0S8DBZs8NS/3C1sUlyXWez82r.ki",
 }
 `;
-
-exports[`authen-sessions Multiple sessions should provide latest logged in device list sort by loggedInAt. 1`] = `
-Array [
-  Object {
-    "installationId": "597c6973e60d9000711f4132",
-    "isLoggedIn": true,
-    "loggedInAt": 2017-08-03T12:45:59.928Z,
-    "userId": "597c695ae60d9000711f4131",
-  },
-  Object {
-    "installationId": "597c6478d5901c0062984128",
-    "isLoggedIn": true,
-    "loggedInAt": 2017-08-02T12:45:59.928Z,
-    "userId": "597c695ae60d9000711f4131",
-  },
-]
-`;
