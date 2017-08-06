@@ -38,8 +38,7 @@ const logout = async ({ context }) => {
   }
 
   // Logout
-  const { installationId, userId } = context.nap.session
-  return context.nap.willLogout(installationId, userId, context.token).catch(onError(context))
+  return context.nap.willLogout(context.token).catch(onError(context))
 }
 
 const authen = async ({ context }) => {

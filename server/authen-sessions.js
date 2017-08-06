@@ -52,7 +52,7 @@ const willLimitAuthen = async (installationId, user, provider) => {
   return willAuthen(installationId, user, provider)
 }
 
-const willAuthen = async (installationId, { _id: userId, emailVerified, facebook }, provider) => {
+const willAuthen = async (installationId, { _id: userId, emailVerified }, provider) => {
   // Base data
   let authenData = {
     isLoggedIn: false,
@@ -114,6 +114,28 @@ const willGetUserFromSession = async context => {
 
 const willCreateUser = async user => NAP.User.create(Object.assign(user, { role: 'user' }))
 
+const willInstallAndAuthen = async (args, user, provider) => {
+  // Guard
+  const { guard } = require('./errors')
+  guard({ user })
+
+  // Link
+  const { willInstall, willAuthen } = require('./authen-sessions')
+  const installation = await willInstall(args)
+  return willAuthen(installation.id, user, provider)
+}
+
+const willInstallAndLimitAuthen = async (args, user, provider) => {
+  // Guard
+  const { guard } = require('./errors')
+  guard({ user })
+
+  // Link
+  const { willInstall, willLimitAuthen } = require('./authen-sessions')
+  const installation = await willInstall(args)
+  return willLimitAuthen(installation.id, user, provider)
+}
+
 module.exports = {
   validateSession,
   listSessionByUser,
@@ -121,5 +143,7 @@ module.exports = {
   willAuthen,
   willLimitAuthen,
   willGetUserFromSession,
-  willCreateUser
+  willCreateUser,
+  willInstallAndAuthen,
+  willInstallAndLimitAuthen
 }

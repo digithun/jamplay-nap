@@ -3,48 +3,15 @@ const _SESSIONS_TTL = 1000 * 60
 process.env.SESSIONS_TTL = _SESSIONS_TTL
 
 const mongoose = require('mongoose')
-const MongodbMemoryServer = require('mongodb-memory-server')
-mongoose.Promise = Promise
-
-// May require additional time for downloading MongoDB binaries
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 60000
-
-let mongoServer
+const { ObjectId } = mongoose.Types
 
 // Seeder
-const _seedUserWithManyDevices = (userId, authens) => {
-  // Me with many devices
-  const installs = authens.map(authen => authen.installationId)
-  let i = 0
-  const loggedInAt = authens.map(authen => authen.loggedInAt)
-  installs.map(installationId =>
-    mongoose.connection.collection('authens').insert({
-      userId,
-      isLoggedIn: true,
-      installationId: new mongoose.Types.ObjectId(installationId),
-      loggedInAt: loggedInAt[i++]
-    })
-  )
-
-  return userId
-}
+const { setup, teardown, seedUserWithManyDevices, seedUserWithEmailAndPassword } = require('./mongoose-helper')
 
 describe('authen-sessions', async () => {
-  beforeAll(async () => {
-    mongoServer = new MongodbMemoryServer.default()
-    const mongoUri = await mongoServer.getConnectionString()
-    mongoose.connect(mongoUri, err => err && console.error(err))
+  beforeAll(setup)
 
-    global.NAP = {}
-    NAP.Authen = require('../graphql/models/Authen')().Authen
-    NAP.Installation = require('../graphql/models/Installation')().Installation
-    NAP.User = require('../graphql/models/User')().User
-  })
-
-  afterAll(() => {
-    mongoose.disconnect()
-    mongoServer.stop()
-  })
+  afterAll(teardown)
 
   describe('Single sessions', () => {
     it('should create user and return user data', async () => {
@@ -56,7 +23,7 @@ describe('authen-sessions', async () => {
 
       expect(user).toEqual(
         expect.objectContaining({
-          _id: expect.any(mongoose.Types.ObjectId),
+          _id: expect.any(ObjectId),
           __v: 0,
           name: 'foo',
           role: 'user',
@@ -84,13 +51,35 @@ describe('authen-sessions', async () => {
         })
       ).rejects.toMatchObject(require('../errors/codes').AUTH_USER_TOKEN_EXPIRED)
     })
+
+    it('should install and authen then return authen', async () => {
+      const userId = await seedUserWithEmailAndPassword('katopz@gmail.com', 'foobar')
+      const user = { _id: userId, emailVerified: true }
+      const { willInstallAndLimitAuthen } = require('../authen-sessions')
+      const authen = await willInstallAndLimitAuthen({ deviceInfo: 'foo' }, user, 'local')
+
+      // Is valid format
+      expect(authen).toEqual(
+        expect.objectContaining({
+          _id: expect.any(ObjectId),
+          installationId: expect.any(ObjectId),
+          userId: expect.any(ObjectId),
+          isLoggedIn: true,
+          loggedInAt: expect.any(Date)
+        })
+      )
+
+      // Dispose
+      await mongoose.connection.collection('users').drop()
+      await mongoose.connection.collection('authens').drop()
+    })
   })
 
   describe('Multiple sessions', () => {
     it('should provide latest logged in device list sort by loggedInAt.', async () => {
       // Seed
-      const userId = new mongoose.Types.ObjectId('597c695ae60d9000711f4131')
-      _seedUserWithManyDevices(userId, [
+      const userId = new ObjectId('597c695ae60d9000711f4131')
+      seedUserWithManyDevices(userId, [
         {
           installationId: '597c6478d5901c0062984128',
           loggedInAt: new Date('2017-08-02T12:45:59.928Z')
@@ -103,9 +92,9 @@ describe('authen-sessions', async () => {
 
       // Others
       mongoose.connection.collection('authens').insert({
-        userId: new mongoose.Types.ObjectId('597c695ae60d9000711f4132'),
+        userId: new ObjectId('597c695ae60d9000711f4132'),
         isLoggedIn: true,
-        installationId: new mongoose.Types.ObjectId('597c6973e60d9000711f4133'),
+        installationId: new ObjectId('597c6973e60d9000711f4133'),
         loggedInAt: new Date('2017-08-04T12:45:59.928Z')
       })
 
@@ -119,9 +108,9 @@ describe('authen-sessions', async () => {
         // Is valid format
         expect(authen).toEqual(
           expect.objectContaining({
-            _id: expect.any(mongoose.Types.ObjectId),
-            installationId: expect.any(mongoose.Types.ObjectId),
-            userId: expect.any(mongoose.Types.ObjectId),
+            _id: expect.any(ObjectId),
+            installationId: expect.any(ObjectId),
+            userId: expect.any(ObjectId),
             isLoggedIn: true,
             loggedInAt: expect.any(Date)
           })
@@ -137,8 +126,8 @@ describe('authen-sessions', async () => {
 
     it('should let sessionToken expire if user logged in more than 5 devices.', async () => {
       // Seed authens
-      const userId = new mongoose.Types.ObjectId('597c695ae60d9000711f4131')
-      _seedUserWithManyDevices(userId, [
+      const userId = new ObjectId('597c695ae60d9000711f4131')
+      seedUserWithManyDevices(userId, [
         {
           installationId: '597c6478d5901c0062984128',
           loggedInAt: new Date('2017-08-02T12:45:00.928Z')

@@ -123,9 +123,9 @@ const willLogin = async (req, email, password) => {
   return willAuthenWithPassport('local', req)
 }
 
-const willLogout = async (installationId, userId, sessionToken) =>
+const willLogout = async sessionToken =>
   NAP.Authen.findOneAndUpdate(
-    { installationId, userId, sessionToken, isLoggedIn: true },
+    { sessionToken },
     {
       loggedOutAt: new Date().toISOString(),
       isLoggedIn: false,

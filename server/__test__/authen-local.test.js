@@ -3,7 +3,19 @@
 process.env.MAILGUN_API_KEY = 'FOO_MAILGUN_API_KEY'
 process.env.MAILGUN_DOMAIN = 'BAR_MAILGUN_DOMAIN'
 
+const { errorBy } = require('../errors')
+
+const mongoose = require('mongoose')
+const { ObjectId } = mongoose.Types
+
+// Seeder
+const { setup, teardown, seedUserWithEmailAndPassword } = require('./mongoose-helper')
+
 describe('authen-local', () => {
+  beforeAll(setup)
+
+  afterAll(teardown)
+
   it('should throw error if has no email and password', async () => {
     // mock
     const req = {
@@ -14,11 +26,7 @@ describe('authen-local', () => {
     const password = null
 
     const { willLogin } = require('../authen-local')
-    await willLogin(req, email, password).catch(err => {
-      expect(() => {
-        throw err
-      }).toThrow('Required : email')
-    })
+    expect(willLogin(req, email, password)).rejects.toEqual(errorBy('NAP_INVALID_ARGUMENT', 'Required : email'))
   })
 
   it('should throw error if has no email', async () => {
@@ -31,11 +39,7 @@ describe('authen-local', () => {
     const password = 'foobar'
 
     const { willLogin } = require('../authen-local')
-    await willLogin(req, email, password).catch(err => {
-      expect(() => {
-        throw err
-      }).toThrow('Required : email')
-    })
+    expect(willLogin(req, email, password)).rejects.toEqual(errorBy('NAP_INVALID_ARGUMENT', 'Required : email'))
   })
 
   it('should throw error if has no password', async () => {
@@ -48,23 +52,10 @@ describe('authen-local', () => {
     const password = null
 
     const { willLogin } = require('../authen-local')
-    await willLogin(req, email, password).catch(err => {
-      expect(() => {
-        throw err
-      }).toThrow('Required : password')
-    })
+    expect(willLogin(req, email, password)).rejects.toEqual(errorBy('NAP_INVALID_ARGUMENT', 'Required : password'))
   })
 
-  it('should login with user and password', async () => {
-    // stub
-    global.NAP = {}
-    NAP.User = {
-      findOneAndUpdate: jest.fn().mockImplementationOnce(async () => ({
-        _id: '58d0e20e7ff032b39c2a9a18',
-        name: 'bar'
-      }))
-    }
-
+  it('should able to login with user and password', async () => {
     // mock
     const req = {
       nap: { errors: [] },
@@ -73,31 +64,38 @@ describe('authen-local', () => {
     const email = 'katopz@gmail.com'
     const password = 'foobar'
 
+    // Seed
+    seedUserWithEmailAndPassword(email, password)
+
     const { willLogin } = require('../authen-local')
     const user = await willLogin(req, email, password)
     expect(user).toMatchSnapshot()
   })
 
   it('should logout', async () => {
-    // stub
-    global.NAP = {}
-    NAP.Authen = {
-      findOneAndUpdate: jest.fn().mockImplementationOnce(async () => ({
-        loggedOutAt: '2017-06-01T06:22:01.596Z',
-        isLoggedIn: false,
-        sessionToken: null
-      }))
-    }
-
-    // mock
-    const { createSessionToken } = require('../jwt-token')
-    const installationId = '58d119431e2107009b2cad55'
-    const userId = '58d0e20e7ff032b39c2a9a18'
-    const sessionToken = createSessionToken(installationId, userId)
+    const userId = await seedUserWithEmailAndPassword('katopz@gmail.com', 'foobar')
+    const user = { _id: userId, emailVerified: true }
+    const { willInstallAndLimitAuthen } = require('../authen-sessions')
+    const authen = await willInstallAndLimitAuthen({ deviceInfo: 'foo' }, user, 'local')
 
     const { willLogout } = require('../authen-local')
-    const result = await willLogout(installationId, userId, sessionToken)
-    expect(result).toMatchSnapshot()
+    const { sessionToken } = authen
+    const _authen = await willLogout(sessionToken)
+
+    // Is valid format
+    expect(_authen).toEqual(
+      expect.objectContaining({
+        _id: expect.any(ObjectId),
+        installationId: expect.any(ObjectId),
+        userId: expect.any(ObjectId),
+        isLoggedIn: false,
+        loggedInAt: expect.any(Date)
+      })
+    )
+
+    // Dispose
+    await mongoose.connection.collection('authens').drop()
+    await mongoose.connection.collection('users').drop()
   })
 
   it('should reset password', async () => {

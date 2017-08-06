@@ -48,11 +48,14 @@ const willValidateEmailAndPassword = async (email, password) => {
   return isValid
 }
 
-const _withHashedPassword = (user, password) => {
+const toHashedPassword = password => {
   const bcrypt = require('bcryptjs')
   const salt = bcrypt.genSaltSync(10)
-  user.hashed_password = bcrypt.hashSync(password, salt)
+  return bcrypt.hashSync(password, salt)
+}
 
+const _withHashedPassword = (user, password) => {
+  user.hashed_password = toHashedPassword(password)
   return user
 }
 
@@ -275,5 +278,6 @@ module.exports = {
   willUpdatePasswordByToken,
   willUpdateEmail,
   validateLocalStrategy,
-  handler
+  handler,
+  toHashedPassword
 }
