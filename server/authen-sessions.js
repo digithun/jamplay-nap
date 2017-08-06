@@ -101,12 +101,14 @@ const willGetUserFromSession = async context => {
 
   // Guard
   if (!userId) {
-    // TOFIX : onError(context)(require('../../errors/codes').AUTH_MISSING_UID)
-    throw require('./errors/codes').AUTH_MISSING_UID
+    const { AUTH_MISSING_UID } = require('./errors/codes')
+    require('./errors').onError(context)(AUTH_MISSING_UID)
+    // TOFIX : always throw via onError?
+    throw AUTH_MISSING_UID
   }
 
   // Expire?
-  validateSession(session)
+  await validateSession(session)
 
   // User
   return NAP.User.findById(userId)
