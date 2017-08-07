@@ -1,11 +1,3 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`authen-facebook should login with Facebook and return user 1`] = `
-Object {
-  "_id": "58d0e20e7ff032b39c2a9a18",
-  "email": "foo@bar.com",
-  "name": "bar",
-}
-`;
-
 exports[`authen-facebook should not attach current user to nap from wrong session token after authenticate 1`] = `[JsonWebTokenError: jwt malformed]`;

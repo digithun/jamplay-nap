@@ -13,7 +13,6 @@ const { setup, teardown, seedUserWithEmailAndPassword } = require('./mongoose-he
 
 describe('authen-local', () => {
   beforeAll(setup)
-
   afterAll(teardown)
 
   it('should throw error if has no email and password', async () => {
