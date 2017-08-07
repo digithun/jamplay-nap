@@ -40,6 +40,14 @@ const seedUserWithEmailAndPassword = async (email, password) => {
   })
 }
 
+const seedInstalledAndVerifiedUser = async (email, password, deviceInfo) => {
+  const userId = await seedUserWithEmailAndPassword(email, password)
+  const user = { _id: userId, emailVerified: true }
+  const { willInstallAndLimitAuthen } = require('../authen-sessions')
+
+  return willInstallAndLimitAuthen({ deviceInfo }, user, 'local')
+}
+
 const setup = async () => {
   mongoServer = new MongodbMemoryServer.default()
   const mongoUri = await mongoServer.getConnectionString()
@@ -56,4 +64,4 @@ const teardown = () => {
   mongoServer.stop()
 }
 
-module.exports = { setup, teardown, seedUserWithManyDevices, seedUserWithEmailAndPassword }
+module.exports = { setup, teardown, seedUserWithManyDevices, seedUserWithEmailAndPassword, seedInstalledAndVerifiedUser }

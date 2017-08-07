@@ -5,7 +5,7 @@ const validateSession = async ({ expireAt }) => {
   guard({ expireAt })
 
   // No expire limit?
-  if (SESSIONS_TTL === -1 || expireAt === -1) {
+  if (SESSIONS_TTL === -1) {
     return true
   }
 
@@ -101,10 +101,7 @@ const willGetUserFromSession = async context => {
 
   // Guard
   if (!userId) {
-    const { AUTH_MISSING_UID } = require('./errors/codes')
-    require('./errors').onError(context)(AUTH_MISSING_UID)
-    // TOFIX : always throw via onError?
-    throw AUTH_MISSING_UID
+    throw require('./errors/codes').AUTH_MISSING_UID
   }
 
   // Expire?

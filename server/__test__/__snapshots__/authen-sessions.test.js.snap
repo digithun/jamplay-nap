@@ -3,7 +3,7 @@
 exports[`authen-sessions Multiple sessions should let sessionToken expire if user logged in more than 5 devices. 1`] = `
 Object {
   "_id": "597c695ae60d9000711f4131",
-  "email": "katopz@gmail.com",
+  "email": "foo@bar.com",
   "emailVerified": true,
   "hashed_password": "$2a$10$r9yAY4TYm88cpIOzyaaIJOjEz0S8DBZs8NS/3C1sUlyXWez82r.ki",
 }

@@ -6,7 +6,7 @@ const mongoose = require('mongoose')
 const { ObjectId } = mongoose.Types
 
 // Seeder
-const { setup, teardown, seedUserWithManyDevices, seedUserWithEmailAndPassword } = require('./mongoose-helper')
+const { setup, teardown, seedUserWithManyDevices, seedInstalledAndVerifiedUser } = require('./mongoose-helper')
 
 describe('authen-sessions', async () => {
   beforeAll(setup)
@@ -34,13 +34,6 @@ describe('authen-sessions', async () => {
       )
     })
 
-    it('should provide sessionToken that never expire', async () => {
-      const { validateSession } = require('../authen-sessions')
-
-      // Never expire as -1
-      expect(await validateSession({ expireAt: -1 })).toBe(true)
-    })
-
     it('should provide sessionToken that can be expire', async () => {
       const { validateSession } = require('../authen-sessions')
 
@@ -53,10 +46,8 @@ describe('authen-sessions', async () => {
     })
 
     it('should install and authen then return authen', async () => {
-      const userId = await seedUserWithEmailAndPassword('katopz@gmail.com', 'foobar')
-      const user = { _id: userId, emailVerified: true }
-      const { willInstallAndLimitAuthen } = require('../authen-sessions')
-      const authen = await willInstallAndLimitAuthen({ deviceInfo: 'foo' }, user, 'local')
+      // Seed
+      const authen = await seedInstalledAndVerifiedUser('foo@bar.com', 'foobar', 'foo')
 
       // Is valid format
       expect(authen).toEqual(
@@ -66,6 +57,26 @@ describe('authen-sessions', async () => {
           userId: expect.any(ObjectId),
           isLoggedIn: true,
           loggedInAt: expect.any(Date)
+        })
+      )
+
+      // Dispose
+      await mongoose.connection.collection('users').drop()
+      await mongoose.connection.collection('authens').drop()
+    })
+
+    it('should provide sessionToken information', async () => {
+      // Seed
+      const { sessionToken } = await seedInstalledAndVerifiedUser('foo@bar.com', 'foobar', 'foo')
+      const { willDecodeSessionToken } = require('../jwt-token')
+      const { jwt_secret } = require('../config')
+      const decoded = await willDecodeSessionToken(sessionToken, jwt_secret)
+      expect(decoded).toEqual(
+        expect.objectContaining({
+          installationId: expect.any(String),
+          userId: expect.any(String),
+          createdAt: expect.any(String),
+          expireAt: expect.any(String)
         })
       )
 
@@ -121,6 +132,7 @@ describe('authen-sessions', async () => {
       })
 
       // Dispose
+      // await mongoose.connection.collection('users').drop()
       await mongoose.connection.collection('authens').drop()
     })
 
@@ -151,7 +163,7 @@ describe('authen-sessions', async () => {
       ])
 
       // Seed users
-      const email = 'katopz@gmail.com'
+      const email = 'foo@bar.com'
       const password = 'foobar'
       mongoose.connection.collection('users').insert({
         _id: userId,
@@ -196,6 +208,10 @@ describe('authen-sessions', async () => {
       const _after_userIds = _after_authens.map(authen => authen.userId)
 
       expect(_userIds).toMatchObject(_after_userIds)
+
+      // Dispose
+      await mongoose.connection.collection('users').drop()
+      await mongoose.connection.collection('authens').drop()
     })
   })
 })

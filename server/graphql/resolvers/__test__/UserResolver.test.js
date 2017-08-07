@@ -1,4 +1,6 @@
 /* eslint-env jest */
+const _NOW_PLUS_60SEC_ISO = new Date(+new Date() + 1000 * 60).toISOString()
+
 describe('UserResolver', () => {
   it('should return error if session not exist', async () => {
     const { user: willReadUser } = require('../UserResolver')
@@ -29,7 +31,7 @@ describe('UserResolver', () => {
     }
 
     const { user: willReadUser } = require('../UserResolver')
-    const context = { nap: { session: { userId: 'foo', expireAt: -1 } } }
+    const context = { nap: { session: { userId: 'foo', expireAt: _NOW_PLUS_60SEC_ISO } } }
     const user = await willReadUser({ context })
 
     expect(user).toMatchSnapshot()
@@ -56,7 +58,7 @@ describe('UserResolver', () => {
       nap: {
         session: {
           userId: '592c0bb4484d740e0e73798b',
-          expireAt: -1
+          expireAt: _NOW_PLUS_60SEC_ISO
         },
         willUpdateEmail: require('../../../../server/authen-local-passport').willUpdateEmail
       }
@@ -86,7 +88,7 @@ describe('UserResolver', () => {
       nap: {
         session: {
           userId: '592c0bb4484d740e0e73798b',
-          expireAt: -1
+          expireAt: _NOW_PLUS_60SEC_ISO
         },
         willUpdateEmail: require('../../../../server/authen-local-passport').willUpdateEmail,
         errors: []
