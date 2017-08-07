@@ -1,44 +1,31 @@
-const { onError } = require('./errors')
+const { promisify } = require('util')
+const jwt = require('jsonwebtoken')
+const willDecodeSessionToken = promisify(jwt.verify)
 
-const _willAttachSessionFromSessionToken = req =>
-  new Promise((resolve, reject) => {
-    // Ensure no session
-    req.nap.session = null
+const _willAttachSessionFromSessionToken = async req => {
+  // Ensure no session
+  req.nap.session = null
 
-    // Guard
-    if (!req.token) {
-      // Ignore empty token
-      return resolve(req)
-    }
+  // Guard : Ignore empty token
+  const { token } = req
+  if (!token) {
+    return req
+  }
 
-    const config = require('./config')
-    const jwt = require('jsonwebtoken')
-    jwt.verify(req.token, config.jwt_secret, (err, decoded) => {
-      // Error?
-      if (err) {
-        return reject(err)
-      }
-
-      // Succeed
-      req.nap.session = decoded
-      return resolve(req)
-    })
-  })
-
-const authenticate = (req, res, next) => {
-  ;(async () => {
-    // Validate and decode sessionToken
-    await _willAttachSessionFromSessionToken(req).catch(onError(req))
-
-    // Done
-    next()
-  })()
+  const { jwt_secret } = require('./config')
+  return willDecodeSessionToken(token, jwt_secret)
 }
+
+const authenticate = (req, res, next) =>
+  _willAttachSessionFromSessionToken(req).then(decoded => {
+    req.nap.session = decoded
+    next()
+  })
 
 const createSessionToken = (installationId, userId) => {
   const config = require('./config')
   const jwt = require('jsonwebtoken')
-  const expires = config.session_ttl || -1
+  const expires = +new Date() + (config.sessions_ttl || -1)
   const createdAt = new Date().toISOString()
   const expireAt = new Date(expires).toISOString()
 
@@ -57,5 +44,6 @@ const createSessionToken = (installationId, userId) => {
 
 module.exports = {
   authenticate,
-  createSessionToken
+  createSessionToken,
+  willDecodeSessionToken
 }

@@ -12,7 +12,10 @@ const _COMMON_ERRORS = {
 
 const DEFAULT_CODE = 'node-error'
 
-const _push = (req, { code, message }) => req.nap.errors.push({ code, message })
+const _push = (req, { code, message }) => {
+  if (!req.nap.errors) req.nap.errors = []
+  req.nap.errors.push({ code, message })
+}
 
 const onError = req => (...args) => {
   // Guard
@@ -23,6 +26,12 @@ const onError = req => (...args) => {
   // GenericError
   if (args[0] instanceof GenericError) {
     _push(req, args[0])
+    return null
+  }
+
+  // Error Object
+  if (args[0].code && args[0].message) {
+    _push(req, new GenericError(args[0].code, args[0].message))
     return null
   }
 

@@ -19,14 +19,20 @@ describe('errors', () => {
 
   it('should guard null and throw error', () => {
     const { guard } = require('../errors')
-    expect(() => guard()).toThrow(
-      'An invalid argument was provided. Required : guard({ foo })'
-    )
+    expect(() => guard()).toThrow('An invalid argument was provided. Required : guard({ foo })')
     expect(() => guard({ foo: null })).toThrow('Required : foo')
     expect(() => guard({ foo: undefined })).toThrow('Required : foo')
   })
 
-  it('should add error new generic error to request', () => {
+  it('should add new generic error to request', () => {
+    const { onError, GenericError } = require('../errors')
+    const req = { nap: { errors: [] } }
+    onError(req)(new GenericError('foo', 'bar'))
+
+    expect(req.nap.errors[0]).toMatchSnapshot()
+  })
+
+  it('should add error as new generic error to request', () => {
     const { onError } = require('../errors')
     const req = { nap: { errors: [] } }
     onError(req)(new Error('foo'))

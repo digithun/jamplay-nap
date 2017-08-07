@@ -1,30 +1,30 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`authen-local-passport should be true for valid email 1`] = `true`;
+exports[`authen-local-passport mock should be true for valid email 1`] = `true`;
 
-exports[`authen-local-passport should be true for valid email and password 1`] = `true`;
+exports[`authen-local-passport mock should be true for valid email and password 1`] = `true`;
 
-exports[`authen-local-passport should be true for valid password 1`] = `true`;
+exports[`authen-local-passport mock should be true for valid password 1`] = `true`;
 
-exports[`authen-local-passport should create email verification url 1`] = `"http://localhost:3000/auth/local/FOO_TOKEN"`;
+exports[`authen-local-passport mock should create email verification url 1`] = `"http://localhost:3000/auth/local/FOO_TOKEN"`;
 
-exports[`authen-local-passport should create email verification url 2`] = `"http://localhost:4000//auth/local/FOO_TOKEN"`;
+exports[`authen-local-passport mock should create email verification url 2`] = `"http://localhost:4000//auth/local/FOO_TOKEN"`;
 
-exports[`authen-local-passport should create new password reset url 1`] = `"http://localhost:3000/auth/reset"`;
+exports[`authen-local-passport mock should create new password reset url 1`] = `"http://localhost:3000/auth/reset"`;
 
-exports[`authen-local-passport should create new password reset url 2`] = `"http://localhost:4000//auth/reset"`;
+exports[`authen-local-passport mock should create new password reset url 2`] = `"http://localhost:4000//auth/reset"`;
 
-exports[`authen-local-passport should create password reset url 1`] = `"http://localhost:3000/auth/reset/FOO_TOKEN"`;
+exports[`authen-local-passport mock should create password reset url 1`] = `"http://localhost:3000/auth/reset/FOO_TOKEN"`;
 
-exports[`authen-local-passport should create password reset url 2`] = `"http://localhost:4000//auth/reset/FOO_TOKEN"`;
+exports[`authen-local-passport mock should create password reset url 2`] = `"http://localhost:4000//auth/reset/FOO_TOKEN"`;
 
-exports[`authen-local-passport should redirect non exist token to /auth/error/token-not-exist 1`] = `"/auth/error?code=token-not-exist"`;
+exports[`authen-local-passport mock should redirect non exist token to /auth/error/token-not-exist 1`] = `"/auth/error?code=token-not-exist"`;
 
-exports[`authen-local-passport should redirect null token to /auth/error/token-not-provided 1`] = `"/auth/error?code=token-not-provided"`;
+exports[`authen-local-passport mock should redirect null token to /auth/error/token-not-provided 1`] = `"/auth/error?code=token-not-provided"`;
 
-exports[`authen-local-passport should redirect valid token to /auth/verified 1`] = `"http://localhost:4000/auth/verified"`;
+exports[`authen-local-passport mock should redirect valid token to /auth/verified 1`] = `"http://localhost:4000/auth/verified"`;
 
-exports[`authen-local-passport should reset password if user exist 1`] = `
+exports[`authen-local-passport mock should reset password if user exist 1`] = `
 Object {
   "_id": "592c0bb4484d740e0e73798b",
   "email": "foo@bar.com",
@@ -33,7 +33,7 @@ Object {
 }
 `;
 
-exports[`authen-local-passport should signup new user and return user data 1`] = `
+exports[`authen-local-passport mock should signup new user and return user data 1`] = `
 Object {
   "_id": "592c0bb4484d740e0e73798b",
   "foo": "bar",
@@ -41,7 +41,7 @@ Object {
 }
 `;
 
-exports[`authen-local-passport should validate local strategy 1`] = `
+exports[`authen-local-passport mock should validate local strategy 1`] = `
 Object {
   "_id": "592c0bb4484d740e0e73798b",
   "emailVerified": true,
