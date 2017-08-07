@@ -52,7 +52,7 @@ const seedInstalledAndVerifiedUser = async (email, password, deviceInfo) => {
 const setup = async () => {
   mongoServer = new MongodbMemoryServer.default()
   const mongoUri = await mongoServer.getConnectionString()
-  mongoose.connect(mongoUri, err => err && console.error(err))
+  await mongoose.connect(mongoUri, { useMongoClient: true }).catch(err => err && console.error(err))
 
   global.NAP = {}
   NAP.Authen = require('../graphql/models/Authen')().Authen
@@ -60,8 +60,8 @@ const setup = async () => {
   NAP.User = require('../graphql/models/User')().User
 }
 
-const teardown = () => {
-  mongoose.disconnect()
+const teardown = async () => {
+  await mongoose.disconnect()
   mongoServer.stop()
 }
 

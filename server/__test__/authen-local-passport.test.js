@@ -250,9 +250,6 @@ describe('authen-local-passport', () => {
         redirect: route => expect(route).toMatchSnapshot()
       }
       auth_local_token(req, res)
-
-      // Dispose
-      await mongoose.connection.collection('users').drop()
     })
 
     it('should validate local strategy', async () => {
@@ -266,14 +263,10 @@ describe('authen-local-passport', () => {
       const _user = await willCreateUser(userData)
 
       const { validateLocalStrategy } = require('../authen-local-passport')
-      const willValidateLocalStrategy = () =>
-        new Promise((resolve, reject) =>
-          validateLocalStrategy(email, password, (err, result) => {
-            resolve(result)
-          })
-        )
+      const { promisify } = require('util')
+      const willValidateLocalStrategy = promisify(validateLocalStrategy)
 
-      const user = await willValidateLocalStrategy()
+      const user = await willValidateLocalStrategy(email, password)
       expect(user.toObject()).toEqual(_user.toObject())
 
       // Dispose
