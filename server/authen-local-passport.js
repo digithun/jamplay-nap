@@ -238,15 +238,33 @@ const willUpdateEmail = async (user, email) => {
   guard({ email })
 
   // Guard : valid email
-  willValidateEmail(email)
+  await willValidateEmail(email)
 
   // Guard : unique
-  const existingUser = await NAP.User.findOne({ email })
+  const existingUser = await NAP.User.findOne({ email, _id: { $nin: user._id } })
   _guardDuplicatedUserByEmail(existingUser)
 
   // Update email
   user.email = email
   return user.save()
+}
+
+const willUpdatePassword = async (user, password, new_password) => {
+  // Guard
+  guard({ user })
+  guard({ password })
+  guard({ new_password })
+
+  // Guard : valid password
+  await willValidatePassword(new_password)
+
+  // User exist?
+  const existingUser = await _getUserByEmailAndPassword(user.email, password)
+  if (!existingUser) throw require('./errors/commons').NAP_USER_NOT_FOUND
+
+  _withHashedPassword(existingUser, new_password)
+
+  return existingUser.save()
 }
 
 const reset_password_by_token = (req, res) => {
@@ -277,6 +295,7 @@ module.exports = {
   willSetUserStatusAsWaitForEmailReset,
   willUpdatePasswordByToken,
   willUpdateEmail,
+  willUpdatePassword,
   validateLocalStrategy,
   handler,
   toHashedPassword

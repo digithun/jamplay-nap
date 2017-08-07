@@ -46,10 +46,21 @@ module.exports = models => {
     name: 'updatePassword',
     kind: 'mutation',
     args: {
+      password: 'String!',
+      new_password: 'String!'
+    },
+    type: models.UserTC,
+    resolve: UserResolver.updatePassword
+  })
+
+  models.UserTC.addResolver({
+    name: 'updatePasswordByToken',
+    kind: 'mutation',
+    args: {
       token: 'String!',
       password: 'String!'
     },
     type: models.UserTC,
-    resolve: UserResolver.updatePassword
+    resolve: UserResolver.updatePasswordByToken
   })
 }

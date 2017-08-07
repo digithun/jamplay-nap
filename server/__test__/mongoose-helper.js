@@ -32,7 +32,8 @@ const seedUserWithEmailAndPassword = async (email, password) => {
     mongoose.connection.collection('users').insert({
       email,
       hashed_password,
-      emailVerified: true
+      emailVerified: true,
+      roles: 'user'
     }, (err, data) => {
       if (err) throw err
       resolve(data.insertedIds[0])

@@ -84,6 +84,7 @@ module.exports.buildSchema = () => {
     signUpWithEmailAndPassword: models.AuthenTC.getResolver('signUpWithEmailAndPassword'),
     forget: models.UserTC.getResolver('forget'),
     updatePassword: models.UserTC.getResolver('updatePassword'),
+    updatePasswordByToken: models.UserTC.getResolver('updatePasswordByToken'),
     unlinkFromFacebook: models.UserTC.getResolver('unlinkFromFacebook'),
     linkWithFacebook: models.UserTC.getResolver('linkWithFacebook'),
     updateEmail: models.UserTC.getResolver('updateEmail'),
