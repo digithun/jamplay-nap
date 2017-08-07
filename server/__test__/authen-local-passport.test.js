@@ -237,57 +237,56 @@ describe('authen-local-passport', () => {
       }
       reset_password_by_token(req, res)
     })
+  })
+
+  describe('mock-server', () => {
+    beforeAll(setup)
+    afterAll(teardown)
 
     it('should redirect valid token to /auth/verified', async () => {
-      // stub
-      global.NAP = {}
-      NAP.User = {
-        findOneAndUpdate: jest.fn().mockImplementationOnce(async () => ({
-          _id: '592c0bb4484d740e0e73798b',
-          role: 'user',
-          status: 'VERIFIED_BY_EMAIL'
-        }))
-      }
-
       const { auth_local_token } = require('../authen-local-passport').handler
       const req = { params: { token: 'VALID_TOKEN' } }
       const res = {
         redirect: route => expect(route).toMatchSnapshot()
       }
       auth_local_token(req, res)
+
+      // Dispose
+      await mongoose.connection.collection('users').drop()
     })
 
     it('should validate local strategy', async () => {
       // mock
       const email = 'foo@bar.com'
-      const password = 'password'
-      const hashed_password = '$2a$10$J8sNyptEzgDuQu3b9H8PnuYO85KLnMYF2RjmMeAbt.vpND7NymH/O'
-
-      // stub
-      global.NAP = {}
-      NAP.User = {
-        findOne: jest.fn().mockImplementationOnce(async () => ({
-          _id: '592c0bb4484d740e0e73798b',
-          role: 'user',
-          emailVerified: true,
-          hashed_password
-        }))
-      }
-
-      const { validateLocalStrategy } = require('../authen-local-passport')
-      validateLocalStrategy(email, password, (err, result) => expect(result).toMatchSnapshot())
-    })
-  })
-
-  describe('mock-server', () => {
-    beforeAll(setup)
-    afterAll(teardown)
-    it('can update password', async () => {
       const password = 'foobar'
       const { toHashedPassword } = require('../authen-local-passport')
       const hashed_password = toHashedPassword(password)
       const { willCreateUser } = require('../authen-sessions')
-      const userData = { email: 'foo@bar.com', emailVerified: true, hashed_password }
+      const userData = { email, emailVerified: true, hashed_password }
+      const _user = await willCreateUser(userData)
+
+      const { validateLocalStrategy } = require('../authen-local-passport')
+      const willValidateLocalStrategy = () =>
+        new Promise((resolve, reject) =>
+          validateLocalStrategy(email, password, (err, result) => {
+            resolve(result)
+          })
+        )
+
+      const user = await willValidateLocalStrategy()
+      expect(user.toObject()).toEqual(_user.toObject())
+
+      // Dispose
+      await mongoose.connection.collection('users').drop()
+    })
+
+    it.skip('can update password', async () => {
+      const email = 'foo@bar.com'
+      const password = 'foobar'
+      const { toHashedPassword } = require('../authen-local-passport')
+      const hashed_password = toHashedPassword(password)
+      const { willCreateUser } = require('../authen-sessions')
+      const userData = { email, emailVerified: true, hashed_password }
       const user = await willCreateUser(userData)
 
       const { willUpdatePassword } = require('../authen-local-passport')
