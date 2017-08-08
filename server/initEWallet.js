@@ -13,7 +13,7 @@ const init = (config, app) => {
       getEWallet: token => ({
         hasReceipt: async ({ refId, spendType }) => !!wallet.receipts.find(r => r === refId),
         getJelly: async () => ({ gold: wallet.gold, silver: wallet.silver }),
-        spendJelly: async ({ refId, spendType, merchantId, merchantAlaisId, amount, currencyType, commissionRate }) => {
+        spendJelly: async ({ refId, spendType, merchantId, merchantAliasId, amount, currencyType, commissionRate }) => {
           if (currencyType === 'gold') {
             wallet.gold -= amount
           } else {
@@ -21,8 +21,8 @@ const init = (config, app) => {
           }
           wallet.receipts.push(refId)
           return { gold: wallet.gold, silver: wallet.silver }
-        },
-        //addExchange: async () =>({token, amountIn, amountOut, conversionType, progressBarcode, status})
+        }
+        // addExchange: async () =>({token, amountIn, amountOut, conversionType, progressBarcode, status})
       })
     }
   } else {
@@ -48,17 +48,17 @@ const init = (config, app) => {
             const result = await callApi('user/getJelly')
             return result
           },
-          spendJelly: async ({ refId, spendType, merchantId, merchantAlaisId, amount, currencyType, commissionRate }) => {
-            const result = await callApi('spend/spendJelly', { refId, spendType, merchantId, merchantAlaisId, amount, currencyType, commissionRate })
+          spendJelly: async ({ refId, spendType, merchantId, merchantAliasId, amount, currencyType, commissionRate }) => {
+            const result = await callApi('spend/spendJelly', { refId, spendType, merchantId, merchantAliasId, amount, currencyType, commissionRate })
             return result.reader
           },
-          //TO DO: change schema
+          // TO DO: change schema
           addExchange: async ({ amountIn, amountOut, conversionType }) => {
             const result = await callApi('exchange/addExchange', { amountIn, amountOut, conversionType })
             return result
           },
           getRateTable: async () => {
-            const rateType = "baht:gold"
+            const rateType = 'baht:gold'
             const result = await callApi('rate/findRateActive', { rateType })
             return result
           },
