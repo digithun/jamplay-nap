@@ -1,6 +1,6 @@
 /* eslint-env jest */
 
-const { setup, teardown, seedUserWithEmailAndPassword } = require('./mongoose-helper')
+const { setup, teardown } = require('./mongoose-helper')
 const mongoose = require('mongoose')
 
 describe('authen-local-passport', () => {
