@@ -10,7 +10,6 @@ const { setup, teardown, seedUserWithManyDevices, seedInstalledAndVerifiedUser }
 
 describe('authen-sessions', async () => {
   beforeAll(setup)
-
   afterAll(teardown)
 
   describe('Single sessions', () => {

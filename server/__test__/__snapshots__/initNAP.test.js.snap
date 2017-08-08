@@ -16,6 +16,7 @@ Object {
     "willSignUp": [Function],
     "willUnlinkFromFacebook": [Function],
     "willUpdateEmail": [Function],
+    "willUpdatePassword": [Function],
     "willUpdatePasswordByToken": [Function],
   },
 }

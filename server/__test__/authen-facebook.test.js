@@ -4,7 +4,16 @@ process.env.MAILGUN_DOMAIN = 'BAR_MAILGUN_DOMAIN'
 
 require('../debug')
 
+const mongoose = require('mongoose')
+const { ObjectId } = mongoose.Types
+
+// Seeder
+const { setup, teardown } = require('./mongoose-helper')
+
 describe('authen-facebook', () => {
+  beforeAll(setup)
+  afterAll(teardown)
+
   it('should throw error when no FACEBOOK_APP_ID, FACEBOOK_APP_SECRET provide', async () => {
     delete process.env.FACEBOOK_APP_ID
     delete process.env.FACEBOOK_APP_SECRET
@@ -29,21 +38,23 @@ describe('authen-facebook', () => {
     process.env.FACEBOOK_APP_ID = 'FOO_FACEBOOK_APP_ID'
     process.env.FACEBOOK_APP_SECRET = 'BAR_FACEBOOK_APP_SECRET'
 
-    // stub
-    global.NAP = {}
-    NAP.User = {
-      findOneAndUpdate: jest.fn().mockImplementationOnce(async () => ({
-        _id: '58d0e20e7ff032b39c2a9a18',
-        name: 'bar',
-        email: 'foo@bar.com'
-      }))
-    }
-
     const authen = require('../authen-facebook')
     const accessToken = 'FOO_BAR_TOKEN'
     const user = await authen.willLoginWithFacebook({ body: {} }, accessToken)
 
-    expect(user).toMatchSnapshot()
+    expect(user).toEqual(
+      expect.objectContaining({
+        __v: 0,
+        name: 'bar',
+        email: 'foo@bar.com',
+        emailVerified: false,
+        createdAt: expect.any(Date),
+        updatedAt: expect.any(Date)
+      })
+    )
+
+    // Dispose
+    await mongoose.connection.collection('users').drop()
   })
 
   it('should not login with Facebook and return error for wrong token', async () => {

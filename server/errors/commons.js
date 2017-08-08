@@ -5,7 +5,10 @@ module.exports = {
     return new GenericError('nap/invalid-argument', 'An invalid argument was provided. ')
   },
   get NAP_INVALID_SESSION_TOKEN () {
-    return new GenericError('nap/invalid-session-token', 'Invalid sessionToken provide. ')
+    return new GenericError('nap/invalid-session-token', 'Invalid sessionToken was provided. ')
+  },
+  get NAP_INVALID_VERIFY_TOKEN () {
+    return new GenericError('nap/invalid-verify-token', 'Invalid verify token was provided. ')
   },
   get NAP_SESSION_NOT_FOUND () {
     return new GenericError('nap/session-not-found', 'NAP session not found. ')

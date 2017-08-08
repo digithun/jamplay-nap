@@ -220,7 +220,7 @@ const auth_local_token = (req, res) => {
 const willUpdatePasswordByToken = async (token, password) => {
   // Guard token
   let user = await NAP.User.findOne({ token })
-  if (!user) throw require('./errors/codes').AUTH_USER_NOT_FOUND
+  if (!user) throw require('./errors/commons').NAP_INVALID_VERIFY_TOKEN
 
   // Guard email
   const isValid = await willValidatePassword(password)

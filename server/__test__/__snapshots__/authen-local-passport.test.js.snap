@@ -22,8 +22,6 @@ exports[`authen-local-passport mock should redirect non exist token to /auth/err
 
 exports[`authen-local-passport mock should redirect null token to /auth/error/token-not-provided 1`] = `"/auth/error?code=token-not-provided"`;
 
-exports[`authen-local-passport mock should redirect valid token to /auth/verified 1`] = `"http://localhost:4000/auth/verified"`;
-
 exports[`authen-local-passport mock should reset password if user exist 1`] = `
 Object {
   "_id": "592c0bb4484d740e0e73798b",
@@ -41,11 +39,4 @@ Object {
 }
 `;
 
-exports[`authen-local-passport mock should validate local strategy 1`] = `
-Object {
-  "_id": "592c0bb4484d740e0e73798b",
-  "emailVerified": true,
-  "hashed_password": "$2a$10$J8sNyptEzgDuQu3b9H8PnuYO85KLnMYF2RjmMeAbt.vpND7NymH/O",
-  "role": "user",
-}
-`;
+exports[`authen-local-passport mock-server should validate local strategy 1`] = `"/auth/error?code=token-not-exist"`;
