@@ -48,11 +48,14 @@ const willValidateEmailAndPassword = async (email, password) => {
   return isValid
 }
 
-const _withHashedPassword = (user, password) => {
+const toHashedPassword = password => {
   const bcrypt = require('bcryptjs')
   const salt = bcrypt.genSaltSync(10)
-  user.hashed_password = bcrypt.hashSync(password, salt)
+  return bcrypt.hashSync(password, salt)
+}
 
+const _withHashedPassword = (user, password) => {
+  user.hashed_password = toHashedPassword(password)
   return user
 }
 
@@ -173,24 +176,30 @@ const _willValidatePassword = async (password, hashed_password) => {
   return true
 }
 
-const validateLocalStrategy = (email, password, done) => {
-  // Find by email
-  ;(async () => {
-    try {
-      // Guard unverified or not existing user
-      const user = await NAP.User.findOne({ email })
-      _guardInvalidUserForLoginWithLocal(user)
+const _getUserByEmailAndPassword = async (email, password) => {
+  // Guard
+  willValidateEmailAndPassword(email, password)
 
-      const isPasswordMatch = await _willValidatePassword(password, user.hashed_password)
-      if (!isPasswordMatch) {
-        throw require('./errors/codes').AUTH_WRONG_PASSWORD
-      } else {
-        done(null, user)
-      }
-    } catch (err) {
+  // Guard unverified or not existing user
+  const user = await NAP.User.findOne({ email })
+  _guardInvalidUserForLoginWithLocal(user)
+
+  const isPasswordMatch = await _willValidatePassword(password, user.hashed_password)
+  if (!isPasswordMatch) {
+    throw require('./errors/codes').AUTH_WRONG_PASSWORD
+  } else {
+    return user
+  }
+}
+
+const validateLocalStrategy = (email, password, done) => {
+  _getUserByEmailAndPassword(email, password)
+    .then(user => {
+      done(null, user)
+    })
+    .catch(err => {
       done(err, null)
-    }
-  })()
+    })
 }
 
 const auth_local_token = (req, res) => {
@@ -229,15 +238,33 @@ const willUpdateEmail = async (user, email) => {
   guard({ email })
 
   // Guard : valid email
-  willValidateEmail(email)
+  await willValidateEmail(email)
 
   // Guard : unique
-  const existingUser = await NAP.User.findOne({ email })
+  const existingUser = await NAP.User.findOne({ email, _id: { $nin: user._id } })
   _guardDuplicatedUserByEmail(existingUser)
 
   // Update email
   user.email = email
   return user.save()
+}
+
+const willUpdatePassword = async (user, password, new_password) => {
+  // Guard
+  guard({ user })
+  guard({ password })
+  guard({ new_password })
+
+  // Guard : valid password
+  await willValidatePassword(new_password)
+
+  // User exist?
+  const existingUser = await _getUserByEmailAndPassword(user.email, password)
+  if (!existingUser) throw require('./errors/commons').NAP_USER_NOT_FOUND
+
+  _withHashedPassword(existingUser, new_password)
+
+  return existingUser.save()
 }
 
 const reset_password_by_token = (req, res) => {
@@ -268,6 +295,8 @@ module.exports = {
   willSetUserStatusAsWaitForEmailReset,
   willUpdatePasswordByToken,
   willUpdateEmail,
+  willUpdatePassword,
   validateLocalStrategy,
-  handler
+  handler,
+  toHashedPassword
 }

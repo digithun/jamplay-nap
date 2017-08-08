@@ -12,16 +12,6 @@ Object {
 }
 `;
 
-exports[`UserResolver should create user and return user data 1`] = `
-Object {
-  "_id": "592c0bb4484d740e0e73798b",
-  "foo": "bar",
-  "role": "user",
-}
-`;
-
-exports[`UserResolver should return error if session not exist 1`] = `[Error: A uid identifier is required for the current operation.]`;
-
 exports[`UserResolver should return user data if has session 1`] = `
 Object {
   "_id": "592c0bb4484d740e0e73798b",
