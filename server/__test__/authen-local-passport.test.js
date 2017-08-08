@@ -237,6 +237,13 @@ describe('authen-local-passport', () => {
       }
       reset_password_by_token(req, res)
     })
+
+    it('should throw error if verify token has been use', async () => {
+      const { willUpdatePasswordByToken } = require('../authen-local-passport')
+      const token = 'SOME_TOKEN'
+      const password = 'SOME_PASSWORD'
+      expect(willUpdatePasswordByToken(token, password)).rejects.toMatchObject(require('../errors/commons').NAP_INVALID_VERIFY_TOKEN)
+    })
   })
 
   describe('mock-server', () => {
