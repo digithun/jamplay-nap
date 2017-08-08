@@ -2,12 +2,11 @@
 const _NOW_PLUS_60SEC_ISO = new Date(+new Date() + 1000 * 60).toISOString()
 
 describe('UserResolver', () => {
-  it('should return error if session not exist', async () => {
+  it('should return null if session not provided', async () => {
     const { user: willReadUser } = require('../UserResolver')
     const context = { nap: { errors: [] } }
-    await willReadUser({ context }).catch(err => {
-      expect(err).toMatchSnapshot()
-    })
+    const user = await willReadUser({ context })
+    expect(user).toBeNull()
   })
 
   it('should return user data if has session', async () => {
@@ -111,7 +110,6 @@ describe('UserResolver', () => {
     }
 
     const { updateEmail } = require('../UserResolver')
-    await updateEmail({ context, args })
-    expect(context.nap.errors[0]).toMatchObject(require('../../../errors/codes').AUTH_EMAIL_ALREADY_IN_USE)
+    expect(updateEmail({ context, args })).rejects.toMatchObject(require('../../../errors/codes').AUTH_EMAIL_ALREADY_IN_USE)
   })
 })

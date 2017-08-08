@@ -8,19 +8,18 @@ jasmine.DEFAULT_TIMEOUT_INTERVAL = 60000
 let mongoServer
 
 // Seeder
-const seedUserWithManyDevices = (userId, authens) => {
+const seedAuthenByUserWithManyDevices = async (userId, authens) => {
   // Me with many devices
   const installs = authens.map(authen => authen.installationId)
   let i = 0
   const loggedInAt = authens.map(authen => authen.loggedInAt)
-  installs.map(installationId =>
-    mongoose.connection.collection('authens').insert({
-      userId,
-      isLoggedIn: true,
-      installationId: new mongoose.Types.ObjectId(installationId),
-      loggedInAt: loggedInAt[i++]
-    })
-  )
+  const payloads = installs.map(installationId => ({
+    userId,
+    isLoggedIn: true,
+    installationId: new mongoose.Types.ObjectId(installationId),
+    loggedInAt: loggedInAt[i++]
+  }))
+  await mongoose.connection.collection('authens').insertMany(payloads)
 
   return userId
 }
@@ -28,17 +27,17 @@ const seedUserWithManyDevices = (userId, authens) => {
 const seedUserWithEmailAndPassword = async (email, password) => {
   const hashed_password = require('../../server/authen-local-passport').toHashedPassword(password)
 
-  return new Promise((resolve, reject) => {
-    mongoose.connection.collection('users').insert({
+  return mongoose.connection
+    .collection('users')
+    .insert({
       email,
       hashed_password,
       emailVerified: true,
       roles: 'user'
-    }, (err, data) => {
-      if (err) throw err
-      resolve(data.insertedIds[0])
     })
-  })
+    .then(data => {
+      return data.insertedIds[0]
+    })
 }
 
 const seedInstalledAndVerifiedUser = async (email, password, deviceInfo) => {
@@ -65,4 +64,4 @@ const teardown = async () => {
   mongoServer.stop()
 }
 
-module.exports = { setup, teardown, seedUserWithManyDevices, seedUserWithEmailAndPassword, seedInstalledAndVerifiedUser }
+module.exports = { setup, teardown, seedAuthenByUserWithManyDevices, seedUserWithEmailAndPassword, seedInstalledAndVerifiedUser }

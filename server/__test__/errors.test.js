@@ -1,6 +1,19 @@
 /* eslint-env jest */
 
+const _expectError = (req, err) => {
+  const { onError } = require('../errors')
+  expect(() => {
+    onError(req)(err)
+  }).toThrow(err)
+  expect(req.nap.errors[0]).toMatchSnapshot()
+}
+
 describe('errors', () => {
+  let req
+  beforeEach(() => {
+    req = { nap: { errors: [] } }
+  })
+
   it('should return error', () => {
     const { GenericError } = require('../errors')
     const customError = {
@@ -25,50 +38,37 @@ describe('errors', () => {
   })
 
   it('should add new generic error to request', () => {
-    const { onError, GenericError } = require('../errors')
-    const req = { nap: { errors: [] } }
-    onError(req)(new GenericError('foo', 'bar'))
+    const { GenericError } = require('../errors')
 
-    expect(req.nap.errors[0]).toMatchSnapshot()
+    const err = new GenericError('foo', 'bar')
+    _expectError(req, err)
   })
 
   it('should add error as new generic error to request', () => {
-    const { onError } = require('../errors')
-    const req = { nap: { errors: [] } }
-    onError(req)(new Error('foo'))
-
-    expect(req.nap.errors[0]).toMatchSnapshot()
+    const err = new Error('foo')
+    _expectError(req, err)
   })
 
   it('should add string as new generic error to request', () => {
-    const { onError } = require('../errors')
-    const req = { nap: { errors: [] } }
-    onError(req)('foo')
-
-    expect(req.nap.errors[0]).toMatchSnapshot()
+    _expectError(req, 'foo')
   })
 
   it('should add code, string as new generic error to request', () => {
-    const { onError } = require('../errors')
-    const req = { nap: { errors: [] } }
-    onError(req)(403, 'foo')
+    const { onError, GenericError } = require('../errors')
 
+    const err = new GenericError(403, 'foo')
+    expect(() => {
+      onError(req)(403, 'foo')
+    }).toThrow(err)
     expect(req.nap.errors[0]).toMatchSnapshot()
   })
 
   it('should add code as new generic error to request', () => {
-    const { onError } = require('../errors')
-    const req = { nap: { errors: [] } }
-    onError(req)(3)
-
-    expect(req.nap.errors[0]).toMatchSnapshot()
-  })
-
-  it('should add code with common error as new generic error to request', () => {
-    const { onError } = require('../errors')
-    const req = { nap: { errors: [] } }
-    onError(req)(403)
-
+    const { onError, GenericError } = require('../errors')
+    const err = new GenericError(403)
+    expect(() => {
+      onError(req)(403)
+    }).toThrow(err)
     expect(req.nap.errors[0]).toMatchSnapshot()
   })
 })

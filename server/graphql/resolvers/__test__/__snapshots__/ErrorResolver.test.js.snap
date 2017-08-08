@@ -1,12 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`AuthenResolver should return errors if has any error 1`] = `
-Array [
-  Object {
-    "code": "node-error",
-    "message": "foo",
-  },
-]
-`;
+exports[`ErrorResolver should return errors if has any error 1`] = `[Error: foo]`;
 
-exports[`AuthenResolver should return null if no error 1`] = `null`;
+exports[`ErrorResolver should return errors if has any error 2`] = `[Function]`;
+
+exports[`ErrorResolver should return null if no error 1`] = `[Function]`;

@@ -1,5 +1,5 @@
 /* eslint-env jest */
-describe('AuthenResolver', () => {
+describe('ErrorResolver', () => {
   it('should return null if no error', () => {
     const ErrorResolver = require('../ErrorResolver')
     const context = { nap: { errors: [] } }
@@ -10,7 +10,12 @@ describe('AuthenResolver', () => {
     const ErrorResolver = require('../ErrorResolver')
     const { onError } = require('../../../errors')
     const context = { nap: { errors: [] } }
-    onError(context)(new Error('foo'))
+
+    try {
+      onError(context)(new Error('foo'))
+    } catch (err) {
+      expect(err).toMatchSnapshot()
+    }
 
     expect(ErrorResolver.resolver({ context })).toMatchSnapshot()
   })
