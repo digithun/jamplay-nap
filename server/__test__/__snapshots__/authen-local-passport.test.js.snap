@@ -39,8 +39,4 @@ Object {
 }
 `;
 
-exports[`authen-local-passport mock-server can update password 1`] = `null`;
-
-exports[`authen-local-passport mock-server can update password 2`] = `null`;
-
 exports[`authen-local-passport mock-server should validate local strategy 1`] = `"/auth/error?code=token-not-exist"`;

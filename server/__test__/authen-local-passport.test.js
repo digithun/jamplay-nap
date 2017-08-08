@@ -280,7 +280,7 @@ describe('authen-local-passport', () => {
       await mongoose.connection.collection('users').drop()
     })
 
-    it.skip('can update password', async () => {
+    it('can update password', async () => {
       const email = 'foo@bar.com'
       const password = 'foobar'
       const { toHashedPassword } = require('../authen-local-passport')
@@ -293,7 +293,7 @@ describe('authen-local-passport', () => {
       const new_password = 'newfoobar'
       const updated_user = await willUpdatePassword(user, password, new_password)
 
-      expect(hashed_password).not.toBe(updated_user.hashed_password)
+      expect(user.hashed_password).not.toBe(updated_user.hashed_password)
 
       // Dispose
       await mongoose.connection.collection('users').drop()
