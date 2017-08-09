@@ -23,9 +23,9 @@ const authenticate = (req, res, next) =>
   })
 
 const createSessionToken = (installationId, userId) => {
-  const config = require('./config')
+  const { sessions_ttl, jwt_secret } = require('./config')
   const jwt = require('jsonwebtoken')
-  const expires = +new Date() + (config.sessions_ttl || -1)
+  const expires = +new Date() + sessions_ttl
   const createdAt = new Date().toISOString()
   const expireAt = new Date(expires).toISOString()
 
@@ -36,7 +36,7 @@ const createSessionToken = (installationId, userId) => {
       createdAt,
       expireAt
     },
-    config.jwt_secret
+    jwt_secret
   )
 
   return sessionToken

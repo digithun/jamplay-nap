@@ -3,11 +3,6 @@ const validateSession = async ({ expireAt }) => {
   // Guard
   if (!expireAt) return false
 
-  // No expire limit?
-  if (SESSIONS_TTL === -1) {
-    return true
-  }
-
   // Expired?
   const expires = new Date(expireAt).valueOf()
   const now = new Date().valueOf()
