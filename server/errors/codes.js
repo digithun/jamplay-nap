@@ -131,6 +131,9 @@ module.exports = {
 
   // Ref : https://firebase.google.com/docs/reference/js/firebase.auth.Auth
   get AUTH_INVALID_ACTION_CODE () {
-    return new GenericError('auth/invalid-action-code', 'Tthe password reset code is invalid. This can happen if the code is malformed or has already been used.')
+    return new GenericError('auth/invalid-action-code', 'The password reset code is invalid. This can happen if the code is malformed or has already been used.')
+  },
+  get AUTH_INVALID_LOGIN () {
+    return new GenericError('auth/invalid-login', 'Provided email and/or password was invalid.')
   }
 }

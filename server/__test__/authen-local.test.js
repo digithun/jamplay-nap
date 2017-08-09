@@ -54,6 +54,46 @@ describe('authen-local', () => {
     expect(willLogin(req, email, password)).rejects.toEqual(errorBy('NAP_INVALID_ARGUMENT', 'Required : password'))
   })
 
+  it('should throw `auth/invalid-login` error for not exist email', async () => {
+    // mock
+    const req = {
+      nap: { errors: [] },
+      body: { isMockServer: true }
+    }
+    const email = 'exist@bar.com'
+    const not_exiting_email = 'not_exiting@bar.com'
+    const password = 'foobar'
+
+    // Seed
+    await seedUserWithEmailAndPassword(email, password)
+
+    const { willLogin } = require('../authen-local')
+    expect(willLogin(req, not_exiting_email, password)).rejects.toEqual(require('../errors/codes').AUTH_INVALID_LOGIN)
+
+    // Dispose
+    await mongoose.connection.collection('users').drop()
+  })
+
+  it('should throw `auth/invalid-login` error for wrong password', async () => {
+    // mock
+    const req = {
+      nap: { errors: [] },
+      body: { isMockServer: true }
+    }
+    const email = 'foo@bar.com'
+    const password = 'foobar'
+    const wrong_password = 'notfoobar'
+
+    // Seed
+    await seedUserWithEmailAndPassword(email, password)
+
+    const { willLogin } = require('../authen-local')
+    expect(willLogin(req, email, wrong_password)).rejects.toEqual(require('../errors/codes').AUTH_INVALID_LOGIN)
+
+    // Dispose
+    await mongoose.connection.collection('users').drop()
+  })
+
   it('should able to login with user and password', async () => {
     // mock
     const req = {
@@ -69,6 +109,9 @@ describe('authen-local', () => {
     const { willLogin } = require('../authen-local')
     const user = await willLogin(req, email, password)
     expect(user).toMatchSnapshot()
+
+    // Dispose
+    await mongoose.connection.collection('users').drop()
   })
 
   it('should logout', async () => {
@@ -79,16 +122,15 @@ describe('authen-local', () => {
 
     const { willLogout } = require('../authen-local')
     const { sessionToken } = authen
-    const _authen = await willLogout(sessionToken)
 
     // Is valid format
-    expect(_authen).toEqual(
+    expect(await willLogout(sessionToken)).toEqual(
       expect.objectContaining({
-        // _id: expect.any(ObjectId),
-        // installationId: expect.any(ObjectId),
+        _id: expect.any(ObjectId),
+        installationId: expect.any(ObjectId),
         userId: new ObjectId(userId),
-        isLoggedIn: false
-        // loggedInAt: expect.any(Date)
+        isLoggedIn: false,
+        loggedOutAt: expect.any(Date)
       })
     )
 
