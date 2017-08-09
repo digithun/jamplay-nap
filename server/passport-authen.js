@@ -50,6 +50,12 @@ const willGetProfileWithPassport = (provider, strategy, req) =>
     passport.authenticate(strategy, (err, payload) => {
       // Error?
       if (err) {
+        try {
+          return reject(new Error(JSON.parse(err.oauthError.data).error.message))
+        } catch (err) {
+          // Ignore wrong error format
+        }
+
         return reject(err)
       }
 
