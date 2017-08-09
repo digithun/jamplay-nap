@@ -49,17 +49,8 @@ const _willUnlink = async (provider, user) => {
   return user
 }
 
-const willLinkWithFacebook = async (user, profile, token) => {
-  // Guard
-  guard({ user })
-  guard({ profile })
-  guard({ token })
+const willLinkWithFacebook = async (user, profile, token) => _willLink('facebook', user, profile, token)
 
-  return _willLink('facebook', user, profile, token)
-}
-
-const willUnlinkFromFacebook = async user => {
-  return _willUnlink('facebook', user)
-}
+const willUnlinkFromFacebook = async user => _willUnlink('facebook', user)
 
 module.exports = { willLinkWithFacebook, willUnlinkFromFacebook }
