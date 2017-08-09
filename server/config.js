@@ -28,7 +28,7 @@ const config = {
   // Services
   redis_url: process.env.REDIS_URI || 'redis://redis',
   mongo_url: process.env.MONGODB_URI || 'mongodb://mongo/graphql',
-  port: parseInt(process.env.PORT || '0') || 3000,
+  base_url: process.env.BASE_URL || `http://localhost:3000`,
 
   // Security
   cookie_secret: process.env.COOKIE_SECRET || 'foo',

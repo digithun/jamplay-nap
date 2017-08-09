@@ -24,8 +24,7 @@ const willResetPasswordViaEmail = async (req, email) => {
   }
 
   // Will send email verification
-  const { auth_reset_uri, auth_new_reset_uri } = require('./config')
-  const base_url = `${req.protocol}://${req.headers.host}`
+  const { auth_reset_uri, auth_new_reset_uri, base_url } = require('./config')
   const { createPasswordResetURL, createNewPasswordResetURL } = require('./authen-local-passport')
   const password_reset_url = createPasswordResetURL(auth_reset_uri, base_url, token)
   const new_password_reset_url = createNewPasswordResetURL(auth_new_reset_uri, base_url)
@@ -45,7 +44,6 @@ const willResetPasswordViaEmail = async (req, email) => {
       new_password_reset_url
     })
     .catch(err => {
-      console.log(err.message)
       throw _emailError(` (${email}) : ${err.message}`)
     })
 
@@ -78,8 +76,7 @@ const willSignUp = async (req, email, password, extraFields) => {
   }
 
   // Will send email verification
-  const base_url = `${req.protocol}://${req.headers.host}`
-  const { auth_local_uri } = require('./config')
+  const { auth_local_uri, base_url } = require('./config')
   const { createVerificationURL } = require('./authen-local-passport')
   const verification_url = createVerificationURL(auth_local_uri, base_url, token)
 
