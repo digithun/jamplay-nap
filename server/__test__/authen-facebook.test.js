@@ -105,8 +105,6 @@ describe('authen-facebook', () => {
     await authenticate(req, {}, () => {
       // Should be no user
       expect(req.nap.session).toBeNull()
-
-      // Expected : JsonWebTokenError { name: 'JsonWebTokenError', message: 'jwt malformed' }
       expect(req.nap).toMatchSnapshot()
     }).catch(err => {
       expect(err).toMatchSnapshot()

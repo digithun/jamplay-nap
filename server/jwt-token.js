@@ -17,10 +17,15 @@ const _willAttachSessionFromSessionToken = async req => {
 }
 
 const authenticate = (req, res, next) =>
-  _willAttachSessionFromSessionToken(req).then(decoded => {
-    req.nap.session = decoded
-    next()
-  })
+  _willAttachSessionFromSessionToken(req)
+    .then(decoded => {
+      req.nap.session = decoded
+      next()
+    })
+    .catch(err => {
+      req.nap.session = null
+      next()
+    })
 
 const createSessionToken = (installationId, userId) => {
   const { sessions_ttl, jwt_secret } = require('./config')
