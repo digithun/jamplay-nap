@@ -119,6 +119,9 @@ const willSetUserStatusAsWaitForEmailReset = async (email, token) => {
   guard({ email })
   guard({ token })
 
+  // Guard
+  await willValidateEmail(email)
+
   // Use existing user
   return NAP.User.findOneAndUpdate(
     {

@@ -24,21 +24,23 @@ const seedAuthenByUserWithManyDevices = async (userId, authens) => {
   return userId
 }
 
-const seedUserWithEmailAndPassword = async (email, password) => {
-  const hashed_password = require('../../server/authen-local-passport').toHashedPassword(password)
+const seedUserWithEmailAndPassword = async (email, password, emailVerified = false) =>
+  seedUserWithData({
+    email,
+    password,
+    emailVerified
+  })
 
-  return mongoose.connection
+const seedUserWithData = async data =>
+  mongoose.connection
     .collection('users')
-    .insert({
-      email,
-      hashed_password,
-      emailVerified: true,
-      roles: 'user'
-    })
-    .then(data => {
-      return data.insertedIds[0]
-    })
-}
+    .insert(
+      Object.assign(data, {
+        hashed_password: require('../../server/authen-local-passport').toHashedPassword(data.password),
+        roles: data.roles || 'user'
+      })
+    )
+    .then(data => data.insertedIds[0])
 
 const seedInstalledAndVerifiedUser = async (email, password, deviceInfo) => {
   const userId = await seedUserWithEmailAndPassword(email, password)
@@ -64,4 +66,4 @@ const teardown = async () => {
   mongoServer.stop()
 }
 
-module.exports = { setup, teardown, seedAuthenByUserWithManyDevices, seedUserWithEmailAndPassword, seedInstalledAndVerifiedUser }
+module.exports = { setup, teardown, seedUserWithData, seedAuthenByUserWithManyDevices, seedUserWithEmailAndPassword, seedInstalledAndVerifiedUser }

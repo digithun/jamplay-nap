@@ -3,18 +3,10 @@ const { guard, errorBy } = require('./errors')
 const _emailError = msg => errorBy('AUTH_EMAIL_NOT_SENT', msg)
 
 // Forget password
-const willResetPasswordViaEmail = async (req, email) => {
-  // Guard
-  const { willValidateEmail } = require('./authen-local-passport')
-  const isValidEmail = await willValidateEmail(email)
-  if (!isValidEmail) {
-    throw require('./errors/codes').AUTH_INVALID_EMAIL
-  }
-
+const willResetPasswordViaEmail = async (req, email, token) => {
   // Token
-  const token = require('uuid/v4')()
+  token = token || require('uuid/v4')()
 
-  // Validate receiver
   const { willSetUserStatusAsWaitForEmailReset } = require('./authen-local-passport')
   const user = await willSetUserStatusAsWaitForEmailReset(email, token)
 
