@@ -87,6 +87,8 @@ export default graphql(signUpWithEmailAndPassword, {
           // Write our data back to the cache.
           proxy.writeQuery({ query: userProfile, data: cached })
         }
+      }).catch(err => {
+        window.alert(err.message)
       })
   })
 })(SignUp)

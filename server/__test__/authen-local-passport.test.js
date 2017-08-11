@@ -242,7 +242,7 @@ describe('authen-local-passport', () => {
       const { willUpdatePasswordByToken } = require('../authen-local-passport')
       const token = 'SOME_TOKEN'
       const password = 'SOME_PASSWORD'
-      expect(willUpdatePasswordByToken(token, password)).rejects.toMatchObject(require('../errors/commons').NAP_INVALID_VERIFY_TOKEN)
+      expect(willUpdatePasswordByToken(token, password)).rejects.toMatchObject(require('../errors/codes').AUTH_INVALID_ACTION_CODE)
     })
   })
 

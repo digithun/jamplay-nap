@@ -9,7 +9,7 @@ const mongoose = require('mongoose')
 const { ObjectId } = mongoose.Types
 
 // Seeder
-const { setup, teardown, seedUserWithEmailAndPassword } = require('./mongoose-helper')
+const { setup, teardown, seedUserWithEmailAndPassword, seedUserWithData } = require('./mongoose-helper')
 
 describe('authen-local', () => {
   beforeAll(setup)
@@ -54,6 +54,46 @@ describe('authen-local', () => {
     expect(willLogin(req, email, password)).rejects.toEqual(errorBy('NAP_INVALID_ARGUMENT', 'Required : password'))
   })
 
+  it('should throw `auth/invalid-login` error for not exist email', async () => {
+    // mock
+    const req = {
+      nap: { errors: [] },
+      body: { isMockServer: true }
+    }
+    const email = 'exist@bar.com'
+    const not_exiting_email = 'not_exiting@bar.com'
+    const password = 'foobar'
+
+    // Seed
+    await seedUserWithEmailAndPassword(email, password, true)
+
+    const { willLogin } = require('../authen-local')
+    expect(willLogin(req, not_exiting_email, password)).rejects.toEqual(require('../errors/codes').AUTH_INVALID_LOGIN)
+
+    // Dispose
+    await mongoose.connection.collection('users').drop()
+  })
+
+  it('should throw `auth/invalid-login` error for wrong password', async () => {
+    // mock
+    const req = {
+      nap: { errors: [] },
+      body: { isMockServer: true }
+    }
+    const email = 'foo@bar.com'
+    const password = 'foobar'
+    const wrong_password = 'notfoobar'
+
+    // Seed
+    await seedUserWithEmailAndPassword(email, password, true)
+
+    const { willLogin } = require('../authen-local')
+    expect(willLogin(req, email, wrong_password)).rejects.toEqual(require('../errors/codes').AUTH_INVALID_LOGIN)
+
+    // Dispose
+    await mongoose.connection.collection('users').drop()
+  })
+
   it('should able to login with user and password', async () => {
     // mock
     const req = {
@@ -64,31 +104,33 @@ describe('authen-local', () => {
     const password = 'foobar'
 
     // Seed
-    seedUserWithEmailAndPassword(email, password)
+    await seedUserWithEmailAndPassword(email, password, true)
 
     const { willLogin } = require('../authen-local')
     const user = await willLogin(req, email, password)
     expect(user).toMatchSnapshot()
+
+    // Dispose
+    await mongoose.connection.collection('users').drop()
   })
 
   it('should logout', async () => {
-    const userId = await seedUserWithEmailAndPassword('katopz@gmail.com', 'foobar')
+    const userId = await seedUserWithEmailAndPassword('katopz@gmail.com', 'foobar', true)
     const user = { _id: userId, emailVerified: true }
     const { willInstallAndLimitAuthen } = require('../authen-sessions')
     const authen = await willInstallAndLimitAuthen({ deviceInfo: 'foo' }, user, 'local')
 
     const { willLogout } = require('../authen-local')
     const { sessionToken } = authen
-    const _authen = await willLogout(sessionToken)
 
     // Is valid format
-    expect(_authen).toEqual(
+    expect(await willLogout(sessionToken)).toEqual(
       expect.objectContaining({
         _id: expect.any(ObjectId),
         installationId: expect.any(ObjectId),
-        userId: expect.any(ObjectId),
+        userId: new ObjectId(userId),
         isLoggedIn: false,
-        loggedInAt: expect.any(Date)
+        loggedOutAt: expect.any(Date)
       })
     )
 
@@ -101,22 +143,24 @@ describe('authen-local', () => {
     // mock
     const req = { headers: { host: 'localhost:3000' } }
     const email = 'foo@bar.com'
+    const password = 'foobar'
     const token = 'aa90f9ca-ced9-4cad-b4a2-948006bf000d'
 
-    // stub
-    global.NAP = {}
-    NAP.User = {
-      findOneAndUpdate: jest.fn().mockImplementationOnce(async () => ({
-        _id: '592c0bb4484d740e0e73798b',
-        email,
-        role: 'user',
-        token
-      }))
-    }
+    await seedUserWithData({
+      email,
+      password,
+      token,
+      emailVerified: true
+    })
 
     const { willResetPasswordViaEmail } = require('../authen-local')
-    const result = await willResetPasswordViaEmail(req, email)
-    expect(result).toMatchSnapshot()
+    const result = await willResetPasswordViaEmail(req, email, token)
+    expect(result).toEqual(
+      expect.objectContaining({
+        _id: expect.any(ObjectId),
+        status: 'WAIT_FOR_EMAIL_RESET'
+      })
+    )
   })
 
   it('should able to signup', async () => {

@@ -7,6 +7,7 @@ Object {
   "auth_new_reset_uri": "http://localhost:4000/auth/reset",
   "auth_reset_uri": "http://localhost:4000/auth/reset",
   "auth_verified_uri": "http://localhost:4000/auth/verified",
+  "base_url": "http://127.0.0.1:8080",
   "bigquery_service_endpoint": null,
   "cookie_secret": "foo",
   "dev": true,
@@ -23,7 +24,6 @@ Object {
   "mubsub_enabled": false,
   "next_disabled": false,
   "passport_disabled": false,
-  "port": 3000,
   "redis_url": "redis://redis",
   "sessions_ttl": 60000,
 }

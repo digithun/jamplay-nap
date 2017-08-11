@@ -2,15 +2,8 @@
 
 exports[`errors should add code as new generic error to request 1`] = `
 Object {
-  "code": 3,
-  "message": "",
-}
-`;
-
-exports[`errors should add code with common error as new generic error to request 1`] = `
-Object {
   "code": 403,
-  "message": "Forbidden",
+  "message": "",
 }
 `;
 

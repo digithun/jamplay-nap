@@ -6,7 +6,7 @@ const mongoose = require('mongoose')
 const { ObjectId } = mongoose.Types
 
 // Seeder
-const { setup, teardown, seedUserWithManyDevices, seedInstalledAndVerifiedUser } = require('./mongoose-helper')
+const { setup, teardown, seedAuthenByUserWithManyDevices, seedInstalledAndVerifiedUser } = require('./mongoose-helper')
 
 describe('authen-sessions', async () => {
   beforeAll(setup)
@@ -31,6 +31,9 @@ describe('authen-sessions', async () => {
           updatedAt: expect.any(Date)
         })
       )
+
+      // Dispose
+      await mongoose.connection.collection('users').drop()
     })
 
     it('should provide sessionToken that can be expire', async () => {
@@ -89,7 +92,7 @@ describe('authen-sessions', async () => {
     it('should provide latest logged in device list sort by loggedInAt.', async () => {
       // Seed
       const userId = new ObjectId('597c695ae60d9000711f4131')
-      seedUserWithManyDevices(userId, [
+      await seedAuthenByUserWithManyDevices(userId, [
         {
           installationId: '597c6478d5901c0062984128',
           loggedInAt: new Date('2017-08-02T12:45:59.928Z')
@@ -101,7 +104,7 @@ describe('authen-sessions', async () => {
       ])
 
       // Others
-      mongoose.connection.collection('authens').insert({
+      await mongoose.connection.collection('authens').insertOne({
         userId: new ObjectId('597c695ae60d9000711f4132'),
         isLoggedIn: true,
         installationId: new ObjectId('597c6973e60d9000711f4133'),
@@ -131,14 +134,13 @@ describe('authen-sessions', async () => {
       })
 
       // Dispose
-      // await mongoose.connection.collection('users').drop()
       await mongoose.connection.collection('authens').drop()
     })
 
     it('should let sessionToken expire if user logged in more than 5 devices.', async () => {
       // Seed authens
       const userId = new ObjectId('597c695ae60d9000711f4131')
-      seedUserWithManyDevices(userId, [
+      await seedAuthenByUserWithManyDevices(userId, [
         {
           installationId: '597c6478d5901c0062984128',
           loggedInAt: new Date('2017-08-02T12:45:00.928Z')
@@ -164,7 +166,7 @@ describe('authen-sessions', async () => {
       // Seed users
       const email = 'foo@bar.com'
       const password = 'foobar'
-      mongoose.connection.collection('users').insert({
+      await mongoose.connection.collection('users').insertOne({
         _id: userId,
         email,
         hashed_password: '$2a$10$r9yAY4TYm88cpIOzyaaIJOjEz0S8DBZs8NS/3C1sUlyXWez82r.ki',

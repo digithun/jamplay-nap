@@ -10,7 +10,7 @@ const { GenericError } = require('./errors')
 require('es6-promise').polyfill()
 require('isomorphic-fetch')
 
-const init = ({ graphiql_enabled: graphiql, port, e_wallet_enabled }, app) => {
+const init = ({ graphiql_enabled: graphiql, base_url, port, e_wallet_enabled }, app) => {
   // Custom GraphQL
   NAP.expose = {
     extendModel: require('./graphql').extendModel,
@@ -45,7 +45,7 @@ const init = ({ graphiql_enabled: graphiql, port, e_wallet_enabled }, app) => {
   const schema = is_optics_enabled ? OpticsAgent.instrumentSchema(buildSchema()) : buildSchema()
   is_optics_enabled && app.use(OpticsAgent.middleware())
 
-// attach middleware
+  // attach middleware
   if (bigquery_service_endpoint) {
     const { insertQuery, initMiddleWare } = require('../bigquery/queryCollection')
     app.all('/bigQuery/insert', (req, res) => insertQuery(req, res))
@@ -78,7 +78,7 @@ const init = ({ graphiql_enabled: graphiql, port, e_wallet_enabled }, app) => {
   )
 
   // Status
-  debug.info(`GraphQL :`, graphiql ? `http://localhost:${port}/graphql` : 'N/A')
+  debug.info(`GraphQL :`, graphiql ? `${base_url}/graphql` : 'N/A')
 }
 
 module.exports = init

@@ -1,5 +1,5 @@
 const { guard } = require('./errors')
-const { AUTH_WEAK_PASSWORD } = require('./errors/codes')
+const ERRORS = require('./errors/codes')
 
 const { URL } = require('url')
 
@@ -24,7 +24,7 @@ const willValidateEmail = async email => {
   guard({ email })
 
   if (is.not.email(email)) {
-    throw require('./errors/codes').AUTH_INVALID_EMAIL
+    throw ERRORS.AUTH_INVALID_EMAIL
   }
 
   return true
@@ -36,7 +36,7 @@ const willValidatePassword = async password => {
   guard({ password })
 
   if (is.not.within(password.length, 5, 256)) {
-    throw AUTH_WEAK_PASSWORD
+    throw ERRORS.AUTH_WEAK_PASSWORD
   }
 
   return true
@@ -91,27 +91,15 @@ const _guardUnverifiedUserForSignUp = user => {
   // User, but...
   switch (user.status) {
     case 'WAIT_FOR_EMAIL_VERIFICATION':
-      throw require('./errors/codes').AUTH_EMAIL_ALREADY_SENT
+      throw ERRORS.AUTH_EMAIL_ALREADY_SENT
     case 'VERIFIED_BY_EMAIL':
-      throw require('./errors/codes').AUTH_EMAIL_ALREADY_IN_USE
+      throw ERRORS.AUTH_EMAIL_ALREADY_IN_USE
   }
 }
 
 const _guardDuplicatedUserByEmail = user => {
   if (user) {
-    throw require('./errors/codes').AUTH_EMAIL_ALREADY_IN_USE
-  }
-}
-
-const _guardInvalidUserForLoginWithLocal = user => {
-  // No user
-  if (!user) {
-    throw require('./errors/codes').AUTH_USER_NOT_FOUND
-  }
-
-  // User, but...
-  if (!user.emailVerified) {
-    throw require('./errors/codes').AUTH_EMAIL_NOT_VERIFIED
+    throw ERRORS.AUTH_EMAIL_ALREADY_IN_USE
   }
 }
 
@@ -130,6 +118,9 @@ const willSetUserStatusAsWaitForEmailReset = async (email, token) => {
   // Guard
   guard({ email })
   guard({ token })
+
+  // Guard
+  await willValidateEmail(email)
 
   // Use existing user
   return NAP.User.findOneAndUpdate(
@@ -155,7 +146,7 @@ const _willMarkUserAsVerifiedByToken = async token => {
   // Look up user by token
   const user = await NAP.User.findOneAndUpdate({ token }, _verifiedByEmailPayload())
   if (!user) {
-    throw require('./errors/codes').AUTH_INVALID_USER_TOKEN
+    throw ERRORS.AUTH_INVALID_USER_TOKEN
   }
 
   return user
@@ -170,7 +161,7 @@ const _willValidatePassword = async (password, hashed_password) => {
   const bcrypt = require('bcryptjs')
   const isPasswordMatch = bcrypt.compareSync(password, hashed_password)
   if (!isPasswordMatch) {
-    throw require('./errors/codes').AUTH_WRONG_PASSWORD
+    throw ERRORS.AUTH_WRONG_PASSWORD
   }
 
   return true
@@ -182,11 +173,20 @@ const _getUserByEmailAndPassword = async (email, password) => {
 
   // Guard unverified or not existing user
   const user = await NAP.User.findOne({ email })
-  _guardInvalidUserForLoginWithLocal(user)
+
+  // No user for that email, will throw invalid login
+  if (!user) {
+    throw ERRORS.AUTH_USER_NOT_FOUND
+  }
+
+  // User for that email exist but not verify
+  if (!user.emailVerified) {
+    throw ERRORS.AUTH_EMAIL_NOT_VERIFIED
+  }
 
   const isPasswordMatch = await _willValidatePassword(password, user.hashed_password)
   if (!isPasswordMatch) {
-    throw require('./errors/codes').AUTH_WRONG_PASSWORD
+    throw ERRORS.AUTH_WRONG_PASSWORD
   } else {
     return user
   }
@@ -198,7 +198,12 @@ const validateLocalStrategy = (email, password, done) => {
       done(null, user)
     })
     .catch(err => {
-      done(err, null)
+      // Will throw only invalid login for these cases
+      if (err.code === ERRORS.AUTH_USER_NOT_FOUND.code || err.code === ERRORS.AUTH_WRONG_PASSWORD.code) {
+        done(ERRORS.AUTH_INVALID_LOGIN)
+      } else {
+        done(err, null)
+      }
     })
 }
 
@@ -220,11 +225,11 @@ const auth_local_token = (req, res) => {
 const willUpdatePasswordByToken = async (token, password) => {
   // Guard token
   let user = await NAP.User.findOne({ token })
-  if (!user) throw require('./errors/commons').NAP_INVALID_VERIFY_TOKEN
+  if (!user) throw ERRORS.AUTH_INVALID_ACTION_CODE
 
   // Guard email
   const isValid = await willValidatePassword(password)
-  if (!isValid) throw require('./errors/codes').AUTH_INVALID_PASSWORD
+  if (!isValid) throw ERRORS.AUTH_INVALID_PASSWORD
 
   user = _withHashedPassword(user, password)
   user = Object.assign(user, _verifiedByEmailPayload())

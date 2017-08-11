@@ -1,7 +1,7 @@
 const { onError } = require('../../errors')
 const { willGetUserFromSession } = require('../../../server/authen-sessions')
 
-const willReadUser = async ({ context }) => willGetUserFromSession(context).catch(onError(context))
+const willReadUser = async ({ context }) => willGetUserFromSession(context).catch(() => null)
 
 const unlinkFromFacebook = async ({ context }) => {
   const user = await willGetUserFromSession(context).catch(onError(context))

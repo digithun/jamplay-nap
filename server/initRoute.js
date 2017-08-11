@@ -48,16 +48,18 @@ const gracefulShutdown = (server, signal) => {
   })
 }
 
-const init = ({ port }, app, nextjs) =>
+const init = ({ base_url }, app, nextjs) =>
   new Promise((resolve, reject) => {
     // Next exist?
     initNextRoute(app, nextjs)
 
     // Server
+    const { URL } = require('url')
+    const port = new URL(base_url).port
     const server = app.listen(port, err => {
       if (err) return reject(err)
 
-      debug.info(`Express : http://localhost:${port}`)
+      debug.info(`Express : ${base_url}`)
       resolve(app)
     })
 

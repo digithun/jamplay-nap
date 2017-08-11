@@ -2,30 +2,35 @@ const { promisify } = require('util')
 const jwt = require('jsonwebtoken')
 const willDecodeSessionToken = promisify(jwt.verify)
 
-const _willAttachSessionFromSessionToken = async req => {
-  // Ensure no session
-  req.nap.session = null
-
+const authenticate = (req, res, next) => {
   // Guard : Ignore empty token
   const { token } = req
-  if (!token) {
-    return req
+  if (typeof token === 'undefined' || !token) {
+    req.nap.session = null
+    next()
+    return null
   }
 
+  // Guard : Require jwt_secret
   const { jwt_secret } = require('./config')
+  if (typeof jwt_secret === 'undefined' || !jwt_secret) throw new Error('Missing JWT_SECRET')
+
+  // Attach sessions
   return willDecodeSessionToken(token, jwt_secret)
+    .then(decoded => {
+      req.nap.session = decoded
+      next()
+    })
+    .catch(err => {
+      req.nap.session = null
+      next()
+    })
 }
 
-const authenticate = (req, res, next) =>
-  _willAttachSessionFromSessionToken(req).then(decoded => {
-    req.nap.session = decoded
-    next()
-  })
-
 const createSessionToken = (installationId, userId) => {
-  const config = require('./config')
+  const { sessions_ttl, jwt_secret } = require('./config')
   const jwt = require('jsonwebtoken')
-  const expires = +new Date() + (config.sessions_ttl || -1)
+  const expires = +new Date() + sessions_ttl
   const createdAt = new Date().toISOString()
   const expireAt = new Date(expires).toISOString()
 
@@ -36,7 +41,7 @@ const createSessionToken = (installationId, userId) => {
       createdAt,
       expireAt
     },
-    config.jwt_secret
+    jwt_secret
   )
 
   return sessionToken

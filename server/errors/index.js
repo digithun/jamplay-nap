@@ -5,11 +5,6 @@ class GenericError extends Error {
   }
 }
 
-const _COMMON_ERRORS = {
-  403: 'Forbidden',
-  501: 'Server error'
-}
-
 const DEFAULT_CODE = 'node-error'
 
 const _push = (req, { code, message }) => {
@@ -25,38 +20,44 @@ const onError = req => (...args) => {
 
   // GenericError
   if (args[0] instanceof GenericError) {
-    _push(req, args[0])
-    return null
+    const err = args[0]
+    _push(req, err)
+    throw err
   }
 
   // Error Object
   if (args[0].code && args[0].message) {
-    _push(req, new GenericError(args[0].code, args[0].message))
-    return null
+    const err = new GenericError(args[0].code, args[0].message)
+    _push(req, err)
+    throw err
   }
 
   // Error('foo')
   if (args[0] instanceof Error) {
-    _push(req, new GenericError(DEFAULT_CODE, args[0].message))
-    return null
+    const err = new GenericError(DEFAULT_CODE, args[0].message)
+    _push(req, err)
+    throw err
   }
 
   // 'foo'
   if (typeof args[0] === 'string') {
-    _push(req, new GenericError(DEFAULT_CODE, args[0]))
-    return null
+    const err = new GenericError(DEFAULT_CODE, args[0])
+    _push(req, err)
+    throw err
   }
 
   // 403, 'foo'
   if (typeof args[0] === 'number' && typeof args[1] === 'string') {
-    _push(req, new GenericError(args[0], args[1]))
-    return null
+    const err = new GenericError(args[0], args[1])
+    _push(req, err)
+    throw err
   }
 
   // 403
   if (typeof args[0] === 'number' && args.length === 1) {
-    _push(req, new GenericError(args[0], _COMMON_ERRORS[args[0]] || ''))
-    return null
+    const err = new GenericError(args[0])
+    _push(req, err)
+    throw err
   }
 
   return null

@@ -80,6 +80,8 @@ export default graphql(forget, {
           // Write our data back to the cache.
           proxy.writeQuery({ query: userProfile, data: cached })
         }
+      }).catch(err => {
+        window.alert(err.message)
       })
   })
 })(Forget)

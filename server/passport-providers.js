@@ -14,7 +14,7 @@ const init = (app, passport) => {
 
   // Define a Passport strategy for provider
   providers.forEach(({ provider, Strategy, strategyOptions, getUserFromProfile }) => {
-    strategyOptions.callbackURL = `http://localhost:${config.port}/auth/${provider}/callback`
+    strategyOptions.callbackURL = `${config.base_url}/auth/${provider}/callback`
     strategyOptions.passReqToCallback = true
 
     passport.use(

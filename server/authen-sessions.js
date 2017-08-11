@@ -1,13 +1,7 @@
 const SESSIONS_TTL = require('./config').sessions_ttl
 const validateSession = async ({ expireAt }) => {
   // Guard
-  const { guard } = require('./errors')
-  guard({ expireAt })
-
-  // No expire limit?
-  if (SESSIONS_TTL === -1) {
-    return true
-  }
+  if (!expireAt) return false
 
   // Expired?
   const expires = new Date(expireAt).valueOf()
@@ -101,14 +95,14 @@ const willGetUserFromSession = async context => {
 
   // Guard
   if (!userId) {
-    throw require('./errors/codes').AUTH_MISSING_UID
+    return null
   }
 
   // Expire?
-  await validateSession(session)
+  const isValid = await validateSession(session)
 
   // User
-  return NAP.User.findById(userId)
+  return isValid ? NAP.User.findById(userId) : null
 }
 
 const willCreateUser = async user => NAP.User.create(Object.assign(user, { role: 'user' }))

@@ -96,7 +96,7 @@ const withGraphQL = graphql(linkWithFacebook, {
         update: (proxy, { data }) => {
           // Guard
           const { errors } = data
-          if (errors) {
+          if (errors && errors[0]) {
             window.alert(errors[0].message)
             return
           }
@@ -113,6 +113,8 @@ const withGraphQL = graphql(linkWithFacebook, {
           // Write our data back to the cache.
           proxy.writeQuery({ query: userProfile, data: cached })
         }
+      }).catch(err => {
+        window.alert(err.message)
       })
   })
 })

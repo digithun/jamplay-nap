@@ -3,18 +3,10 @@ const { guard, errorBy } = require('./errors')
 const _emailError = msg => errorBy('AUTH_EMAIL_NOT_SENT', msg)
 
 // Forget password
-const willResetPasswordViaEmail = async (req, email) => {
-  // Guard
-  const { willValidateEmail } = require('./authen-local-passport')
-  const isValidEmail = await willValidateEmail(email)
-  if (!isValidEmail) {
-    throw require('./errors/codes').AUTH_INVALID_EMAIL
-  }
-
+const willResetPasswordViaEmail = async (req, email, token) => {
   // Token
-  const token = require('uuid/v4')()
+  token = token || require('uuid/v4')()
 
-  // Validate receiver
   const { willSetUserStatusAsWaitForEmailReset } = require('./authen-local-passport')
   const user = await willSetUserStatusAsWaitForEmailReset(email, token)
 
@@ -24,8 +16,7 @@ const willResetPasswordViaEmail = async (req, email) => {
   }
 
   // Will send email verification
-  const { auth_reset_uri, auth_new_reset_uri } = require('./config')
-  const base_url = `${req.protocol}://${req.headers.host}`
+  const { auth_reset_uri, auth_new_reset_uri, base_url } = require('./config')
   const { createPasswordResetURL, createNewPasswordResetURL } = require('./authen-local-passport')
   const password_reset_url = createPasswordResetURL(auth_reset_uri, base_url, token)
   const new_password_reset_url = createNewPasswordResetURL(auth_new_reset_uri, base_url)
@@ -45,7 +36,6 @@ const willResetPasswordViaEmail = async (req, email) => {
       new_password_reset_url
     })
     .catch(err => {
-      console.log(err.message)
       throw _emailError(` (${email}) : ${err.message}`)
     })
 
@@ -78,8 +68,7 @@ const willSignUp = async (req, email, password, extraFields) => {
   }
 
   // Will send email verification
-  const base_url = `${req.protocol}://${req.headers.host}`
-  const { auth_local_uri } = require('./config')
+  const { auth_local_uri, base_url } = require('./config')
   const { createVerificationURL } = require('./authen-local-passport')
   const verification_url = createVerificationURL(auth_local_uri, base_url, token)
 

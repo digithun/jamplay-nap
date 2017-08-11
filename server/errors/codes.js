@@ -127,5 +127,13 @@ module.exports = {
   },
   get AUTH_PROVIDER_ALREADY_LINKED () {
     return new GenericError('auth/provider-already-linked', "The provider has already been linked to the user. This error is thrown even if this is not the same provider's account that is currently linked to the user.")
+  },
+
+  // Ref : https://firebase.google.com/docs/reference/js/firebase.auth.Auth
+  get AUTH_INVALID_ACTION_CODE () {
+    return new GenericError('auth/invalid-action-code', 'The password reset code is invalid. This can happen if the code is malformed or has already been used.')
+  },
+  get AUTH_INVALID_LOGIN () {
+    return new GenericError('auth/invalid-login', 'Provided email and/or password was invalid.')
   }
 }

@@ -5,12 +5,7 @@ const init = mongo_url =>
     mongoose.Promise = global.Promise
 
     mongoose.connect(mongo_url, {
-      useMongoClient: true,
-      server: {
-        auto_reconnect: true,
-        reconnectTries: Number.MAX_VLUE,
-        reconnectInterval: 1000
-      }
+      useMongoClient: true
     })
 
     const connection = mongoose.connection
