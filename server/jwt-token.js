@@ -2,22 +2,21 @@ const { promisify } = require('util')
 const jwt = require('jsonwebtoken')
 const willDecodeSessionToken = promisify(jwt.verify)
 
-const _willAttachSessionFromSessionToken = async req => {
-  // Ensure no session
-  req.nap.session = null
-
+const authenticate = (req, res, next) => {
   // Guard : Ignore empty token
   const { token } = req
-  if (!token) {
-    return req
+  if (typeof token === 'undefined' || !token) {
+    req.nap.session = null
+    next()
+    return null
   }
 
+  // Guard : Require jwt_secret
   const { jwt_secret } = require('./config')
-  return willDecodeSessionToken(token, jwt_secret)
-}
+  if (typeof jwt_secret === 'undefined' || !jwt_secret) throw new Error('Missing JWT_SECRET')
 
-const authenticate = (req, res, next) =>
-  _willAttachSessionFromSessionToken(req)
+  // Attach sessions
+  return willDecodeSessionToken(token, jwt_secret)
     .then(decoded => {
       req.nap.session = decoded
       next()
@@ -26,6 +25,7 @@ const authenticate = (req, res, next) =>
       req.nap.session = null
       next()
     })
+}
 
 const createSessionToken = (installationId, userId) => {
   const { sessions_ttl, jwt_secret } = require('./config')
