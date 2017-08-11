@@ -141,7 +141,10 @@ describe('authen-local', () => {
 
   it('should reset password', async () => {
     // mock
-    const req = { headers: { host: 'localhost:3000' } }
+    const req = {
+      nap: { errors: [] },
+      body: { isMockServer: true }
+    }
     const email = 'foo@bar.com'
     const password = 'foobar'
     const token = 'aa90f9ca-ced9-4cad-b4a2-948006bf000d'
@@ -161,26 +164,37 @@ describe('authen-local', () => {
         status: 'WAIT_FOR_EMAIL_RESET'
       })
     )
+
+    // Dispose
+    await mongoose.connection.collection('users').drop()
   })
 
   it('should able to signup', async () => {
     // mock
-    const req = { headers: { host: 'localhost:3000' } }
+    const req = {
+      nap: { errors: [] },
+      body: { isMockServer: true }
+    }
+
     const email = 'foo@bar.com'
     const password = 'password'
 
-    // stub
-    global.NAP = {}
-    NAP.User = {
-      findOne: jest.fn().mockImplementationOnce(() => null),
-      create: jest.fn().mockImplementationOnce(async () => ({
-        _id: '592c0bb4484d740e0e73798b',
-        role: 'user'
-      }))
-    }
-
     const { willSignUp } = require('../authen-local')
-    const result = await willSignUp(req, email, password)
-    expect(result).toMatchSnapshot()
+
+    expect(await willSignUp(req, email, password)).toEqual(
+      expect.objectContaining({
+        _id: expect.any(ObjectId),
+        email,
+        status: 'WAIT_FOR_EMAIL_VERIFICATION',
+        emailVerified: false,
+        hashed_password: expect.any(String),
+        token: expect.any(String),
+        createdAt: expect.any(Date),
+        updatedAt: expect.any(Date)
+      })
+    )
+
+    // Dispose
+    await mongoose.connection.collection('users').drop()
   })
 })

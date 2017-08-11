@@ -7,10 +7,3 @@ Object {
   "name": "bar",
 }
 `;
-
-exports[`authen-local should able to signup 1`] = `
-Object {
-  "_id": "592c0bb4484d740e0e73798b",
-  "role": "user",
-}
-`;
