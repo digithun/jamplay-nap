@@ -11,7 +11,7 @@ module.exports = {
     return new GenericError('nap/session-not-found', 'NAP session not found. ')
   },
   get NAP_INSTALLATION_NOT_FOUND () {
-    return new GenericError('nap/installation-not-found', 'NAP session not found. ')
+    return new GenericError('nap/installation-not-found', 'NAP installation not found. ')
   },
   get NAP_USER_NOT_FOUND () {
     return new GenericError('nap/user-not-found', 'NAP user not found. ')
