@@ -43,13 +43,11 @@ module.exports.buildSchema = () => {
   const GQC = new ComposeStorage()
   const models = require('./models')()
   require('./composers')(models)
-  const { onError } = require('../errors')
 
   const userAccess = resolvers => {
     Object.keys(resolvers).forEach(k => {
       resolvers[k] = resolvers[k].wrapResolve(next => rp => {
         if (!rp.context.nap.session) {
-          onError(rp.context)(require('../errors/commons').NAP_SESSION_NOT_FOUND)
           return null
         }
         return next(rp)
