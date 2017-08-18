@@ -50,7 +50,8 @@ const init = (config, app) => {
           },
           spendJelly: async ({ refId, spendType, merchantId, merchantAliasId, amount, currencyType, commissionRate }) => {
             const result = await callApi('spend/spendJelly', { refId, spendType, merchantId, merchantAliasId, amount, currencyType, commissionRate })
-            return result.reader
+            console.log(result)
+            return result
           },
           // TO DO: change schema
           addExchange: async ({ amountIn, amountOut, conversionType }) => {
