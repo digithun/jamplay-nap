@@ -237,6 +237,11 @@ describe('authen-local-passport', () => {
       }
       reset_password_by_token(req, res)
     })
+  })
+
+  describe('mock-server', () => {
+    beforeAll(setup)
+    afterAll(teardown)
 
     it('should throw error if verify token has been use', async () => {
       const { willUpdatePasswordByToken } = require('../authen-local-passport')
@@ -244,11 +249,6 @@ describe('authen-local-passport', () => {
       const password = 'SOME_PASSWORD'
       expect(willUpdatePasswordByToken(token, password)).rejects.toMatchObject(require('../errors/codes').AUTH_INVALID_ACTION_CODE)
     })
-  })
-
-  describe('mock-server', () => {
-    beforeAll(setup)
-    afterAll(teardown)
 
     it('should redirect valid token to /auth/verified', async () => {
       const { auth_local_token } = require('../authen-local-passport').handler

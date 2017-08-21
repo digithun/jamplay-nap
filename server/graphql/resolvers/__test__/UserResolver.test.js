@@ -1,39 +1,40 @@
 /* eslint-env jest */
 const _NOW_PLUS_60SEC_ISO = new Date(+new Date() + 1000 * 60).toISOString()
 
+// Seeder
+const mongoose = require('mongoose')
+const { setup, teardown, seedVerifiedLocalUser, __expected__seedVerifiedLocalUser } = require('../../../__test__/mongoose-helper')
+
 describe('UserResolver', () => {
+  beforeAll(setup)
+  afterAll(teardown)
+
   it('should return null if session not provided', async () => {
     const { user: willReadUser } = require('../UserResolver')
-    const context = { nap: { errors: [] } }
+    const context = {
+      nap: { errors: [] },
+      body: { isMockServer: true }
+    }
+
     const user = await willReadUser({ context })
     expect(user).toBeNull()
   })
 
   it('should return user data if has session', async () => {
-    // mock
-    const userData = { foo: 'bar' }
-
-    // stub
-    global.NAP = {}
-    NAP.User = {
-      findById: jest.fn().mockImplementationOnce(() =>
-        Promise.resolve(
-          Object.assign(
-            {
-              _id: '592c0bb4484d740e0e73798b',
-              role: 'user'
-            },
-            userData
-          )
-        )
-      )
-    }
-
+    // Seed
+    const userId = await seedVerifiedLocalUser()
     const { user: willReadUser } = require('../UserResolver')
-    const context = { nap: { session: { userId: 'foo', expireAt: _NOW_PLUS_60SEC_ISO } } }
+    const context = {
+      nap: { session: { userId, expireAt: _NOW_PLUS_60SEC_ISO } },
+      body: { isMockServer: true }
+    }
     const user = await willReadUser({ context })
 
-    expect(user).toMatchSnapshot()
+    // Expect
+    expect(user).toEqual(expect.objectContaining(__expected__seedVerifiedLocalUser))
+
+    // Dispose
+    await mongoose.connection.collection('users').drop()
   })
 
   it('should able to forget password', async () => {
