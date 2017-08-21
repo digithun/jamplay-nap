@@ -9,7 +9,7 @@ const mongoose = require('mongoose')
 const { ObjectId } = mongoose.Types
 
 // Seeder
-const { setup, teardown, seedUserWithEmailAndPassword, seedUserWithData } = require('./mongoose-helper')
+const { setup, teardown, seedUserWithEmailAndPassword, seedUserWithData, seedVerifiedLocalUser, __mocked__verifiedLocalUserPayload, __expected__seedVerifiedLocalUser } = require('./mongoose-helper')
 
 describe('authen-local', () => {
   beforeAll(setup)
@@ -19,7 +19,7 @@ describe('authen-local', () => {
     // mock
     const req = {
       nap: { errors: [] },
-      body: {}
+      body: { isMockServer: true }
     }
     const email = null
     const password = null
@@ -32,7 +32,7 @@ describe('authen-local', () => {
     // mock
     const req = {
       nap: { errors: [] },
-      body: {}
+      body: { isMockServer: true }
     }
     const email = null
     const password = 'foobar'
@@ -45,7 +45,7 @@ describe('authen-local', () => {
     // mock
     const req = {
       nap: { errors: [] },
-      body: {}
+      body: { isMockServer: true }
     }
     const email = 'katopz@gmail.com'
     const password = null
@@ -98,24 +98,25 @@ describe('authen-local', () => {
     // mock
     const req = {
       nap: { errors: [] },
-      body: {}
+      body: { isMockServer: true }
     }
-    const email = 'katopz@gmail.com'
-    const password = 'foobar'
 
     // Seed
-    await seedUserWithEmailAndPassword(email, password, true)
+    await seedVerifiedLocalUser()
 
     const { willLogin } = require('../authen-local')
+    const { email, password } = __mocked__verifiedLocalUserPayload
     const user = await willLogin(req, email, password)
-    expect(user).toMatchSnapshot()
+
+    // Expect
+    expect(user).toEqual(expect.objectContaining(__expected__seedVerifiedLocalUser))
 
     // Dispose
     await mongoose.connection.collection('users').drop()
   })
 
   it('should logout', async () => {
-    const userId = await seedUserWithEmailAndPassword('katopz@gmail.com', 'foobar', true)
+    const userId = await seedVerifiedLocalUser()
     const user = { _id: userId, emailVerified: true }
     const { willInstallAndLimitAuthen } = require('../authen-sessions')
     const authen = await willInstallAndLimitAuthen({ deviceInfo: 'foo' }, user, 'local')

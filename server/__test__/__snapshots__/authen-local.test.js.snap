@@ -1,9 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`authen-local should able to login with user and password 1`] = `
-Object {
-  "_id": "58d0e20e7ff032b39c2a9a18",
-  "email": "foo@bar.com",
-  "name": "bar",
-}
-`;

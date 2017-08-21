@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const { ObjectId } = mongoose.Types
 const MongodbMemoryServer = require('mongodb-memory-server')
 mongoose.Promise = Promise
 
@@ -7,6 +8,27 @@ jasmine.DEFAULT_TIMEOUT_INTERVAL = 60000
 
 let mongoServer
 
+// Mock data
+const __mocked__verifiedLocalUserPayload = {
+  email: 'foo@bar.com',
+  password: 'foobar',
+  emailVerified: true,
+  role: 'user'
+}
+
+const __expected__seedVerifiedLocalUser = {
+  _id: expect.any(ObjectId),
+  email: expect.any(String),
+  role: 'user',
+  emailVerified: true,
+  hashed_password: expect.any(String)
+}
+/*
+  _id: expect.any(ObjectId),
+  email: expect.any(String),
+  hashed_password: expect.any(String),
+  emailVerified: true,
+*/
 // Seeder
 const seedAuthenByUserWithManyDevices = async (userId, authens) => {
   // Me with many devices
@@ -37,10 +59,12 @@ const seedUserWithData = async data =>
     .insert(
       Object.assign(data, {
         hashed_password: require('../../server/authen-local-passport').toHashedPassword(data.password),
-        roles: data.roles || 'user'
+        role: data.role || 'user'
       })
     )
     .then(data => data.insertedIds[0])
+
+const seedVerifiedLocalUser = async () => seedUserWithData(__mocked__verifiedLocalUserPayload)
 
 const seedInstalledAndVerifiedUser = async (email, password, deviceInfo) => {
   const userId = await seedUserWithEmailAndPassword(email, password)
@@ -66,4 +90,14 @@ const teardown = async () => {
   mongoServer.stop()
 }
 
-module.exports = { setup, teardown, seedUserWithData, seedAuthenByUserWithManyDevices, seedUserWithEmailAndPassword, seedInstalledAndVerifiedUser }
+module.exports = {
+  setup,
+  teardown,
+  seedUserWithData,
+  seedAuthenByUserWithManyDevices,
+  seedUserWithEmailAndPassword,
+  seedInstalledAndVerifiedUser,
+  seedVerifiedLocalUser,
+  __mocked__verifiedLocalUserPayload,
+  __expected__seedVerifiedLocalUser
+}
