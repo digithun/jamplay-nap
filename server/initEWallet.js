@@ -65,6 +65,14 @@ const init = (config, app) => {
           createRateTable: async ({ keyValue }) => {
             const result = await callApi('rate/createRate', { keyValue })
             return result
+          },
+          findExchangeByToken: async ({ token }) => {
+            const result = await callApi('exchange/findByToken', { token })
+            return result.exchanges
+          },
+          findSpendByToken: async ({ token }) => {
+            const result = await callApi('spend/findByToken', { token })
+            return result.spends
           }
         }
       }
