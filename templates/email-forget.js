@@ -30,9 +30,9 @@ module.exports = (domain, email, password_reset_url, new_password_reset_url) => 
   to: [email],
   subject: `[${domain}] Please reset your password`,
   html: `
-  
-  <img src='http://static.jamplay.world:3002/static/logo-orange@2x.png' style='width:150px;margin-bottom:10px' /> 
-  <div style='font-size:26px;font-weight:bold;color:white;background-color:#df6336;padding: 20px;text-align:center;'>เปลี่ยนรหัสผ่านใหม่</div> 
+
+  <img src='http://static.jamplay.world:3002/static/logo-orange@2x.png' style='width:150px;margin-bottom:10px' />
+  <div style='font-size:26px;font-weight:bold;color:white;background-color:#df6336;padding: 20px;text-align:center;'>เปลี่ยนรหัสผ่านใหม่</div>
   <div style='${contentStyle}'>
     <p>
       กดลิ้งค์ด้านล่าง เพื่อดำเนินการเปลี่ยนรหัสผ่านใหม่
@@ -40,7 +40,6 @@ module.exports = (domain, email, password_reset_url, new_password_reset_url) => 
     <p>
       <a href='${password_reset_url}'>${password_reset_url}</a>
     </p>
-  
   </div>
   <div style='${footerContainerStyle}'>
     <a style='${footerItemWrap}${footerItemBorder}' href='http://www.jamplay.world/about'>เกี่ยวกับ JamPlay</a>
