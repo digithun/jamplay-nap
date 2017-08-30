@@ -28,6 +28,7 @@ const headerLogoContainer = `
 
 const logoImg = `
   background: ${headerBgColor};
+  height: 50px;
 `
 
 const bodyTableContainer = `
@@ -145,19 +146,14 @@ module.exports = (domain, email, verification_url) => ({
           <a href="http://alpha.jamplay.world/about">info@jamplay.world</a>
         </div>
         <div style='${footerRow234}'>
-          <a style='${socialMediaLink}' href="http://alpha.jamplay.world">
+          <a style='${socialMediaLink}' href="https://www.facebook.com/jamsaibookfan">
             <div style='${socialMediaIconContainer}'>
               <img style='${socialMediaIcon}' src="https://cdnjs.cloudflare.com/ajax/libs/webicons/2.0.0/webicons/webicon-facebook.png">
             </div>
           </a>
-          <a style='${socialMediaLink}' href="http://alpha.jamplay.world">
+          <a style='${socialMediaLink}' href="https://twitter.com/jamsai">
             <div style='${socialMediaIconContainer}'>
               <img style='${socialMediaIcon}' src="https://cdnjs.cloudflare.com/ajax/libs/webicons/2.0.0/webicons/webicon-twitter.png">
-            </div>
-          </a>
-          <a style='${socialMediaLink}' href="http://alpha.jamplay.world">
-            <div style='${socialMediaIconContainer}'>
-              <img style='${socialMediaIcon}' src="https://cdnjs.cloudflare.com/ajax/libs/webicons/2.0.0/webicons/webicon-facebook.png">
             </div>
           </a>
         </div>
@@ -169,5 +165,3 @@ module.exports = (domain, email, verification_url) => ({
   </table>
 `
 })
-
-// Copyright © 2017 Jaamplay All rights reserved. version 1.0.0

@@ -10,6 +10,6 @@ describe('Email template test', () => {
       'foo.bar.com',
       'bar@foo.com/?id=bababababab'
     )
-    fs.writeFileSync(path.join(__dirname, 'email.tmp.html'), htmlString.text)
+    fs.writeFileSync(path.join(__dirname, 'email.tmp.html'), htmlString.html)
   })
 })
