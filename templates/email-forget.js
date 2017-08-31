@@ -105,7 +105,7 @@ const copyrights = `
 module.exports = (domain, email, password_reset_url, new_password_reset_url) => ({
   from: `JamPlay.World <noreply@${domain}>`,
   to: [email],
-  subject: `ยืนยันการสมัครสมาชิก`,
+  subject: `เปลี่ยนรหัสผ่านใหม่`,
   html: `
   <table width="100%" style='${table}'>
     <tr style='${headerTableContainer}'>
@@ -137,11 +137,11 @@ module.exports = (domain, email, password_reset_url, new_password_reset_url) => 
     <tr>
       <td>
         <div style='${footerRow1}'>
-          <a style='${footerLink}' href="http://alpha.jamplay.world/about">เกี่ยวกับ JamPlay</a>
+          <a style='${footerLink}' href="http://alpha.jamplay.world/aboutus">เกี่ยวกับ JamPlay</a>
           <span style='${footerLinkSeparation}'>|</span>
-          <a style='${footerLink}' href="http://alpha.jamplay.world/about">นโยบายความเป็นส่วนตัว</a>
+          <a style='${footerLink}' href="http://alpha.jamplay.world/privacy-policy">นโยบายความเป็นส่วนตัว</a>
           <span style='${footerLinkSeparation}'>|</span>
-          <a style='${footerLink}' href="http://alpha.jamplay.world/about">ข้อตกลงในการใช้บริการ</a>
+          <a style='${footerLink}' href="http://alpha.jamplay.world/terms">ข้อตกลงในการใช้บริการ</a>
         </div>
         <div style='${footerRow234}'>
           <label>ติดต่อเรา: </label>

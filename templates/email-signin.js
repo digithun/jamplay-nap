@@ -135,11 +135,11 @@ module.exports = (domain, email, verification_url) => ({
     <tr>
       <td>
         <div style='${footerRow1}'>
-          <a style='${footerLink}' href="http://alpha.jamplay.world/about">เกี่ยวกับ JamPlay</a>
+          <a style='${footerLink}' href="http://alpha.jamplay.world/aboutus">เกี่ยวกับ JamPlay</a>
           <span style='${footerLinkSeparation}'>|</span>
-          <a style='${footerLink}' href="http://alpha.jamplay.world/about">นโยบายความเป็นส่วนตัว</a>
+          <a style='${footerLink}' href="http://alpha.jamplay.world/privacy-policy">นโยบายความเป็นส่วนตัว</a>
           <span style='${footerLinkSeparation}'>|</span>
-          <a style='${footerLink}' href="http://alpha.jamplay.world/about">ข้อตกลงในการใช้บริการ</a>
+          <a style='${footerLink}' href="http://alpha.jamplay.world/terms">ข้อตกลงในการใช้บริการ</a>
         </div>
         <div style='${footerRow234}'>
           <label>ติดต่อเรา: </label>
