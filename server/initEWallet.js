@@ -1,8 +1,8 @@
 const request = require('superagent')
 
 const wallet = {
-  silver: 1000000,
-  gold: 1000000,
+  silver: 0,
+  gold: 0,
   receipts: []
 }
 
