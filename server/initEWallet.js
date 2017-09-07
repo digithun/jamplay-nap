@@ -44,6 +44,14 @@ const init = (config, app) => {
             const result = await callApi('spend/hasReceipt', { refId, spendType })
             return result.status
           },
+          hasCard: async ({ token }) => {
+            const result = await callApi('creditcard/hasCard', { token })
+            return result
+          },
+          deleteCard: async ({ token }) => {
+            const result = await callApi('creditcard/deleteCard', { token })
+            return result
+          },
           getJelly: async () => {
             const result = await callApi('user/getJelly')
            
