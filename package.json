@@ -3,6 +3,7 @@
   "version": "0.33.0",
   "main": "index.js",
   "scripts": {
+    "postinstall": "cd graphql/content && yarn install",
     "setup": "echo \"# See .env.example for more\" > .env",
     "lint": "eslint . || true",
     "_dev": "next",
