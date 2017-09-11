@@ -58,7 +58,6 @@ const init = ({ graphiql_enabled: graphiql, base_url, port, e_wallet_enabled }, 
     }
     next()
   }
-
   app.use(
     '/graphql',
     bodyParser.json(),

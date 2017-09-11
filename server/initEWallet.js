@@ -20,7 +20,7 @@ const init = (config, app) => {
             wallet.silver -= amount
           }
           wallet.receipts.push(refId)
-          return { gold: wallet.gold , silver: wallet.silver}
+          return { gold: wallet.gold, silver: wallet.silver}
         }
         // addExchange: async () =>({token, amountIn, amountOut, conversionType, progressBarcode, status})
       })
@@ -54,11 +54,10 @@ const init = (config, app) => {
           },
           getJelly: async () => {
             const result = await callApi('user/getJelly')
-           
-            if(result.gold >= 0)
-              return result
 
-            return { gold: 0, silver: 0}
+            if (result.gold >= 0) { return result }
+
+            return {gold: 0, silver: 0}
           },
           spendJelly: async ({ refId, spendType, merchantId, merchantAliasId, amount, currencyType, commissionRate }) => {
             const result = await callApi('spend/spendJelly', { refId, spendType, merchantId, merchantAliasId, amount, currencyType, commissionRate })

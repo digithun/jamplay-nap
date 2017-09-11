@@ -16,7 +16,6 @@ const isTrue = value => {
 }
 // Constants
 const _SESSIONS_TTL_ONE_WEEK = 7 * 24 * 60 * 60 * 1000
-
 const config = {
   // Environments
   dev,
@@ -39,7 +38,7 @@ const config = {
   auth_new_reset_uri: process.env.AUTH_NEW_RESET_URI || '/auth/reset',
   auth_verified_uri: process.env.AUTH_VERIFIED_URI || '/auth/verified',
   auth_error_uri: process.env.AUTH_ERROR_URI || '/auth/error',
-
+  achievement_service_url: process.env.ACHIEVEMENT_SERVICE_URL,
   next_disabled: isTrue(process.env.NEXT_DISABLED),
   passport_disabled: isTrue(process.env.PASSPORT_DISABLED),
   graphql_disabled: isTrue(process.env.GRAPHQL_SERVER_DISABLED),

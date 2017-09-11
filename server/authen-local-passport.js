@@ -209,7 +209,6 @@ const validateLocalStrategy = (email, password, done) => {
 
 const auth_local_token = (req, res) => {
   const { auth_verified_uri, auth_error_uri } = require('./config')
-
   // Guard
   const token = req.params.token
   if (!token || token.trim() === '') {
