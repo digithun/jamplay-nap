@@ -60,16 +60,32 @@ const init = ({ graphiql_enabled: graphiql, base_url, port, e_wallet_enabled }, 
   }
   app.use(
     '/graphql',
+    // http://www.senchalabs.org/connect/limit.html
     function limit (req, res, next) {
+      let received = 0
+      const bytes = 20 * 1024 * 1024
       const len = req.headers['content-length'] ? parseInt(req.headers['content-length'], 10) : null
-      if (!len) {
-        return res.status(411).send('content-length not define')
-      }
-      if (req._limit) return next()
-      req._limit = true
 
-      if (len && len > 20 * 1024 * 1024) return res.status(413).send('content-length is to long')
+      if (len && len > bytes) return res.status(413).send('content-length is to long')
+
+      req.on('new Listener', function handler (event) {
+        if (event !== 'data') return
+
+        req.removeListener('new Listener', handler)
+        process.nextTick(listen)
+      })
+
       next()
+
+      function listen () {
+        req.on('data', function (chunk) {
+          received += Buffer.isBuffer(chunk)
+          ? chunk.length
+          : Buffer.byteLength(chunk)
+
+          if (received > bytes) req.destroy()
+        })
+      }
     },
     bodyParser.json(),
     // upload.array('files'),
