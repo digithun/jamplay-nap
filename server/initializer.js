@@ -20,6 +20,8 @@ module.exports = async (config, nextjs) => {
   // GraphQL
   !config.graphql_disabled && require('./initGraphQL')(config, app)
 
+  global.NAP.userEventHook = require('./user-event-hook')(config)
+
   // Store
   require('./initStore')(mongoose)
 

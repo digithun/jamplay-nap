@@ -1,7 +1,16 @@
 const { onError } = require('../../errors')
 const { willGetUserFromSession } = require('../../../server/authen-sessions')
 
-const willReadUser = async ({ context }) => willGetUserFromSession(context).catch(() => null)
+const willReadUser = async ({ context }) => {
+  const user = await willGetUserFromSession(context).catch(() => null)
+  await global.NAP.userEventHook({
+    type: 'login',
+    payload: {
+      userId: user._id
+    }
+  })
+  return user
+}
 
 const unlinkFromFacebook = async ({ context }) => {
   const user = await willGetUserFromSession(context).catch(onError(context))
