@@ -60,6 +60,17 @@ const init = ({ graphiql_enabled: graphiql, base_url, port, e_wallet_enabled }, 
   }
   app.use(
     '/graphql',
+    function limit (req, res, next) {
+      const len = req.headers['content-length'] ? parseInt(req.headers['content-length'], 10) : null
+      if (!len) {
+        return res.status(411).send('content-length not define')
+      }
+      if (req._limit) return next()
+      req._limit = true
+
+      if (len && len > 20 * 1024 * 1024) return res.status(413).send('content-length is to long')
+      next()
+    },
     bodyParser.json(),
     // upload.array('files'),
     apolloUploadExpress(),
