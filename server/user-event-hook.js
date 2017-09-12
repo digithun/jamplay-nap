@@ -5,12 +5,11 @@ module.exports = function ({ achievement_service_url }) {
       console.log('send user event: ' + type)
       const response = await global.fetch(achievement_service_url, {
         method: 'POST',
-        body: JSON.stringify({
+        body: JSON.stringify(Object.assign({
           uid: payload.userId,
           event: type,
-          timestamp: Date.now(),
-          ...payload
-        })
+          timestamp: Date.now()
+        }, payload))
       })
       const result = await response.json()
       return {
