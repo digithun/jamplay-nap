@@ -3,12 +3,14 @@ const { willGetUserFromSession } = require('../../../server/authen-sessions')
 
 const willReadUser = async ({ context }) => {
   const user = await willGetUserFromSession(context).catch(() => null)
-  await global.NAP.userEventHook({
-    type: 'login',
-    payload: {
-      userId: user._id
-    }
-  })
+  if (user) {
+    await global.NAP.userEventHook({
+      type: 'login',
+      payload: {
+        userId: user._id
+      }
+    })
+  }
   return user
 }
 

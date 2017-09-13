@@ -95,11 +95,16 @@ const init = ({ graphiql_enabled: graphiql, base_url, port, e_wallet_enabled }, 
     graphqlHTTP(() => ({
       schema,
       graphiql,
-      formatError: ({ originalError, message, stack }) => ({
-        message: message,
-        code: originalError ? originalError.code : null,
-        stack: dev ? stack.split('\n') : null
-      })
+      formatError: ({ originalError, message, stack }) => {
+        if (!(originalError instanceof GenericError)) {
+          console.error('GraphQL track:', originalError)
+        }
+        return {
+          message: message,
+          code: originalError ? originalError.code : null,
+          stack: dev ? stack.split('\n') : null
+        }
+      }
     }))
   )
 
