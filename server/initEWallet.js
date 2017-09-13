@@ -40,6 +40,14 @@ const init = (config, app) => {
             }, data))
           return result.body.data
         }
+        const callGetApi = async (path, data = {}) => {
+          const result = await request
+            .get(`${api}/v1/${path}`)
+            .set('Content-Type', 'application/json')
+            // add token to data
+            .set('authorization', process.env.E_WALLET_APIKEY)
+          return result.body.data
+        }
         return {
           hasReceipt: async ({ refId, spendType }) => {
             const result = await callApi('spend/hasReceipt', { refId, spendType })
@@ -85,6 +93,10 @@ const init = (config, app) => {
           findSpendByToken: async ({ token }) => {
             const result = await callApi('spend/findByToken', { token })
             return result.spends
+          },
+          findFeeTax: async () => {
+            const result = await callGetApi('config/findConfig')
+            return result
           }
         }
       }
