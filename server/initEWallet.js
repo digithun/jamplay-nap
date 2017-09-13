@@ -14,6 +14,7 @@ const init = (config, app) => {
         hasReceipt: async ({ refId, spendType }) => !!wallet.receipts.find(r => r === refId),
         getJelly: async () => ({ gold: wallet.gold, silver: wallet.silver }),
         spendJelly: async ({ refId, spendType, merchantId, merchantAliasId, amount, currencyType, commissionRate }) => {
+          console.log('EWallet.DEV.spendJelly: ', { refId, spendType, merchantId, merchantAliasId, amount, currencyType, commissionRate })
           if (currencyType === 'gold') {
             wallet.gold -= amount
           } else {
