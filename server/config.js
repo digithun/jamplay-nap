@@ -39,6 +39,7 @@ const config = {
   auth_verified_uri: process.env.AUTH_VERIFIED_URI || '/auth/verified',
   auth_error_uri: process.env.AUTH_ERROR_URI || '/auth/error',
   achievement_service_url: process.env.ACHIEVEMENT_SERVICE_URL,
+  achievement_service_apikey: process.env.ACHIEVEMENT_SERVICE_APIKEY,
   next_disabled: isTrue(process.env.NEXT_DISABLED),
   passport_disabled: isTrue(process.env.PASSPORT_DISABLED),
   graphql_disabled: isTrue(process.env.GRAPHQL_SERVER_DISABLED),
