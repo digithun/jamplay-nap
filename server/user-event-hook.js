@@ -1,6 +1,15 @@
 require('isomorphic-fetch')
 module.exports = function ({ achievement_service_url }) {
   return async ({ type, payload }) => {
+    return {
+      notifications: [{
+        type: 'share/receive-reward',
+        payload: {
+          type: 'silver',
+          value: 3
+        }
+      }]
+    }
     try {
       console.log('send user event: ' + type)
       const response = await global.fetch(achievement_service_url, {
@@ -13,7 +22,7 @@ module.exports = function ({ achievement_service_url }) {
       })
       const result = await response.json()
       return {
-        notifications: result.notifications || []
+        notifications: result.rewardList || []
       }
     } catch (e) {
       console.log('user-event-hook error')
