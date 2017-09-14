@@ -8,7 +8,7 @@ const MAX_NOTIFICATION_PER_USER = 5
 
 const getNotification = exports.getNotification = async function getNotification (userId) {
   console.log('Notification get for user: ' + userId)
-  const result = await Notification.find({userId: objectId(userId), isRead: false}).sort({createdAt: -1})
+  const result = await Notification.find({userId: objectId(userId)}).sort({createdAt: -1})
   if (!result) {
     return []
   }
@@ -33,12 +33,14 @@ const createNotification = exports.createNotification = async function createNot
 }
 
 const markNotification = exports.markNotification = async function markNotification (notificationIds) {
+  console.log('Notification mark: ' + notificationIds.join(','))
   await Notification.update({_id: {$in: notificationIds}}, { $set: {isRead: true} }, { multi: true })
 }
 const readNotification = async function (userId) {
   console.log('Notification read from user: ' + userId)
   const result = await getNotification(userId)
-  // await markNotification(result.map(notification => notification._id))
+  const ids = result.map(notification => notification._id)
+  await markNotification(ids)
   return result
 }
 
