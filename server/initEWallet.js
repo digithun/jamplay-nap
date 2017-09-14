@@ -63,10 +63,13 @@ const init = (config, app) => {
           },
           getJelly: async () => {
             const result = await callApi('user/getJelly')
-
             if (result.gold >= 0) { return result }
-
             return {gold: 0, silver: 0}
+          },
+          getMerchantEwallet: async () => {
+            //const result = await callApi('user/getJelly')
+            //if (result.gold >= 0) { return result }
+            return {gold: 25000, silver: 250}
           },
           spendJelly: async ({ refId, spendType, merchantId, merchantAliasId, amount, currencyType, commissionRate }) => {
             const result = await callApi('spend/spendJelly', { refId, spendType, merchantId, merchantAliasId, amount, currencyType, commissionRate })
@@ -96,6 +99,11 @@ const init = (config, app) => {
           },
           findFeeTax: async () => {
             const result = await callGetApi('config/findConfig')
+            return result
+          },
+          createWithdraw: async ({token, balance, amount, fee, tax}) => {
+
+            const result = await callApi('withdraw/addWithdraw',{token, balance, amount, fee, tax})
             return result
           }
         }
