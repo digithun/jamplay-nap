@@ -30,6 +30,11 @@ const willValidateEmail = async email => {
   return true
 }
 
+const willValidateEmptyPassword = async password => {
+  guard({ password })
+  return true
+}
+
 const willValidatePassword = async password => {
   const is = require('is_js')
 
@@ -45,6 +50,12 @@ const willValidatePassword = async password => {
 const willValidateEmailAndPassword = async (email, password) => {
   let isValid = await willValidateEmail(email)
   isValid = isValid && (await willValidatePassword(password))
+  return isValid
+}
+
+const willValidateEmailAndEmptyPassword = async (email, password) => {
+  let isValid = await willValidateEmail(email)
+  isValid = isValid && (await willValidateEmptyPassword(password))
   return isValid
 }
 
@@ -169,7 +180,7 @@ const _willValidatePassword = async (password, hashed_password) => {
 
 const _getUserByEmailAndPassword = async (email, password) => {
   // Guard
-  willValidateEmailAndPassword(email, password)
+  await willValidateEmailAndPassword(email, password)
 
   // Guard unverified or not existing user
   const user = await NAP.User.findOne({ email })
@@ -198,11 +209,16 @@ const validateLocalStrategy = (email, password, done) => {
       done(null, user)
     })
     .catch(err => {
-      // Will throw only invalid login for these cases
-      if (err.code === ERRORS.AUTH_USER_NOT_FOUND.code || err.code === ERRORS.AUTH_WRONG_PASSWORD.code) {
-        done(ERRORS.AUTH_INVALID_LOGIN)
-      } else {
-        done(err, null)
+      switch (err.code) {
+        // Will throw invalid login for these cases
+        case ERRORS.AUTH_USER_NOT_FOUND.code:
+        case ERRORS.AUTH_WRONG_PASSWORD.code:
+        case ERRORS.AUTH_WEAK_PASSWORD.code:
+          done(ERRORS.AUTH_INVALID_LOGIN)
+          break
+        default:
+          done(err, null)
+          break
       }
     })
 }
@@ -294,6 +310,8 @@ module.exports = {
   createNewPasswordResetURL,
   willSignUpNewUser,
   willValidateEmail,
+  willValidateEmptyPassword,
+  willValidateEmailAndEmptyPassword,
   willValidatePassword,
   willValidateEmailAndPassword,
   willSetUserStatusAsWaitForEmailReset,
