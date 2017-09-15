@@ -67,8 +67,8 @@ const init = (config, app) => {
             return {gold: 0, silver: 0}
           },
           getMerchantEwallet: async () => {
-            //const result = await callApi('user/getJelly')
-            //if (result.gold >= 0) { return result }
+            const result = await callApi('user/getMerchantEWallet')
+            if (result.gold >= 0) { return result }
             return {gold: 25000, silver: 250}
           },
           spendJelly: async ({ refId, spendType, merchantId, merchantAliasId, amount, currencyType, commissionRate }) => {
@@ -108,6 +108,10 @@ const init = (config, app) => {
           findWithdrawByToken: async ({ token }) => {
             const result = await callApi('withdraw/findWithdrawByToken', { token })
             return result.withdraws || []
+          },
+          findIncomeByToken: async ({ token }) => {
+            const result = await callApi('spend/findIncomeByToken', { token })
+            return result.income || []
           }
         }
       }
