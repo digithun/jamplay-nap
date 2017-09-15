@@ -102,9 +102,12 @@ const init = (config, app) => {
             return result
           },
           createWithdraw: async ({token, balance, amount, fee, tax}) => {
-
             const result = await callApi('withdraw/addWithdraw',{token, balance, amount, fee, tax})
             return result
+          },
+          findWithdrawByToken: async ({ token }) => {
+            const result = await callApi('withdraw/findWithdrawByToken', { token })
+            return result.withdraws || []
           }
         }
       }
