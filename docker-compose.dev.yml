@@ -9,7 +9,6 @@ services:
       - "5858:5858" # Node Inspector port
       - "9222:9222" # Node V8 Inspector port
     volumes:
-      - npm:/root/.npm
       - ./providers:/usr/app/providers
       - ./server:/usr/app/server
     build:
