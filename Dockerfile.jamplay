@@ -19,6 +19,7 @@ npm i --production -g --quiet --depth 0 modclean && \
 modclean -r -D /tmp/node_modules && \
 npm r -g --quiet modclean && du -ms . && \
 mkdir -p /usr/app && cp -a /tmp/node_modules /usr/app/ && \
+rm -rf /tmp && \
 apk del make gcc g++ python
 WORKDIR /usr/app
 
