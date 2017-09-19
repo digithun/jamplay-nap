@@ -1,17 +1,17 @@
-IMAGE               CREATED             CREATED BY                                      SIZE                COMMENT
-499396b7fc62        2 minutes ago       /bin/sh -c #(nop)  CMD ["npm" "run" "_serve"]   0B                  
-d5ee7b7fdf2d        2 minutes ago       /bin/sh -c #(nop)  EXPOSE 3000/tcp              0B                  
-9dba09b77332        2 minutes ago       /bin/sh -c #(nop) COPY dir:b574483032cf41e...   48.9MB              
-07c265bcf26d        2 minutes ago       /bin/sh -c #(nop) WORKDIR /usr/app              0B                  
-d4bdda373596        2 minutes ago       /bin/sh -c apk add make gcc g++ python vip...   350MB               
-e4ad296889b7        4 minutes ago       /bin/sh -c #(nop) COPY file:9b9bbdffe32afe...   6.18kB              
-6284fdc5aea2        4 minutes ago       /bin/sh -c #(nop)  ENV NODE_ENV=production      0B                  
-711ce3ab0809        4 minutes ago       /bin/sh -c #(nop)  MAINTAINER Todsaporn Ba...   0B                  
-7a779c246a41        3 days ago          /bin/sh -c #(nop)  CMD ["node"]                 0B                  
-<missing>           3 days ago          /bin/sh -c apk add --no-cache --virtual .b...   4.02MB              
-<missing>           3 days ago          /bin/sh -c #(nop)  ENV YARN_VERSION=1.0.2       0B                  
-<missing>           4 days ago          /bin/sh -c addgroup -g 1000 node     && ad...   59MB                
-<missing>           4 days ago          /bin/sh -c #(nop)  ENV NODE_VERSION=8.5.0       0B                  
-<missing>           4 days ago          /bin/sh -c #(nop)  ENV NPM_CONFIG_LOGLEVEL...   0B                  
-<missing>           4 days ago          /bin/sh -c #(nop)  CMD ["/bin/sh"]              0B                  
-<missing>           4 days ago          /bin/sh -c #(nop) ADD file:4583e12bf5caec4...   3.97MB              
+IMAGE               CREATED              CREATED BY                                      SIZE                COMMENT
+c6c119b82869        About a minute ago   /bin/sh -c #(nop)  CMD ["npm" "run" "_serve"]   0B                  
+cc2647ada745        About a minute ago   /bin/sh -c #(nop)  EXPOSE 3000/tcp              0B                  
+2f1613198467        About a minute ago   /bin/sh -c #(nop) COPY dir:3883983513beb69...   48.9MB              
+7a9918a76be7        About a minute ago   /bin/sh -c #(nop) WORKDIR /usr/app              0B                  
+8d0ff1176955        About a minute ago   /bin/sh -c apk add make gcc g++ python vip...   287MB               
+ec4641ce2366        4 minutes ago        /bin/sh -c #(nop) COPY file:6128a7038cf46f...   6.18kB              
+8362a73a1a97        4 minutes ago        /bin/sh -c #(nop)  ENV NODE_ENV=production      0B                  
+16e676745587        4 minutes ago        /bin/sh -c #(nop)  MAINTAINER Todsaporn Ba...   0B                  
+7a779c246a41        4 days ago           /bin/sh -c #(nop)  CMD ["node"]                 0B                  
+<missing>           4 days ago           /bin/sh -c apk add --no-cache --virtual .b...   4.02MB              
+<missing>           4 days ago           /bin/sh -c #(nop)  ENV YARN_VERSION=1.0.2       0B                  
+<missing>           5 days ago           /bin/sh -c addgroup -g 1000 node     && ad...   59MB                
+<missing>           5 days ago           /bin/sh -c #(nop)  ENV NODE_VERSION=8.5.0       0B                  
+<missing>           5 days ago           /bin/sh -c #(nop)  ENV NPM_CONFIG_LOGLEVEL...   0B                  
+<missing>           5 days ago           /bin/sh -c #(nop)  CMD ["/bin/sh"]              0B                  
+<missing>           5 days ago           /bin/sh -c #(nop) ADD file:4583e12bf5caec4...   3.97MB              
