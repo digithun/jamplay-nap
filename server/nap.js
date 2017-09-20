@@ -26,10 +26,10 @@ class nap {
     this.willInstallAndAuthen = willInstallAndAuthen
     this.willCreateUser = willCreateUser
 
-    // event hook service
-    this.userEventHookService = require('./user-event-hook')(config)
     // Notification service
     this.notificationService = require('../notification/controller').services
+    // event hook service
+    this.userEventHookService = require('./user-event-hook')(config, this.notificationService)
   }
 }
 
