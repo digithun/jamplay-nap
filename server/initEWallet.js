@@ -62,9 +62,15 @@ const init = (config, app) => {
             return result
           },
           getJelly: async () => {
-            const result = await callApi('user/getJelly')
-            if (result.gold >= 0) { return result }
+            try{
+              const result = await callApi('user/getJelly')
+              if (result.gold >= 0) { return result }
+              return {gold: 0, silver: 0}
+            }
+           catch(e){
+             console.log(e)
             return {gold: 0, silver: 0}
+           }
           },
           getMerchantEwallet: async () => {
             const result = await callApi('user/getMerchantEWallet')
@@ -111,6 +117,12 @@ const init = (config, app) => {
           },
           findIncomeByToken: async ({ token }) => {
             const result = await callApi('spend/findIncomeByToken', { token })
+            return result.income || []
+          }
+          ,
+          findIncomeByBook: async ({ bookId }) => {
+            console.log('bookId ==>',bookId)
+            const result = await callApi('spend/findIncomeByBook', { bookId })
             return result.income || []
           }
         }
