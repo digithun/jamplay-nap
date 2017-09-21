@@ -1,5 +1,6 @@
 require('./debug')
 const config = require('./config')
+const { version } = require('../package.json')
 
 const start = async () => {
   // NAP
@@ -12,7 +13,7 @@ const start = async () => {
 
   // Ready
   debug.info(`TTL     : ${config.sessions_ttl}`)
-  debug.info(`NAP is ready to use (${process.env.NODE_ENV}), enjoy! [^._.^]ﾉ彡`) // eslint-disable-line
+  debug.info(`NAP ${version} is ready to use (${process.env.NODE_ENV}), enjoy! [^._.^]ﾉ彡`) // eslint-disable-line
 }
 
 module.exports = {
