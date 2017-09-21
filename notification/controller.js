@@ -1,6 +1,7 @@
 
 const mongoose = require('mongoose')
 const objectId = mongoose.Types.ObjectId
+const chalk = require('chalk')
 const Notification = require('./models/Notification.model')
 
 // set max notification
@@ -16,7 +17,7 @@ const getNotification = exports.getNotification = async function getNotification
 }
 
 const createNotification = exports.createNotification = async function createNotification (userId, message) {
-  console.log('Notification created to user: ' + userId)
+  console.log(chalk.yellow('Notification created to user: ') + userId)
   const notification = new Notification({
     userId,
     message
