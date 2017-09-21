@@ -9,7 +9,15 @@ const mongoose = require('mongoose')
 const { ObjectId } = mongoose.Types
 
 // Seeder
-const { setup, teardown, seedUserWithEmailAndPassword, seedUserWithData, seedVerifiedLocalUser, __mocked__verifiedLocalUserPayload, __expected__seedVerifiedLocalUser } = require('./mongoose-helper')
+const {
+  setup,
+  teardown,
+  seedUserWithEmailAndPassword,
+  seedUserWithData,
+  seedVerifiedLocalUser,
+  __mocked__verifiedLocalUserPayload,
+  __expected__seedVerifiedLocalUser
+} = require('./mongoose-helper')
 
 describe('authen-local', () => {
   beforeAll(setup)
@@ -89,6 +97,26 @@ describe('authen-local', () => {
 
     const { willLogin } = require('../authen-local')
     expect(willLogin(req, email, wrong_password)).rejects.toEqual(require('../errors/codes').AUTH_INVALID_LOGIN)
+
+    // Dispose
+    await mongoose.connection.collection('users').drop()
+  })
+
+  it('should throw `auth/invalid-login` error for short password', async () => {
+    // mock
+    const req = {
+      nap: { errors: [] },
+      body: { isMockServer: true }
+    }
+    const email = 'foo@bar.com'
+    const password = 'foobar'
+    const short_password = 'short'
+
+    // Seed
+    await seedUserWithEmailAndPassword(email, password, true)
+
+    const { willLogin } = require('../authen-local')
+    expect(willLogin(req, email, short_password)).rejects.toEqual(require('../errors/codes').AUTH_INVALID_LOGIN)
 
     // Dispose
     await mongoose.connection.collection('users').drop()

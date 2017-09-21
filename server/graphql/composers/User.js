@@ -5,7 +5,10 @@ module.exports = models => {
     name: 'user',
     kind: 'query',
     type: models.UserTC,
-    resolve: UserResolver.user
+    resolve: async (params) => {
+      const user = UserResolver.user(params)
+      return user
+    }
   })
 
   models.UserTC.addResolver({

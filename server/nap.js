@@ -4,6 +4,7 @@ const { willSignUp, willLogin, willLogout, willResetPasswordViaEmail } = require
 const { willUpdatePassword, willUpdatePasswordByToken, willUpdateEmail } = require('./authen-local-passport')
 const { willInstallAndAuthen } = require('./graphql/resolvers')
 const { willCreateUser } = require('./authen-sessions')
+const config = require('./config')
 
 class nap {
   constructor () {
@@ -24,6 +25,11 @@ class nap {
     this.willUpdateEmail = willUpdateEmail
     this.willInstallAndAuthen = willInstallAndAuthen
     this.willCreateUser = willCreateUser
+
+    // Notification service
+    this.notificationService = require('../notification/controller').services
+    // event hook service
+    this.userEventHookService = require('./user-event-hook')(config, this.notificationService)
   }
 }
 

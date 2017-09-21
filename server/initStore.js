@@ -1,4 +1,10 @@
 const init = mongoose => {
+  // Guard
+  if (!mongoose) {
+    debug.warn(`MongoDB : Mongoose is undefined`)
+    return
+  }
+
   // Global
   try {
     NAP.Installation = NAP.Installation || mongoose.model('Installation')

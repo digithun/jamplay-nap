@@ -15,6 +15,7 @@
   },
   "watch": [
     "server",
+    "notification",
     "graphql",
     "providers",
     "routes",

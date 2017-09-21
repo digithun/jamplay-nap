@@ -23,6 +23,7 @@ services:
       - ./routes:/usr/app/routes
       - ./graphql:/usr/app/graphql
       - ./templates:/usr/app/templates
+      - ./notification:/usr/app/notification
     command: npm run _prod
     networks:
       - front

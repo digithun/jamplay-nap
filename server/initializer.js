@@ -9,7 +9,7 @@ module.exports = async (config, nextjs) => {
   config.mubsub_enabled && require('./initMubsub')()
 
   // Mongoose
-  const mongoose = await require('./initMongoose')(config.mongo_url)
+  const mongoose = await require('./initMongoose')(config.mongo_url).catch(err => debug.error(`MongoDB :`, err))
 
   // Passport
   !config.passport_disabled && require('./initPassport')(config, app)
@@ -19,6 +19,8 @@ module.exports = async (config, nextjs) => {
 
   // GraphQL
   !config.graphql_disabled && require('./initGraphQL')(config, app)
+
+  global.NAP.userEventHook = require('./user-event-hook')(config)
 
   // Store
   require('./initStore')(mongoose)
