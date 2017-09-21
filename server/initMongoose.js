@@ -1,28 +1,22 @@
-const init = mongo_url =>
-  new Promise((resolve, reject) => {
-    const mongoose = require('mongoose')
+const init = async mongo_url => {
+  debug.info(`MongoDB : ${mongo_url}`)
 
-    mongoose.Promise = global.Promise
+  const mongoose = require('mongoose')
+  mongoose.Promise = global.Promise
 
-    mongoose.connect(mongo_url, {
-      useMongoClient: true
-    })
+  // Debug
+  mongoose.connection.on('connected', () => debug.info(`MongoDB :`, 'Connection Established'))
+  mongoose.connection.on('reconnected', () => debug.info(`MongoDB :`, 'Connection Reestablished'))
+  mongoose.connection.on('disconnected', () => debug.info(`MongoDB :`, 'Connection Disconnected'))
+  mongoose.connection.on('close', () => debug.info(`MongoDB :`, 'Connection Closed'))
+  mongoose.connection.on('error', err => debug.error(`MongoDB :`, err))
 
-    const connection = mongoose.connection
-    connection.on('error', err => {
-      // TODO : Handle error
-      if (err.message.code === 'ETIMEDOUT') {
-        debug.error(err)
-        // mongoose.createConnection(mongo_url)
-      }
-
-      reject(err)
-    })
-
-    connection.once('open', () => {
-      debug.info(`MongoDB : ${mongo_url}`)
-      resolve(mongoose)
-    })
+  return mongoose.connect(mongo_url, {
+    useMongoClient: true,
+    autoReconnect: true,
+    reconnectTries: Number.MAX_VALUE,
+    reconnectInterval: 1000
   })
+}
 
 module.exports = init
