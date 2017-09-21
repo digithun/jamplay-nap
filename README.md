@@ -52,9 +52,9 @@ Build in Next JS for SSR, Apollo Client for GraphQL, Passport JS for authenticat
 - [x] [passport-local](https://github.com/jaredhanson/passport-local) for `email`/`password` login.
 - [x] [passport-facebook-token](https://github.com/drudge/passport-facebook-token) for authenticating with Facebook access tokens.
 - [x] helmet : https://github.com/helmetjs/helmet
-- [x] [lusca](https://github.com/krakenjs/lusca) for web application security middleware.
 - [x] [platform](https://github.com/bestiejs/platform.js) for detect client platform.
 - [x] [commitizen](https://github.com/commitizen/cz-cli) for commit formatting.
+- [x] [express-ping](https://www.npmjs.com/package/express-ping)
 
 - - -
 
@@ -74,6 +74,9 @@ open http://localhost:3000
 
 # Try modify file in ./graphql and see the result via GraphiQL
 open http://localhost:3000/graphql
+
+# Ping service
+open http://localhost:3000/ping
 ```
 
 ## Debug
@@ -131,6 +134,7 @@ npm run cover
 - [ ] [User can logged in with limited device numbers](https://github.com/digithun/jamplay-nap/issues/9)
 
 ## TODO
+- [ ] [lusca](https://github.com/krakenjs/lusca) for web application security middleware.
 - [ ] Handle cookies via [React Native](https://mockingbot.com/posts/287)
 - [ ] Add [HOC](https://github.com/bosung90/HOCExample) to [nap-react-native](https://github.com/rabbotio/nap-react-native)
 - [ ] Create doc separated from this `README` as github page.
