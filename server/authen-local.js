@@ -97,10 +97,11 @@ const willSignUp = async (req, email, password, extraFields) => {
 // Login with email
 const willLogin = async (req, email, password) => {
   // Guard
-  const { willValidateEmailAndPassword } = require('./authen-local-passport')
-  const isValidEmailAndPassword = await willValidateEmailAndPassword(email, password)
-  if (!isValidEmailAndPassword) {
-    throw require('./errors/codes').AUTH_WRONG_PASSWORD
+  const { willValidateEmailAndEmptyPassword } = require('./authen-local-passport')
+  const isValidEmail = await willValidateEmailAndEmptyPassword(email, password)
+
+  if (!isValidEmail) {
+    throw require('./errors/codes').AUTH_INVALID_LOGIN
   }
 
   // To let passport-local consume
