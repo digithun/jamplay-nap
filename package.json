@@ -1,6 +1,6 @@
 {
   "name": "nap",
-  "version": "1.15.0",
+  "version": "1.16.0",
   "main": "index.js",
   "scripts": {
     "postinstall": "cd graphql/content && yarn install",
@@ -70,6 +70,7 @@
     "express": "^4.15.4",
     "express-bearer-token": "^2.1.0",
     "express-graphql": "^0.6.11",
+    "express-ping": "^1.4.0",
     "express-session": "^1.15.5",
     "graphql": "^0.11.3",
     "graphql-comment": "^0.0.8",
