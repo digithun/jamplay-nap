@@ -40,6 +40,7 @@ module.exports = function ({ achievement_service_url, achievement_service_apikey
         timeout: 5000
       })
       const result = await response.json()
+      console.log(result)
       const reward = {
         notifications: result.rewardList || []
       }
