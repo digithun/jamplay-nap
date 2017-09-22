@@ -22,7 +22,8 @@ describe('errors', () => {
     }
     const err = new GenericError(customError.code, customError.message)
 
-    expect(err).toMatchObject(customError)
+    expect(err.code).toBe(customError.code)
+    expect(err.message).toBe(customError.message)
   })
 
   it('should return AUTH_INVALID_USER_TOKEN', () => {
