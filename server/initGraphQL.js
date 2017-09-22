@@ -81,7 +81,15 @@ const init = ({ graphiql_enabled: graphiql, base_url, port, e_wallet_enabled }, 
   // attach middleware
   if (bigquery_service_endpoint) {
     const { insertQuery, initMiddleWare } = require('../bigquery/queryCollection')
-    app.all('/bigQuery/insert', (req, res) => insertQuery(req, res))
+    const chalk = require('chalk')
+    app.all('/bigQuery/insert', async (req, res) => {
+      try {
+        insertQuery(req, res)
+      } catch (e) {
+        console.log(chalk.bgRed('BigQuery service error'))
+        res.status(501).end()
+      }
+    })
     app.use(initMiddleWare())
   }
 
