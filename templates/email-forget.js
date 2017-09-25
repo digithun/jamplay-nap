@@ -111,8 +111,8 @@ module.exports = (domain, email, password_reset_url, new_password_reset_url) => 
     <tr style='${headerTableContainer}'>
       <td style='${headerTableBorder}'>
         <div style='${headerLogoContainer}'>
-          <a href="http://alpha.jamplay.world">
-            <img style='${logoImg}' src="http://alpha.jamplay.world/static/images/logo@2x.png">
+          <a href="${process.env.JAMPLAY_BASE_URL}">
+            <img style='${logoImg}' src="${process.env.JAMPLAY_BASE_URL}/static/images/logo@2x.png">
           </a>
         </div>
       </td>
@@ -137,11 +137,11 @@ module.exports = (domain, email, password_reset_url, new_password_reset_url) => 
     <tr>
       <td>
         <div style='${footerRow1}'>
-          <a style='${footerLink}' href="http://alpha.jamplay.world/aboutus">เกี่ยวกับ JamPlay</a>
+          <a style='${footerLink}' href="${process.env.JAMPLAY_BASE_URL}/aboutus">เกี่ยวกับ JamPlay</a>
           <span style='${footerLinkSeparation}'>|</span>
-          <a style='${footerLink}' href="http://alpha.jamplay.world/privacy-policy">นโยบายความเป็นส่วนตัว</a>
+          <a style='${footerLink}' href="${process.env.JAMPLAY_BASE_URL}/privacy-policy">นโยบายความเป็นส่วนตัว</a>
           <span style='${footerLinkSeparation}'>|</span>
-          <a style='${footerLink}' href="http://alpha.jamplay.world/terms">ข้อตกลงในการใช้บริการ</a>
+          <a style='${footerLink}' href="${process.env.JAMPLAY_BASE_URL}/terms">ข้อตกลงในการใช้บริการ</a>
         </div>
         <div style='${footerRow234}'>
           <label>ติดต่อเรา: </label>
