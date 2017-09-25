@@ -5,6 +5,7 @@ const { apolloUploadExpress } = require('apollo-upload-server')
 const { bigquery_service_endpoint, is_optics_enabled, dev } = require('./config')
 const OpticsAgent = require('optics-agent')
 const rimraf = require('rimraf')
+const CronJob = require('cron').CronJob
 
 // isomorphic-fetch
 require('es6-promise').polyfill()
@@ -92,7 +93,12 @@ const init = ({ graphiql_enabled: graphiql, base_url, port, e_wallet_enabled }, 
   }
   const _removeUpload = () => removeUpload(24 * 60 * 60 * 1000)
   _removeUpload()
-  setInterval(_removeUpload, 24 * 60 * 60 * 1000)
+  const job = new CronJob({
+    cronTime: '00 00 05 * * *',
+    onTick: () => _removeUpload(),
+    timeZone: 'Asia/Bangkok'
+  })
+  job.start()
   app.use(
     '/graphql',
     // http://www.senchalabs.org/connect/limit.html

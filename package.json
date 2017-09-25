@@ -57,7 +57,9 @@
     "seed-episode-binary": "node ./scripts/seeds/seed-episode-binary.js"
   },
   "nodemonConfig": {
-    "ignore": [".tmp/*"]
+    "ignore": [
+      ".tmp/*"
+    ]
   },
   "dependencies": {
     "apollo-client": "1.9.3",
@@ -68,6 +70,7 @@
     "connect-redis": "^3.3.0",
     "cookie-parser": "^1.4.3",
     "cors": "^2.8.4",
+    "cron": "^1.3.0",
     "dotenv": "^4.0.0",
     "es6-promise": "^4.1.1",
     "express": "^4.15.4",
