@@ -56,6 +56,9 @@
     "re-gen-seed": "npm run gen-seed && npm run remove-seed && npm run import-seed",
     "seed-episode-binary": "node ./scripts/seeds/seed-episode-binary.js"
   },
+  "nodemonConfig": {
+    "ignore": [".tmp/*"]
+  },
   "dependencies": {
     "apollo-client": "1.9.2",
     "apollo-upload-server": "^2.0.4",
@@ -114,6 +117,7 @@
     "redis": "^2.8.0",
     "redux": "^3.7.2",
     "redux-thunk": "^2.2.0",
+    "rimraf": "^2.6.2",
     "sharp": "^0.18.3",
     "tmp-promise": "^1.0.3",
     "uuid": "^3.1.0",

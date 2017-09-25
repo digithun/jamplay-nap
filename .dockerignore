@@ -3,6 +3,7 @@ npm-debug.log
 .next
 .vscode
 .git
+.tmp
 .gitignore
 .gitmodules
 .test.js

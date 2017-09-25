@@ -4,11 +4,44 @@ const bodyParser = require('body-parser')
 const { apolloUploadExpress } = require('apollo-upload-server')
 const { bigquery_service_endpoint, is_optics_enabled, dev } = require('./config')
 const OpticsAgent = require('optics-agent')
-const { GenericError } = require('./errors')
+const rimraf = require('rimraf')
 
 // isomorphic-fetch
 require('es6-promise').polyfill()
 require('isomorphic-fetch')
+
+const { GenericError } = require('./errors')
+require('./debug')
+
+const uploadDir = './.tmp'
+
+// https://stackoverflow.com/questions/19167297/in-node-delete-all-files-older-than-an-hour
+function removeUpload (ms) {
+  debug.info(`GraphQL : cleaning ${uploadDir}`)
+  fs.readdir(uploadDir, (err, files) => {
+    if (err) {
+      return debug.error('GraphQL :', err)
+    }
+    files.forEach(function (file, index) {
+      fs.stat(path.join(uploadDir, file), function (err, stat) {
+        var endTime, now
+        if (err) {
+          return debug.error('GraphQL :', err)
+        }
+        now = new Date().getTime()
+        endTime = new Date(stat.ctime).getTime() + ms
+        if (now > endTime) {
+          return rimraf(path.join(uploadDir, file), function (err) {
+            if (err) {
+              return debug.error(err)
+            }
+            debug.info(`GraphQL : removed ${uploadDir}/${file}`)
+          })
+        }
+      })
+    })
+  })
+}
 
 const init = ({ graphiql_enabled: graphiql, base_url, port, e_wallet_enabled }, app) => {
   // Custom GraphQL
@@ -26,7 +59,6 @@ const init = ({ graphiql_enabled: graphiql, base_url, port, e_wallet_enabled }, 
 
   // Upload
   const multer = require('multer')
-  const upload = multer({ dest: './.tmp' })
 
   // CORS
   const cors = require('cors')
@@ -58,6 +90,9 @@ const init = ({ graphiql_enabled: graphiql, base_url, port, e_wallet_enabled }, 
     }
     next()
   }
+  const _removeUpload = () => removeUpload(24 * 60 * 60 * 1000)
+  _removeUpload()
+  setInterval(_removeUpload, 24 * 60 * 60 * 1000)
   app.use(
     '/graphql',
     // http://www.senchalabs.org/connect/limit.html
@@ -89,7 +124,9 @@ const init = ({ graphiql_enabled: graphiql, base_url, port, e_wallet_enabled }, 
     },
     bodyParser.json(),
     // upload.array('files'),
-    apolloUploadExpress(),
+    apolloUploadExpress({
+      uploadDir
+    }),
     authenticate,
     initEWallet,
     graphqlHTTP(() => ({
