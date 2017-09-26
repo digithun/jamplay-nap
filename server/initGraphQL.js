@@ -19,6 +19,9 @@ const uploadDir = './.tmp'
 // https://stackoverflow.com/questions/19167297/in-node-delete-all-files-older-than-an-hour
 function removeUpload (ms) {
   debug.info(`GraphQL : cleaning ${uploadDir}`)
+  if (!fs.existsSync(uploadDir)) {
+    return
+  }
   fs.readdir(uploadDir, (err, files) => {
     if (err) {
       return debug.error('GraphQL :', err)
@@ -57,9 +60,6 @@ const init = ({ graphiql_enabled: graphiql, base_url, port, e_wallet_enabled }, 
   if (fs.existsSync(path.resolve(__dirname, '../graphql/setup.js'))) {
     require('../graphql/setup')
   }
-
-  // Upload
-  const multer = require('multer')
 
   // CORS
   const cors = require('cors')
