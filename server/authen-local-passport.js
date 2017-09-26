@@ -150,6 +150,19 @@ const willSetUserStatusAsWaitForEmailReset = async (email, token) => {
   )
 }
 
+const _willValidateToken = async token => {
+  // Guard
+  guard(token)
+
+  // Look up user by token
+  const user = await NAP.User.findOne({ token })
+  if (!user) {
+    throw ERRORS.AUTH_INVALID_USER_TOKEN
+  }
+
+  return user
+}
+
 const _willMarkUserAsVerifiedByToken = async token => {
   // Guard
   guard(token)
@@ -223,17 +236,31 @@ const validateLocalStrategy = (email, password, done) => {
     })
 }
 
+const auth_reset_token = (req, res, next) => {
+  const { auth_error_uri } = require('./config')
+  // Guard
+  const token = req.params.token
+  if (!token || token.trim() === '') {
+    return res.redirect(`${auth_error_uri}?name=auth/token-not-provided`)
+  }
+
+  // Verify
+  _willValidateToken(token).then(() => next()).catch(() => {
+    res.redirect(`${auth_error_uri}?name=auth/token-not-exist`)
+  })
+}
+
 const auth_local_token = (req, res) => {
   const { auth_verified_uri, auth_error_uri } = require('./config')
   // Guard
   const token = req.params.token
   if (!token || token.trim() === '') {
-    return res.redirect(`${auth_error_uri}?code=token-not-provided`)
+    return res.redirect(`${auth_error_uri}?name=auth/token-not-provided`)
   }
 
   // Verify
   _willMarkUserAsVerifiedByToken(token).then(() => res.redirect(auth_verified_uri)).catch(() => {
-    res.redirect(`${auth_error_uri}?code=token-not-exist`)
+    res.redirect(`${auth_error_uri}?name=auth/token-not-exist`)
   })
 }
 
@@ -300,6 +327,7 @@ const auth_local = (req, res) => res.redirect('/auth/welcome')
 
 const handler = {
   auth_local_token,
+  auth_reset_token,
   reset_password_by_token,
   auth_local
 }

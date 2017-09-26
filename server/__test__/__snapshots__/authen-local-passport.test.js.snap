@@ -18,9 +18,9 @@ exports[`authen-local-passport mock should create password reset url 1`] = `"htt
 
 exports[`authen-local-passport mock should create password reset url 2`] = `"http://localhost:4000//auth/reset/FOO_TOKEN"`;
 
-exports[`authen-local-passport mock should redirect non exist token to /auth/error/token-not-exist 1`] = `"/auth/error?code=token-not-exist"`;
+exports[`authen-local-passport mock should redirect non exist token to /auth/error?name=token-not-exist 1`] = `"/auth/error?name=auth/token-not-exist"`;
 
-exports[`authen-local-passport mock should redirect null token to /auth/error/token-not-provided 1`] = `"/auth/error?code=token-not-provided"`;
+exports[`authen-local-passport mock should redirect null token to /auth/error?name=token-not-provided 1`] = `"/auth/error?name=auth/token-not-provided"`;
 
 exports[`authen-local-passport mock should reset password if user exist 1`] = `
 Object {
@@ -39,4 +39,6 @@ Object {
 }
 `;
 
-exports[`authen-local-passport mock-server should validate local strategy 1`] = `"/auth/error?code=token-not-exist"`;
+exports[`authen-local-passport mock-server should validate local strategy 1`] = `"/auth/error?name=auth/token-not-exist"`;
+
+exports[`authen-local-passport mock-server should validate local strategy 2`] = `"/auth/error?name=auth/token-not-exist"`;

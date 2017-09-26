@@ -1,4 +1,4 @@
-const config = require('./config')
+const { base_url, auth_error_uri } = require('./config')
 
 let providers = []
 
@@ -14,7 +14,7 @@ const init = (app, passport) => {
 
   // Define a Passport strategy for provider
   providers.forEach(({ provider, Strategy, strategyOptions, getUserFromProfile }) => {
-    strategyOptions.callbackURL = `${config.base_url}/auth/${provider}/callback`
+    strategyOptions.callbackURL = `${base_url}/auth/${provider}/callback`
     strategyOptions.passReqToCallback = true
 
     passport.use(
@@ -118,12 +118,12 @@ const init = (app, passport) => {
   providers.forEach(({ provider, scope }) => {
     app.get(`/auth/${provider}`, passport.authenticate(provider, { scope }))
 
-    app.get(`/auth/${provider}/callback`, passport.authenticate(provider, { failureRedirect: '/auth/error' }), (req, res) => {
+    app.get(`/auth/${provider}/callback`, passport.authenticate(provider, { failureRedirect: auth_error_uri }), (req, res) => {
       // Redirect to the sign in success, page which will force the client to update it's cache
       res.redirect('/auth/welcome')
     })
 
-    app.get(`/auth/${provider}/return`, passport.authenticate(provider, { failureRedirect: '/auth/error' }), (req, res) => {
+    app.get(`/auth/${provider}/return`, passport.authenticate(provider, { failureRedirect: auth_error_uri }), (req, res) => {
       // Successful authentication, redirect home.ß
       res.redirect('/auth/welcome')
     })

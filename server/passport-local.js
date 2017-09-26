@@ -1,21 +1,22 @@
-const initLocalStrategy = (passport) => {
+const initLocalStrategy = passport => {
   const LocalStrategy = require('passport-local')
   const { validateLocalStrategy } = require('./authen-local-passport')
-  
+
   // @ts-ignore
-  passport.use(new LocalStrategy({
-    usernameField: 'email',
-    passwordField: 'password',
-    session: false
-  }, validateLocalStrategy))
+  passport.use(
+    new LocalStrategy(
+      {
+        usernameField: 'email',
+        passwordField: 'password',
+        session: false
+      },
+      validateLocalStrategy
+    )
+  )
 }
 const init = (app, passport) => {
   // Handler
-  const {
-    auth_local_token,
-    reset_password_by_token,
-    auth_local
-  } = require('./authen-local-passport').handler
+  const { auth_local_token, reset_password_by_token, auth_local } = require('./authen-local-passport').handler
 
   // Before verify
   app.get('/auth/local/:token', auth_local_token)
@@ -27,7 +28,8 @@ const init = (app, passport) => {
   app.post('/reset-password-by-token', reset_password_by_token)
 
   // Route
-  app.post('/auth/local', passport.authenticate('local', { failureRedirect: '/auth/error' }), auth_local)
+  const { auth_error_uri } = require('./config')
+  app.post('/auth/local', passport.authenticate('local', { failureRedirect: auth_error_uri }), auth_local)
 }
 
 module.exports = init

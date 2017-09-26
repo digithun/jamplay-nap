@@ -188,7 +188,7 @@ describe('authen-local-passport', () => {
       expect(await willSetUserStatusAsWaitForEmailReset(email, token)).toMatchSnapshot()
     })
 
-    it('should redirect null token to /auth/error/token-not-provided', async () => {
+    it('should redirect null token to /auth/error?name=token-not-provided', async () => {
       const { auth_local_token } = require('../authen-local-passport').handler
       const req = { params: { token: null } }
       const res = {
@@ -197,7 +197,7 @@ describe('authen-local-passport', () => {
       auth_local_token(req, res)
     })
 
-    it('should redirect non exist token to /auth/error/token-not-exist', async () => {
+    it('should redirect non exist token to /auth/error?name=token-not-exist', async () => {
       // stub
       global.NAP = {}
       NAP.User = {
@@ -257,6 +257,17 @@ describe('authen-local-passport', () => {
         redirect: route => expect(route).toMatchSnapshot()
       }
       auth_local_token(req, res)
+    })
+
+    it('should redirect invalid reset token to predefined path', async () => {
+      const { auth_reset_token } = require('../authen-local-passport').handler
+      const req = { params: { token: 'NOT_EXIST_TOKEN' } }
+      const res = {
+        redirect: route => expect(route).toMatchSnapshot()
+      }
+      const next = () => console.log(`This shouldn't be call`)
+
+      auth_reset_token(req, res, next)
     })
 
     it('should validate local strategy', async () => {
