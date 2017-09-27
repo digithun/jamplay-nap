@@ -1,3 +1,6 @@
 [submodule "graphql/content"]
 	path = graphql/content
 	url = git@github.com:digithun/jamplay-graphql.git
+[submodule "templates"]
+	path = templates
+	url = git@github.com:digithun/jamplay-mail-templates.git

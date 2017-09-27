@@ -4,7 +4,13 @@ exports[`NAP Server initNAP 1`] = `
 Object {
   "nap": nap {
     "errors": Array [],
+    "notificationService": Object {
+      "createNotification": [Function],
+      "getNotification": [Function],
+      "readNotification": [Function],
+    },
     "session": null,
+    "userEventHookService": [Function],
     "willCreateUser": [Function],
     "willGetFacebookProfile": [Function],
     "willInstallAndAuthen": [Function],

@@ -17,8 +17,12 @@ const initNextRoute = (app, nextjs) => {
   // Handler
   const handler = nextjs.getRequestHandler()
 
+  // Before reset password with token
+  const { auth_reset_token } = require('./authen-local-passport').handler
+  app.get('/auth/reset/:token', auth_reset_token)
+
   // Authen.reset
-  app.get('/auth/reset/*', (req, res) => {
+  app.get('/auth/reset/*', (req, res, next) => {
     const { parse } = require('url')
     const pathMatch = require('path-match')
 
@@ -28,7 +32,7 @@ const initNextRoute = (app, nextjs) => {
     const params = match(pathname)
 
     if (params === false) {
-      handler(req, res)
+      handler(req, res, next)
       return
     }
 
@@ -36,7 +40,7 @@ const initNextRoute = (app, nextjs) => {
   })
 
   // Default catch-all handler to allow Next.js to handle all other routes
-  app.all('*', (req, res) => handler(req, res))
+  app.all('*', (req, res, next) => handler(req, res, next))
 }
 
 // Graceful Shutdown Server

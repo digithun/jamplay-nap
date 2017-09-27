@@ -6,14 +6,12 @@ describe('index', () => {
     expect(start).toMatchSnapshot()
   })
 
-  const fetcher = async (body, authorization) => {
-    const fetch = require('isomorphic-fetch')
-    return await fetch('http://localhost:3000/graphql', {
+  const fetcher = async (body, authorization) =>
+    require('isomorphic-fetch')('http://localhost:3000/graphql', {
       method: 'post',
       headers: { 'Content-Type': 'application/json', authorization },
       body
     }).then(response => response.json())
-  }
 
   const loginWithFacebook = {
     operationName: 'loginWithFacebook',
@@ -60,9 +58,7 @@ describe('index', () => {
     it('can log user out and return null user', async () => {
       // Login first
       const loginWithFacebook_query = JSON.stringify(loginWithFacebook)
-      const sessionToken = await fetcher(loginWithFacebook_query).then(
-        result => result.data.loginWithFacebook.sessionToken
-      )
+      const sessionToken = await fetcher(loginWithFacebook_query).then(result => result.data.loginWithFacebook.sessionToken)
 
       // Then logout
       const logout = {

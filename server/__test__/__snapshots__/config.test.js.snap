@@ -2,6 +2,8 @@
 
 exports[`config should return config 1`] = `
 Object {
+  "achievement_service_api_key": undefined,
+  "achievement_service_url": undefined,
   "auth_error_uri": "/auth/error",
   "auth_local_uri": "http://localhost:4000/auth/local",
   "auth_new_reset_uri": "http://localhost:4000/auth/reset",

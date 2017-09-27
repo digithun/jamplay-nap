@@ -6,4 +6,4 @@ npm-debug.log
 coverage
 yarn-error.log
 
-*.tmp.*
+*.tmp
