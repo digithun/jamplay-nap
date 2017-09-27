@@ -61,7 +61,7 @@ const config = {
 
   static_resolve_url: process.env.STATIC_RESOLVE_URL,
   // ImageRenderService
-  share_image_service_url: process.env.SHRARE_IMAGE_SERVICE_URL || (() => { throw new Error('share image service is not defined') })(),
+  share_image_service_url: process.env.SHARE_IMAGE_SERVICE_URL || (() => { throw new Error('share image service is not defined') })(),
   share_image_service_api_key: process.env.SHARE_IMAGE_SERVICE_API_KEY || (() => { throw new Error('share image service api key not defined') })()
 }
 
