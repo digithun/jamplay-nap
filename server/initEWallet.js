@@ -34,7 +34,7 @@ const init = (config, app) => {
             .post(`${api}/v1/${path}`)
             .set('Content-Type', 'application/json')
             // add token to data
-            .set('authorization', process.env.E_WALLET_APIKEY)
+            .set('authorization', process.env.E_WALLET_API_KEY)
             .send(Object.assign({
               token
             }, data))
@@ -45,7 +45,7 @@ const init = (config, app) => {
             .get(`${api}/v1/${path}`)
             .set('Content-Type', 'application/json')
             // add token to data
-            .set('authorization', process.env.E_WALLET_APIKEY)
+            .set('authorization', process.env.E_WALLET_API_KEY)
           return result.body.data
         }
         return {
