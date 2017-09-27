@@ -55,7 +55,14 @@ const config = {
   is_optics_enabled: isTrue(process.env.IS_OPTICS_ENABLED),
 
   // BigQuery
-  bigquery_service_endpoint: process.env.BIGQUERY_SERVICE_ENDPOINT || null
+  bigquery_service_endpoint: process.env.BIGQUERY_SERVICE_ENDPOINT || null,
+
+  // s3
+
+  static_resolve_url: process.env.STATIC_RESOLVE_URL,
+  // ImageRenderService
+  share_image_service_url: process.env.SHRARE_IMAGE_SERVICE_URL || (() => { throw new Error('share image service is not defined') })(),
+  share_image_service_api_key: process.env.SHARE_IMAGE_SERVICE_API_KEY || (() => { throw new Error('share image service api key not defined') })()
 }
 
 module.exports = config
