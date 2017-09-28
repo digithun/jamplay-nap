@@ -1,6 +1,6 @@
 {
   "name": "nap",
-  "version": "1.18.1",
+  "version": "1.18.2",
   "main": "index.js",
   "scripts": {
     "postinstall": "cd graphql/content && yarn install",
@@ -122,6 +122,7 @@
     "redux-thunk": "^2.2.0",
     "rimraf": "^2.6.2",
     "sharp": "^0.18.4",
+    "superagent": "^3.6.0",
     "tmp-promise": "^1.0.3",
     "uuid": "^3.1.0",
     "validator": "^8.2.0"
@@ -154,7 +155,6 @@
     "promise-sequential": "^1.1.1",
     "prop-types": "^15.5.10",
     "react-addons-test-utils": "^15.6.0",
-    "react-test-renderer": "^15.6.1",
-    "superagent": "^3.6.0"
+    "react-test-renderer": "^15.6.1"
   }
 }
