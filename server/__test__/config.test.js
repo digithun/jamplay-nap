@@ -10,6 +10,10 @@ process.env.AUTH_RESET_URI = 'http://localhost:4000/auth/reset'
 process.env.AUTH_NEW_RESET_URI = 'http://localhost:4000/auth/reset'
 process.env.AUTH_VERIFIED_URI = 'http://localhost:4000/auth/verified'
 
+process.env.STATIC_RESOLVE_URL = 'foo'
+process.env.SHARE_IMAGE_SERVICE_URL = 'bar'
+process.env.SHARE_IMAGE_SERVICE_API_KEY = 'baz'
+
 const config = require('../config')
 
 describe('config', () => {

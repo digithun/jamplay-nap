@@ -69,8 +69,7 @@ const insertQuery = (req, res) => fetch(bigquery_service_endpoint + '/insert', {
   method: req.method,
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify(req.method === 'GET' ? req.query : req.body)
-}).then(fetchRes => res.sendStatus(fetchRes.status))
-
+}).then(fetchRes => res.sendStatus(fetchRes.status)).catch(e => res.status(503).json(e))
 
 const putBook = (body) => new Promise(resolve => fetch(bigquery_service_endpoint + '/book', {
   method: 'PUT',
