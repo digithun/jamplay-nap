@@ -36,3 +36,5 @@ Object {
 `;
 
 exports[`errors should return AUTH_INVALID_USER_TOKEN 1`] = `[Error: The user's credential is no longer valid. The user must sign in again.]`;
+
+exports[`errors should return error by AUTH_INVALID_USER_TOKEN with foo reason 1`] = `[Error: The user's credential is no longer valid. The user must sign in again.foo]`;

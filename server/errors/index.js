@@ -64,7 +64,10 @@ const onError = req => (...args) => {
 }
 
 const errorBy = (code, msg) => {
-  const _error = require('./commons')[code]
+  const _errorCode = require('./codes')[code]
+  const _errorNAP = require('./commons')[code]
+  const _error = _errorNAP || _errorCode || new GenericError('unknown-error')
+
   _error.message += msg
   return _error
 }

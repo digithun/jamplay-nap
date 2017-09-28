@@ -72,4 +72,9 @@ describe('errors', () => {
     }).toThrow(err)
     expect(req.nap.errors[0]).toMatchSnapshot()
   })
+
+  it('should return error by AUTH_INVALID_USER_TOKEN with foo reason', () => {
+    const { errorBy } = require('../errors')
+    expect(errorBy('AUTH_INVALID_USER_TOKEN', 'foo')).toMatchSnapshot()
+  })
 })
