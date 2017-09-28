@@ -58,7 +58,6 @@ const config = {
   bigquery_service_endpoint: process.env.BIGQUERY_SERVICE_ENDPOINT || null,
 
   // s3
-
   static_resolve_url: process.env.STATIC_RESOLVE_URL || (() => { throw new Error('static resolve url is not defined') })(),
   // ImageRenderService
   share_image_service_url: process.env.SHARE_IMAGE_SERVICE_URL || (() => { throw new Error('share image service is not defined') })(),

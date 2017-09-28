@@ -39,21 +39,24 @@ module.exports = function ({ achievement_service_url, achievement_service_api_ke
         body: JSON.stringify(bodyPayload),
         timeout: 5000
       })
+      if (response.status !== 200) {
+        throw new Error('Response error')
+      }
       const result = await response.json()
-      console.log(result)
       const reward = {
         notifications: result.rewardList || []
       }
-
+      console.log('create notification')
       if (reward.notifications.length > 0) {
         const promises = reward.notifications.map(async (notification) => {
-          await notificationService.createNotification(user._id, {
+          return notificationService.createNotification(user._id, {
             text: notification.msg_enum,
             textAttr: notification.reward
           })
         })
         await Promise.all(promises)
       }
+      console.log('done')
     } catch (e) {
       console.log('user-event-hook: error')
       console.log(e.name)
