@@ -279,6 +279,14 @@ const willUpdatePasswordByToken = async (token, password) => {
   return user.save()
 }
 
+const willUpdateEmailByToken = async (token, email) => {
+  // Guard token
+  let user = await NAP.User.findOne({ token })
+  if (!user) throw ERRORS.AUTH_INVALID_ACTION_CODE
+
+  return willUpdateEmail(user, email)
+}
+
 const willUpdateEmail = async (user, email) => {
   // Guard
   guard({ user })
@@ -323,6 +331,15 @@ const reset_password_by_token = (req, res) => {
   })()
 }
 
+const reset_email_by_token = (req, res) => {
+  const { token, password } = req.body
+  ;(async () => {
+    const result = await willUpdateEmailByToken(token, password).catch(err => res.json({ errors: [err.message] }))
+
+    return res.json({ data: { isReset: !!result } })
+  })()
+}
+
 const auth_local = (req, res) => res.redirect('/auth/welcome')
 
 const handler = {
@@ -345,6 +362,7 @@ module.exports = {
   willSetUserStatusAsWaitForEmailReset,
   willUpdatePasswordByToken,
   willUpdateEmail,
+  willUpdateEmailByToken,
   willUpdatePassword,
   validateLocalStrategy,
   handler,

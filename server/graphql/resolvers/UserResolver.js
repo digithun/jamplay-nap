@@ -33,12 +33,14 @@ const updatePassword = async ({ args, context }) => {
 const forget = async ({ context, args }) => context.nap.willResetPasswordViaEmail(context, args.email).catch(onError(context))
 
 const updatePasswordByToken = async ({ context, args }) => context.nap.willUpdatePasswordByToken(args.token, args.password).catch(onError(context))
+const updateEmailByToken = async ({ context, args }) => context.nap.willUpdateEmailByToken(args.token, args.email).catch(onError(context))
 
 module.exports = {
   user: willReadUser,
   linkWithFacebook,
   unlinkFromFacebook,
   updateEmail,
+  updateEmailByToken,
   forget,
   updatePassword,
   updatePasswordByToken

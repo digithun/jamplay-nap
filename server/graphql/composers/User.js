@@ -5,7 +5,7 @@ module.exports = models => {
     name: 'user',
     kind: 'query',
     type: models.UserTC,
-    resolve: async (params) => {
+    resolve: async params => {
       const user = UserResolver.user(params)
       return user
     }
@@ -65,5 +65,16 @@ module.exports = models => {
     },
     type: models.UserTC,
     resolve: UserResolver.updatePasswordByToken
+  })
+
+  models.UserTC.addResolver({
+    name: 'updateEmailByToken',
+    kind: 'mutation',
+    args: {
+      token: 'String!',
+      email: 'String!'
+    },
+    type: models.UserTC,
+    resolve: UserResolver.updateEmailByToken
   })
 }
