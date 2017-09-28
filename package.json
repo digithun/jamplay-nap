@@ -1,6 +1,6 @@
 {
   "name": "nap",
-  "version": "1.17.0",
+  "version": "1.18.0",
   "main": "index.js",
   "scripts": {
     "postinstall": "cd graphql/content && yarn install",
@@ -146,6 +146,7 @@
     "eslint-plugin-babel": "^4.1.2",
     "eslint-plugin-import": "^2.7.0",
     "eslint-plugin-react": "^7.4.0",
+    "is-progressive": "^3.0.0",
     "jest": "^21.1.0",
     "jest-cli": "^21.1.0",
     "mongodb-memory-server": "^1.6.0",

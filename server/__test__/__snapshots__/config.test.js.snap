@@ -28,5 +28,8 @@ Object {
   "passport_disabled": false,
   "redis_url": "redis://redis",
   "sessions_ttl": 60000,
+  "share_image_service_api_key": "baz",
+  "share_image_service_url": "bar",
+  "static_resolve_url": "foo",
 }
 `;
