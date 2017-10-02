@@ -2,6 +2,26 @@ const { guard, errorBy } = require('./errors')
 
 const _emailError = msg => errorBy('AUTH_EMAIL_NOT_SENT', msg)
 
+const willSendVerificationForUpdateEmail = async (user, email) => {
+  // Token
+  const token = require('uuid/v4')()
+
+  const { willAddUnverifiedEmail } = require('./authen-local-passport')
+  await willAddUnverifiedEmail(user, email)
+
+  // Guard
+  if (!user) {
+    throw require('./errors/codes').AUTH_USER_NOT_FOUND
+  }
+
+  const msg = _sendEmailVerification(email, token)
+
+  // Got msg?
+  if (!msg) throw _emailError(` (${email})`)
+
+  return user
+}
+
 // Forget password
 const willResetPasswordViaEmail = async (req, email, token) => {
   // Token
@@ -46,6 +66,29 @@ const willResetPasswordViaEmail = async (req, email, token) => {
   return user
 }
 
+const _sendEmailVerification = async (email, token) => {
+  // Will send email verification
+  const { auth_local_uri, base_url } = require('./config')
+  const { createVerificationURL } = require('./authen-local-passport')
+  const verification_url = createVerificationURL(auth_local_uri, base_url, token)
+
+  // New user, will need verification by email
+  const config = require('./config')
+  const mailer = require('./mailer')
+
+  const msg = await mailer
+    .willSendVerification({
+      mailgun_api_key: config.mailgun_api_key,
+      mailgun_domain: config.mailgun_domain,
+      email,
+      verification_url
+    })
+    .catch(err => {
+      throw _emailError(` (${email}) : ${err.message}`)
+    })
+  return msg
+}
+
 // Register with email and password
 const willSignUp = async (req, email, password, extraFields) => {
   // Guard
@@ -67,30 +110,11 @@ const willSignUp = async (req, email, password, extraFields) => {
     throw require('./errors/codes').AUTH_USER_NOT_FOUND
   }
 
-  // Will send email verification
-  const { auth_local_uri, base_url } = require('./config')
-  const { createVerificationURL } = require('./authen-local-passport')
-  const verification_url = createVerificationURL(auth_local_uri, base_url, token)
-
-  // New user, will need verification by email
-  const config = require('./config')
-  const mailer = require('./mailer')
-
-  const msg = await mailer
-    .willSendVerification({
-      mailgun_api_key: config.mailgun_api_key,
-      mailgun_domain: config.mailgun_domain,
-      email,
-      verification_url
-    })
-    .catch(err => {
-      throw _emailError(` (${email}) : ${err.message}`)
-    })
+  const msg = _sendEmailVerification(email, token)
 
   // Got msg?
-  if (!msg) {
-    throw _emailError(` (${email})`)
-  }
+  if (!msg) throw _emailError(` (${email})`)
+
   return user
 }
 
@@ -128,5 +152,6 @@ module.exports = {
   willSignUp,
   willLogin,
   willLogout,
-  willResetPasswordViaEmail
+  willResetPasswordViaEmail,
+  willSendVerificationForUpdateEmail
 }

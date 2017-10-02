@@ -77,4 +77,15 @@ module.exports = models => {
     type: models.UserTC,
     resolve: UserResolver.updateEmailByToken
   })
+
+  models.UserTC.addResolver({
+    name: 'sendVerificationForUpdateEmail',
+    kind: 'mutation',
+    args: {
+      token: 'String!',
+      email: 'String!'
+    },
+    type: models.UserTC,
+    resolve: UserResolver.sendVerificationForUpdateEmail
+  })
 }

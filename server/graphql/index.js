@@ -88,6 +88,7 @@ module.exports.buildSchema = () => {
     updatePassword: models.UserTC.getResolver('updatePassword'),
     updatePasswordByToken: models.UserTC.getResolver('updatePasswordByToken'),
     updateEmailByToken: models.UserTC.getResolver('updateEmailByToken'),
+    sendVerificationForUpdateEmail: models.UserTC.getResolver('sendVerificationForUpdateEmail'),
     unlinkFromFacebook: models.UserTC.getResolver('unlinkFromFacebook'),
     linkWithFacebook: models.UserTC.getResolver('linkWithFacebook'),
     updateEmail: models.UserTC.getResolver('updateEmail'),

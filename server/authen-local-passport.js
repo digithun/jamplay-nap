@@ -279,6 +279,24 @@ const willUpdatePasswordByToken = async (token, password) => {
   return user.save()
 }
 
+const willAddUnverifiedEmail = async (user, unverifiedEmail) => {
+  // Guard invalid arguments
+  guard({ user })
+  const isValid = await willValidateEmail(unverifiedEmail)
+  if (!isValid) throw ERRORS.AUTH_INVALID_EMAIL
+
+  // Guard existing user that's not owner
+  const otherUser = await NAP.User.findOne({ _id: { $ne: user._id }, email: unverifiedEmail })
+  _guardDuplicatedUserByEmail(otherUser)
+  _guardUnverifiedUserForSignUp(user)
+
+  // Update user status
+  user.unverifiedEmail = unverifiedEmail
+  await user.save()
+
+  return user
+}
+
 const willUpdateEmailByToken = async (token, email) => {
   // Guard token
   let user = await NAP.User.findOne({ token })
@@ -361,6 +379,7 @@ module.exports = {
   willValidateEmailAndPassword,
   willSetUserStatusAsWaitForEmailReset,
   willUpdatePasswordByToken,
+  willAddUnverifiedEmail,
   willUpdateEmail,
   willUpdateEmailByToken,
   willUpdatePassword,

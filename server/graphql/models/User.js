@@ -19,6 +19,7 @@ module.exports = extendedSchema => {
     last_name: String,
     first_name: String,
     email: { type: String, unique: true },
+    unverifiedEmail: { type: String },
     token: String,
     status: String,
     hashed_password: String,
