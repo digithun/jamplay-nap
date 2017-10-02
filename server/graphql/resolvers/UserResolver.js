@@ -18,12 +18,6 @@ const linkWithFacebook = async ({ args, context }) => {
   return context.nap.willLinkWithFacebook(user, profile, token).catch(onError(context))
 }
 
-const verifyBeforeUpdateEmail = async ({ args, context }) => {
-  const user = await willGetUserFromSession(context).catch(onError(context))
-  const { email } = args
-  return context.nap.willSendBeforeUpdateEmail(user, email).catch(onError(context))
-}
-
 const updateEmail = async ({ args, context }) => {
   const user = await willGetUserFromSession(context).catch(onError(context))
   const { email } = args
@@ -51,7 +45,6 @@ module.exports = {
   unlinkFromFacebook,
   updateEmail,
   updateEmailByToken,
-  verifyBeforeUpdateEmail,
   forget,
   updatePassword,
   updatePasswordByToken,
