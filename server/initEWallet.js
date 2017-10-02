@@ -73,8 +73,12 @@ const init = (config, app) => {
           },
           getMerchantEwallet: async () => {
             const result = await callApi('user/getMerchantEWallet')
-            if (result.gold >= 0) { return result }
-            return {gold: 25000, silver: 250}
+            try{
+              return result
+            }catch(e){
+              return {gold: 0, silver: 0}
+            }
+           
           },
           spendJelly: async ({ refId, spendType, merchantId, merchantAliasId, amount, currencyType, commissionRate, payload }) => {
             const result = await callApi('spend/spendJelly', { refId, spendType, merchantId, merchantAliasId, amount, currencyType, commissionRate, payload })
