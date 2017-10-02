@@ -1,6 +1,6 @@
 {
   "name": "nap",
-  "version": "1.18.4",
+  "version": "1.18.5",
   "main": "index.js",
   "scripts": {
     "postinstall": "cd graphql/content && npm install",
@@ -72,6 +72,7 @@
     "cors": "^2.8.4",
     "cron": "^1.3.0",
     "dotenv": "^4.0.0",
+    "draft-js": "^0.10.3",
     "es6-promise": "^4.1.1",
     "express": "^4.15.4",
     "express-bearer-token": "^2.1.0",
