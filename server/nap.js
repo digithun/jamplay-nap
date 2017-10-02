@@ -1,7 +1,7 @@
 const { willLoginWithFacebook, willGetFacebookProfile } = require('./authen-facebook')
 const { willLinkWithFacebook, willUnlinkFromFacebook } = require('./authen-link')
 const { willSignUp, willLogin, willLogout, willResetPasswordViaEmail, willSendVerificationForUpdateEmail } = require('./authen-local')
-const { willUpdatePassword, willUpdatePasswordByToken, willUpdateEmail, willUpdateEmailByToken } = require('./authen-local-passport')
+const { willUpdatePassword, willUpdatePasswordByToken, willUpdateEmail, willVerifyEmailByToken } = require('./authen-local-passport')
 const { willInstallAndAuthen } = require('./graphql/resolvers')
 const { willCreateUser } = require('./authen-sessions')
 const config = require('./config')
@@ -24,7 +24,7 @@ class nap {
     this.willUpdatePasswordByToken = willUpdatePasswordByToken
     this.willUpdateEmail = willUpdateEmail
     this.willSendVerificationForUpdateEmail = willSendVerificationForUpdateEmail
-    this.willUpdateEmailByToken = willUpdateEmailByToken
+    this.willVerifyEmailByToken = willVerifyEmailByToken
     this.willInstallAndAuthen = willInstallAndAuthen
     this.willCreateUser = willCreateUser
 

@@ -21,6 +21,18 @@ describe('authen-local-passport', () => {
       expect(createVerificationURL(`${other_base_url}/${auth_local_uri}`, base_url, token)).toMatchSnapshot()
     })
 
+    it('should create verification for email change url', async () => {
+      const { createVerificationForEmailChangeURL } = require('../authen-local-passport')
+      const auth_change_email_uri = '/auth/change-email'
+      const verification_url = createVerificationForEmailChangeURL(auth_change_email_uri, base_url, token)
+
+      // URL
+      expect(verification_url).toMatchSnapshot()
+
+      // Path
+      expect(createVerificationForEmailChangeURL(`${other_base_url}/${auth_change_email_uri}`, base_url, token)).toMatchSnapshot()
+    })
+
     it('should create password reset url', async () => {
       const { createPasswordResetURL } = require('../authen-local-passport')
       const auth_reset_uri = '/auth/reset'
@@ -251,10 +263,10 @@ describe('authen-local-passport', () => {
     })
 
     it('should throw error if verify token for reset email has been use', async () => {
-      const { willUpdateEmailByToken } = require('../authen-local-passport')
+      const { willVerifyEmailByToken } = require('../authen-local-passport')
       const token = 'SOME_TOKEN'
       const password = 'SOME_PASSWORD'
-      expect(willUpdateEmailByToken(token, password)).rejects.toMatchObject(require('../errors/codes').AUTH_INVALID_ACTION_CODE)
+      expect(willVerifyEmailByToken(token, password)).rejects.toMatchObject(require('../errors/codes').AUTH_INVALID_ACTION_CODE)
     })
 
     it('should redirect valid token to /auth/verified', async () => {

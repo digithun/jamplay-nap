@@ -2,12 +2,12 @@ const { guard, errorBy } = require('./errors')
 
 const _emailError = msg => errorBy('AUTH_EMAIL_NOT_SENT', msg)
 
-const willSendVerificationForUpdateEmail = async (user, email) => {
+const willSendVerificationForUpdateEmail = async (user, email, token) => {
   // Token
-  const token = require('uuid/v4')()
+  token = token || require('uuid/v4')()
 
   const { willAddUnverifiedEmail } = require('./authen-local-passport')
-  await willAddUnverifiedEmail(user, email)
+  await willAddUnverifiedEmail(user, email, token)
 
   // Guard
   if (!user) {

@@ -3,6 +3,12 @@ const ERRORS = require('./errors/codes')
 
 const { URL } = require('url')
 
+const createVerificationForEmailChangeURL = (auth_change_email_uri, base_url, token) => {
+  const url = new URL(auth_change_email_uri, base_url)
+  url.pathname += `/${token}`
+  return url.toString()
+}
+
 const createVerificationURL = (auth_local_uri, base_url, token) => {
   const url = new URL(auth_local_uri, base_url)
   url.pathname += `/${token}`
@@ -236,13 +242,20 @@ const validateLocalStrategy = (email, password, done) => {
     })
 }
 
-const auth_reset_token = (req, res, next) => {
-  const { auth_error_uri } = require('./config')
-  // Guard
-  const token = req.params.token
+const _guardToken = (token, res, auth_error_uri) => {
   if (!token || token.trim() === '') {
     return res.redirect(`${auth_error_uri}?name=auth/token-not-provided`)
   }
+}
+
+const auth_change_email_token = (req, res, next) => auth_reset_token(req, res, next)
+
+const auth_reset_token = (req, res, next) => {
+  const { auth_error_uri } = require('./config')
+
+  // Guard
+  const token = req.params.token
+  _guardToken(token, res, auth_error_uri)
 
   // Verify
   _willValidateToken(token).then(() => next()).catch(() => {
@@ -252,11 +265,10 @@ const auth_reset_token = (req, res, next) => {
 
 const auth_local_token = (req, res) => {
   const { auth_verified_uri, auth_error_uri } = require('./config')
+
   // Guard
   const token = req.params.token
-  if (!token || token.trim() === '') {
-    return res.redirect(`${auth_error_uri}?name=auth/token-not-provided`)
-  }
+  _guardToken(token, res, auth_error_uri)
 
   // Verify
   _willMarkUserAsVerifiedByToken(token).then(() => res.redirect(auth_verified_uri)).catch(() => {
@@ -279,7 +291,7 @@ const willUpdatePasswordByToken = async (token, password) => {
   return user.save()
 }
 
-const willAddUnverifiedEmail = async (user, unverifiedEmail) => {
+const willAddUnverifiedEmail = async (user, unverifiedEmail, token) => {
   // Guard invalid arguments
   guard({ user })
   const isValid = await willValidateEmail(unverifiedEmail)
@@ -291,18 +303,26 @@ const willAddUnverifiedEmail = async (user, unverifiedEmail) => {
   _guardUnverifiedUserForSignUp(user)
 
   // Update user status
+  user.token = token
   user.unverifiedEmail = unverifiedEmail
   await user.save()
 
   return user
 }
 
-const willUpdateEmailByToken = async (token, email) => {
+const willVerifyEmailByToken = async token => {
   // Guard token
   let user = await NAP.User.findOne({ token })
   if (!user) throw ERRORS.AUTH_INVALID_ACTION_CODE
+  const email = user.unverifiedEmail
 
-  return willUpdateEmail(user, email)
+  await willUpdateEmail(user, email)
+
+  // Clean up
+  user.token = undefined
+  user.unverifiedEmail = undefined
+
+  return user.save()
 }
 
 const willUpdateEmail = async (user, email) => {
@@ -352,7 +372,7 @@ const reset_password_by_token = (req, res) => {
 const reset_email_by_token = (req, res) => {
   const { token, password } = req.body
   ;(async () => {
-    const result = await willUpdateEmailByToken(token, password).catch(err => res.json({ errors: [err.message] }))
+    const result = await willVerifyEmailByToken(token, password).catch(err => res.json({ errors: [err.message] }))
 
     return res.json({ data: { isReset: !!result } })
   })()
@@ -363,6 +383,7 @@ const auth_local = (req, res) => res.redirect('/auth/welcome')
 const handler = {
   auth_local_token,
   auth_reset_token,
+  auth_change_email_token,
   reset_password_by_token,
   auth_local
 }
@@ -371,6 +392,7 @@ module.exports = {
   createVerificationURL,
   createPasswordResetURL,
   createNewPasswordResetURL,
+  createVerificationForEmailChangeURL,
   willSignUpNewUser,
   willValidateEmail,
   willValidateEmptyPassword,
@@ -381,7 +403,7 @@ module.exports = {
   willUpdatePasswordByToken,
   willAddUnverifiedEmail,
   willUpdateEmail,
-  willUpdateEmailByToken,
+  willVerifyEmailByToken,
   willUpdatePassword,
   validateLocalStrategy,
   handler,

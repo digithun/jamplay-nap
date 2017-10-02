@@ -37,6 +37,7 @@ const config = {
   auth_reset_uri: process.env.AUTH_RESET_URI || '/auth/reset',
   auth_new_reset_uri: process.env.AUTH_NEW_RESET_URI || '/auth/reset',
   auth_verified_uri: process.env.AUTH_VERIFIED_URI || '/auth/verified',
+  auth_change_email_uri: process.env.AUTH_CHANGE_EMAIL_URI || '/auth/change-email',
   auth_error_uri: process.env.AUTH_ERROR_URI || '/auth/error',
   achievement_service_url: process.env.ACHIEVEMENT_SERVICE_URL,
   achievement_service_api_key: process.env.ACHIEVEMENT_SERVICE_API_KEY,
