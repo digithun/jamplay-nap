@@ -110,7 +110,7 @@ const willSignUp = async (req, email, password, extraFields) => {
     throw require('./errors/codes').AUTH_USER_NOT_FOUND
   }
 
-  const msg = _sendEmailVerification(email, token)
+  const msg = await _sendEmailVerification(email, token)
 
   // Got msg?
   if (!msg) throw _emailError(` (${email})`)
