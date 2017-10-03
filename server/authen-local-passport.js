@@ -352,6 +352,10 @@ const willUpdateEmail = async (user, email) => {
   const existingUser = await NAP.User.findOne({ email, _id: { $nin: user._id } })
   _guardDuplicatedUserByEmail(existingUser)
 
+  // Backup previous email
+  user.usedEmails = user.usedEmails || []
+  user.usedEmails.push(user.email)
+
   // Update email
   user.email = email
   return user.save()

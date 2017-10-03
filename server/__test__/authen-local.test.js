@@ -234,7 +234,7 @@ describe('authen-local', () => {
       body: { isMockServer: true }
     }
     const email = 'foo@bar.com'
-    const unverifiedEmail = 'katopz@gmail.com'
+    const unverifiedEmail = 'new_foo@gmail.com'
     const password = 'foobar'
     const token = 'aa90f9ca-ced9-4cad-b4a2-948006bf000d'
 
@@ -268,7 +268,9 @@ describe('authen-local', () => {
         email: unverifiedEmail,
         status: 'VERIFIED_BY_EMAIL',
         unverifiedEmail: null,
-        emailVerified: true
+        emailVerified: true,
+        token: null,
+        usedEmails: expect.objectContaining([email])
       })
     )
 
