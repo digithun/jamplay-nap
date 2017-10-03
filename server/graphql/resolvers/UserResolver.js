@@ -35,10 +35,10 @@ const forget = async ({ context, args }) => context.nap.willResetPasswordViaEmai
 const updatePasswordByToken = async ({ context, args }) => context.nap.willUpdatePasswordByToken(args.token, args.password).catch(onError(context))
 const updateEmailByToken = async ({ context, args }) => context.nap.willVerifyEmailByToken(args.token, args.email).catch(onError(context))
 
-const sendVerificationForUpdateEmail = async ({ context, args }) => {
+const changeEmail = async ({ context, args }) => {
   const user = await willGetUserFromSession(context).catch(onError(context))
   const { email } = args
-  context.nap.willSendVerificationForUpdateEmail(user, email).catch(onError(context))
+  return context.nap.willSendVerificationForUpdateEmail(user, email).catch(onError(context))
 }
 
 module.exports = {
@@ -50,5 +50,5 @@ module.exports = {
   forget,
   updatePassword,
   updatePasswordByToken,
-  sendVerificationForUpdateEmail
+  changeEmail
 }

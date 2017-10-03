@@ -252,7 +252,8 @@ describe('authen-local', () => {
       expect.objectContaining({
         _id: expect.any(ObjectId),
         token,
-        unverifiedEmail
+        unverifiedEmail,
+        status: 'WAIT_FOR_NEW_EMAIL_VERIFICATION'
       })
     )
 
@@ -264,7 +265,8 @@ describe('authen-local', () => {
     expect(updatedUser).toEqual(
       expect.objectContaining({
         _id: expect.any(ObjectId),
-        email: unverifiedEmail
+        email: unverifiedEmail,
+        status: ''
       })
     )
 

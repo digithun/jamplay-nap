@@ -14,12 +14,35 @@ const willSendVerificationForUpdateEmail = async (user, email, token) => {
     throw require('./errors/codes').AUTH_USER_NOT_FOUND
   }
 
-  const msg = _sendEmailVerification(email, token)
+  const msg = await _sendChageEmailVerification(email, token)
 
   // Got msg?
   if (!msg) throw _emailError(` (${email})`)
 
   return user
+}
+
+const _sendChageEmailVerification = async (email, token) => {
+  // Will send email verification
+  const { auth_change_email_uri, base_url } = require('./config')
+  const { createVerificationForEmailChangeURL } = require('./authen-local-passport')
+  const verification_url = createVerificationForEmailChangeURL(auth_change_email_uri, base_url, token)
+
+  // New user, will need verification by email
+  const config = require('./config')
+  const mailer = require('./mailer')
+
+  const msg = await mailer
+    .willSendVerificationForChangeEmail({
+      mailgun_api_key: config.mailgun_api_key,
+      mailgun_domain: config.mailgun_domain,
+      email,
+      verification_url
+    })
+    .catch(err => {
+      throw _emailError(` (${email}) : ${err.message}`)
+    })
+  return msg
 }
 
 // Forget password

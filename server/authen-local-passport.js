@@ -248,7 +248,18 @@ const _guardToken = (token, res, auth_error_uri) => {
   }
 }
 
-const auth_change_email_token = (req, res, next) => auth_reset_token(req, res, next)
+const auth_change_email_token = (req, res, next) => {
+  const { auth_error_uri } = require('./config')
+
+  // Guard
+  const token = req.params.token
+  _guardToken(token, res, auth_error_uri)
+
+  // Verify
+  _willValidateToken(token).then(() => next()).catch(() => {
+    res.redirect(`${auth_error_uri}?name=auth/token-not-exist`)
+  })
+}
 
 const auth_reset_token = (req, res, next) => {
   const { auth_error_uri } = require('./config')
@@ -283,7 +294,7 @@ const willUpdatePasswordByToken = async (token, password) => {
 
   // Guard email
   const isValid = await willValidatePassword(password)
-  if (!isValid) throw ERRORS.AUTH_INVALID_PASSWORD
+  if (!isValid) throw ERRORS.AUTH_WRONG_PASSWORD
 
   user = _withHashedPassword(user, password)
   user = Object.assign(user, _verifiedByEmailPayload())
@@ -300,27 +311,33 @@ const willAddUnverifiedEmail = async (user, unverifiedEmail, token) => {
   // Guard existing user that's not owner
   const otherUser = await NAP.User.findOne({ _id: { $ne: user._id }, email: unverifiedEmail })
   _guardDuplicatedUserByEmail(otherUser)
-  _guardUnverifiedUserForSignUp(user)
 
   // Update user status
   user.token = token
   user.unverifiedEmail = unverifiedEmail
+  user.status = 'WAIT_FOR_NEW_EMAIL_VERIFICATION'
   await user.save()
 
   return user
 }
 
-const willVerifyEmailByToken = async token => {
+const willVerifyEmailByToken = async (token, password) => {
+  console.log(token, password)
+
   // Guard token
   let user = await NAP.User.findOne({ token })
   if (!user) throw ERRORS.AUTH_INVALID_ACTION_CODE
-  const email = user.unverifiedEmail
 
+  // Guard Password
+  const isValidPassword = await _willValidatePassword(password, user.hashed_password)
+  if (!isValidPassword) throw ERRORS.AUTH_INVALID_PASSWORD
+
+  const email = user.unverifiedEmail
   await willUpdateEmail(user, email)
 
   // Clean up
-  user.token = undefined
-  user.unverifiedEmail = undefined
+  user = Object.assign(user, _verifiedByEmailPayload())
+  user.unverifiedEmail = null
 
   return user.save()
 }
@@ -363,18 +380,30 @@ const willUpdatePassword = async (user, password, new_password) => {
 const reset_password_by_token = (req, res) => {
   const { token, password } = req.body
   ;(async () => {
-    const result = await willUpdatePasswordByToken(token, password).catch(err => res.json({ errors: [err.message] }))
+    let result = {}
+    const user = await willUpdatePasswordByToken(token, password).catch(err => (result = { errors: [err.message] }))
+    const AUTH_USER_NOT_FOUND = require('./errors/commons').AUTH_USER_NOT_FOUND
+    if (!user) {
+      result.errors = result.errors ? result.errors.concat(AUTH_USER_NOT_FOUND) : AUTH_USER_NOT_FOUND
+    }
 
-    return res.json({ data: { isReset: !!result } })
+    return res.json(Object.assign(result, { data: { succeed: !result.errors, /* Will deprecated isReset */ isReset: !result.errors } }))
   })()
 }
 
-const reset_email_by_token = (req, res) => {
+const change_email_by_token = (req, res) => {
   const { token, password } = req.body
   ;(async () => {
-    const result = await willVerifyEmailByToken(token, password).catch(err => res.json({ errors: [err.message] }))
+    let result = {}
+    const user = await willVerifyEmailByToken(token, password).catch(err => (result = { errors: [err.message] }))
+    if (!user) {
+      const AUTH_USER_NOT_FOUND = require('./errors/commons').AUTH_USER_NOT_FOUND
+      result.errors = result.errors ? result.errors.concat(AUTH_USER_NOT_FOUND) : [AUTH_USER_NOT_FOUND]
+    }
 
-    return res.json({ data: { isReset: !!result } })
+    result = Object.assign(result, { data: { succeed: !result.errors } })
+    console.log(result)
+    return res.json(result)
   })()
 }
 
@@ -385,6 +414,7 @@ const handler = {
   auth_reset_token,
   auth_change_email_token,
   reset_password_by_token,
+  change_email_by_token,
   auth_local
 }
 
