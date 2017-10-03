@@ -30,6 +30,8 @@ const init = (app, passport) => {
         // Upsert data
         const payload = {
           email,
+          first_name: profile.name.givenName,
+          last_name: profile.name.familyName,
           name: profile.displayName,
           facebook: new NAP.Provider({
             id: profile.id,
