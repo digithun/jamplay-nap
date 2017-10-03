@@ -1,5 +1,7 @@
 // Helper
 const dev = process.env.NODE_ENV !== 'production'
+const test = process.env.NODE_ENV === 'test'
+
 const isTrue = value => {
   switch (value) {
     case true:
@@ -14,6 +16,11 @@ const isTrue = value => {
       return false
   }
 }
+
+const throwError = msg => {
+  throw new Error(msg)
+}
+
 // Constants
 const _SESSIONS_TTL_ONE_WEEK = 7 * 24 * 60 * 60 * 1000
 const config = {
@@ -59,19 +66,10 @@ const config = {
   bigquery_service_endpoint: process.env.BIGQUERY_SERVICE_ENDPOINT || null,
 
   // s3
-  static_resolve_url: process.env.STATIC_RESOLVE_URL ||
-    (() => {
-      if (!dev) throw new Error('static resolve url is not defined')
-    })(),
+  static_resolve_url: process.env.STATIC_RESOLVE_URL || test || throwError('static resolve url is not defined'),
   // ImageRenderService
-  share_image_service_url: process.env.SHARE_IMAGE_SERVICE_URL ||
-    (() => {
-      if (!dev) throw new Error('share image service is not defined')
-    })(),
-  share_image_service_api_key: process.env.SHARE_IMAGE_SERVICE_API_KEY ||
-    (() => {
-      if (!dev) throw new Error('share image service api key not defined')
-    })()
+  share_image_service_url: process.env.SHARE_IMAGE_SERVICE_URL || test || throwError('share image service is not defined'),
+  share_image_service_api_key: process.env.SHARE_IMAGE_SERVICE_API_KEY || test || throwError('share image service api key not defined')
 }
 
 module.exports = config

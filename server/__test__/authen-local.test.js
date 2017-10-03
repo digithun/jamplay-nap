@@ -227,7 +227,7 @@ describe('authen-local', () => {
     await mongoose.connection.collection('users').drop()
   })
 
-  it('should able to change email by token', async () => {
+  it('should able to change email by token and password', async () => {
     // mock
     const req = {
       nap: { errors: [] },
@@ -260,13 +260,15 @@ describe('authen-local', () => {
     // Simulate user click link from email
     // http://localhost:3000/auth/local/aa90f9ca-ced9-4cad-b4a2-948006bf000d
     const { willVerifyEmailByToken } = require('../authen-local-passport')
-    const updatedUser = await willVerifyEmailByToken(token)
+    const updatedUser = await willVerifyEmailByToken(token, password)
 
     expect(updatedUser).toEqual(
       expect.objectContaining({
         _id: expect.any(ObjectId),
         email: unverifiedEmail,
-        status: ''
+        status: 'VERIFIED_BY_EMAIL',
+        unverifiedEmail: null,
+        emailVerified: true
       })
     )
 

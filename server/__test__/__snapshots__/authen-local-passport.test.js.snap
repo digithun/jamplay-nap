@@ -26,6 +26,8 @@ exports[`authen-local-passport mock should redirect non exist token to /auth/err
 
 exports[`authen-local-passport mock should redirect null token to /auth/error?name=token-not-provided 1`] = `"/auth/error?name=auth/token-not-provided"`;
 
+exports[`authen-local-passport mock should redirect null token to /auth/error?name=token-not-provided 2`] = `"/auth/error?name=auth/token-not-exist"`;
+
 exports[`authen-local-passport mock should reset password if user exist 1`] = `
 Object {
   "_id": "592c0bb4484d740e0e73798b",
