@@ -59,7 +59,11 @@ module.exports.buildSchema = () => {
   if (config.mubsub_enabled) {
     authenChannel = NAP.mubsub.client.channel('authen')
 
-    models.AuthenTC = compose(addResolverMiddleware('login', loginMiddleware), addResolverMiddleware('loginWithFacebook', loginMiddleware), addResolverMiddleware('logout', logoutMiddleware))(models.AuthenTC)
+    models.AuthenTC = compose(
+      addResolverMiddleware('login', loginMiddleware),
+      addResolverMiddleware('loginWithFacebook', loginMiddleware),
+      addResolverMiddleware('logout', logoutMiddleware)
+    )(models.AuthenTC)
   }
 
   GQC.rootQuery().addFields(
@@ -81,8 +85,10 @@ module.exports.buildSchema = () => {
     loginWithFacebook: models.AuthenTC.getResolver('loginWithFacebook'),
     signUpWithEmailAndPassword: models.AuthenTC.getResolver('signUpWithEmailAndPassword'),
     forget: models.UserTC.getResolver('forget'),
+    changeEmail: models.UserTC.getResolver('changeEmail'),
     updatePassword: models.UserTC.getResolver('updatePassword'),
     updatePasswordByToken: models.UserTC.getResolver('updatePasswordByToken'),
+    updateEmailByToken: models.UserTC.getResolver('updateEmailByToken'),
     unlinkFromFacebook: models.UserTC.getResolver('unlinkFromFacebook'),
     linkWithFacebook: models.UserTC.getResolver('linkWithFacebook'),
     updateEmail: models.UserTC.getResolver('updateEmail'),

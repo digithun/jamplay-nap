@@ -8,7 +8,8 @@
     ".next",
     "*.test.js",
     "*__",
-    "coverage"
+    "coverage",
+    ".tmp/*"
   ],
   "events": {
     "restart": "osascript -e 'display notification \"App restarted due to:\n'$FILENAME'\" with title \"nodemon\"'"

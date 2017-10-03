@@ -226,4 +226,55 @@ describe('authen-local', () => {
     // Dispose
     await mongoose.connection.collection('users').drop()
   })
+
+  it('should able to change email by token and password', async () => {
+    // mock
+    const req = {
+      nap: { errors: [] },
+      body: { isMockServer: true }
+    }
+    const email = 'foo@bar.com'
+    const unverifiedEmail = 'new_foo@gmail.com'
+    const password = 'foobar'
+    const token = 'aa90f9ca-ced9-4cad-b4a2-948006bf000d'
+
+    await seedUserWithData({
+      email,
+      password,
+      emailVerified: true
+    })
+
+    const { willLogin, willSendVerificationForUpdateEmail } = require('../authen-local')
+    const user = await willLogin(req, email, password)
+    const result = await willSendVerificationForUpdateEmail(user, unverifiedEmail, token)
+
+    expect(result).toEqual(
+      expect.objectContaining({
+        _id: expect.any(ObjectId),
+        token,
+        unverifiedEmail,
+        status: 'WAIT_FOR_NEW_EMAIL_VERIFICATION'
+      })
+    )
+
+    // Simulate user click link from email
+    // http://localhost:3000/auth/local/aa90f9ca-ced9-4cad-b4a2-948006bf000d
+    const { willVerifyEmailByToken } = require('../authen-local-passport')
+    const updatedUser = await willVerifyEmailByToken(token, password)
+
+    expect(updatedUser).toEqual(
+      expect.objectContaining({
+        _id: expect.any(ObjectId),
+        email: unverifiedEmail,
+        status: 'VERIFIED_BY_EMAIL',
+        unverifiedEmail: null,
+        emailVerified: true,
+        token: null,
+        usedEmails: expect.objectContaining([email])
+      })
+    )
+
+    // Dispose
+    await mongoose.connection.collection('users').drop()
+  })
 })

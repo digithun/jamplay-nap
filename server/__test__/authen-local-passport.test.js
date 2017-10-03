@@ -21,6 +21,18 @@ describe('authen-local-passport', () => {
       expect(createVerificationURL(`${other_base_url}/${auth_local_uri}`, base_url, token)).toMatchSnapshot()
     })
 
+    it('should create verification for email change url', async () => {
+      const { createVerificationForChangeEmailURL } = require('../authen-local-passport')
+      const auth_change_email_uri = '/auth/change-email'
+      const verification_url = createVerificationForChangeEmailURL(auth_change_email_uri, base_url, token)
+
+      // URL
+      expect(verification_url).toMatchSnapshot()
+
+      // Path
+      expect(createVerificationForChangeEmailURL(`${other_base_url}/${auth_change_email_uri}`, base_url, token)).toMatchSnapshot()
+    })
+
     it('should create password reset url', async () => {
       const { createPasswordResetURL } = require('../authen-local-passport')
       const auth_reset_uri = '/auth/reset'
@@ -198,6 +210,10 @@ describe('authen-local-passport', () => {
     })
 
     it('should redirect non exist token to /auth/error?name=token-not-exist', async () => {
+      // Config
+      const config = require('../config')
+      config.auth_error_uri = '/auth/error'
+
       // stub
       global.NAP = {}
       NAP.User = {
@@ -212,42 +228,45 @@ describe('authen-local-passport', () => {
 
       auth_local_token(req, res)
     })
-
-    it('should reset password by token', async () => {
-      const token = 'aa90f9ca-ced9-4cad-b4a2-948006bf000d'
-      const password = 'password'
-
-      // stub
-      global.NAP = {}
-      NAP.User = {
-        findOne: jest.fn().mockImplementationOnce(async () => ({
-          save: async () => ({
-            _id: '592c0bb4484d740e0e73798b',
-            role: 'user',
-            token
-          })
-        }))
-      }
-
-      const { reset_password_by_token } = require('../authen-local-passport').handler
-      const req = { body: { token, password } }
-      const res = {
-        redirect: route => expect(route).toMatchSnapshot(),
-        json: JSON.toString
-      }
-      reset_password_by_token(req, res)
-    })
   })
 
   describe('mock-server', () => {
     beforeAll(setup)
     afterAll(teardown)
 
-    it('should throw error if verify token has been use', async () => {
+    it('should update password by token correctly', async () => {
+      const email = 'foo@bar.com'
+      const password = 'OLD_PASSWORD'
+      const token = 'aa90f9ca-ced9-4cad-b4a2-948006bf000d'
+
+      const { toHashedPassword } = require('../authen-local-passport')
+      const hashed_password = toHashedPassword(password)
+      const { willCreateUser } = require('../authen-sessions')
+      const userData = { email, emailVerified: true, hashed_password, token }
+      const user = await willCreateUser(userData)
+
+      const { willUpdatePasswordByToken } = require('../authen-local-passport')
+      const new_password = 'NEW_PASSWORD'
+      const updated_user = await willUpdatePasswordByToken(token, new_password)
+
+      expect(user.hashed_password).not.toBe(updated_user.hashed_password)
+
+      // Dispose
+      await mongoose.connection.collection('users').drop()
+    })
+
+    it('should throw error if verify token for reset password has been use', async () => {
       const { willUpdatePasswordByToken } = require('../authen-local-passport')
       const token = 'SOME_TOKEN'
       const password = 'SOME_PASSWORD'
       expect(willUpdatePasswordByToken(token, password)).rejects.toMatchObject(require('../errors/codes').AUTH_INVALID_ACTION_CODE)
+    })
+
+    it('should throw error if verify token for reset email has been use', async () => {
+      const { willVerifyEmailByToken } = require('../authen-local-passport')
+      const token = 'SOME_TOKEN'
+      const password = 'SOME_PASSWORD'
+      expect(willVerifyEmailByToken(token, password)).rejects.toMatchObject(require('../errors/codes').AUTH_INVALID_ACTION_CODE)
     })
 
     it('should redirect valid token to /auth/verified', async () => {

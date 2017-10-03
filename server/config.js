@@ -1,5 +1,7 @@
 // Helper
 const dev = process.env.NODE_ENV !== 'production'
+const test = process.env.NODE_ENV === 'test'
+
 const isTrue = value => {
   switch (value) {
     case true:
@@ -14,6 +16,11 @@ const isTrue = value => {
       return false
   }
 }
+
+const throwError = msg => {
+  throw new Error(msg)
+}
+
 // Constants
 const _SESSIONS_TTL_ONE_WEEK = 7 * 24 * 60 * 60 * 1000
 const config = {
@@ -37,6 +44,7 @@ const config = {
   auth_reset_uri: process.env.AUTH_RESET_URI || '/auth/reset',
   auth_new_reset_uri: process.env.AUTH_NEW_RESET_URI || '/auth/reset',
   auth_verified_uri: process.env.AUTH_VERIFIED_URI || '/auth/verified',
+  auth_change_email_uri: process.env.AUTH_CHANGE_EMAIL_URI || '/auth/change-email',
   auth_error_uri: process.env.AUTH_ERROR_URI || '/auth/error',
   achievement_service_url: process.env.ACHIEVEMENT_SERVICE_URL,
   achievement_service_api_key: process.env.ACHIEVEMENT_SERVICE_API_KEY,
@@ -58,10 +66,10 @@ const config = {
   bigquery_service_endpoint: process.env.BIGQUERY_SERVICE_ENDPOINT || null,
 
   // s3
-  static_resolve_url: process.env.STATIC_RESOLVE_URL || (() => { throw new Error('static resolve url is not defined') })(),
+  static_resolve_url: process.env.STATIC_RESOLVE_URL || test || throwError('static resolve url is not defined'),
   // ImageRenderService
-  share_image_service_url: process.env.SHARE_IMAGE_SERVICE_URL || (() => { throw new Error('share image service is not defined') })(),
-  share_image_service_api_key: process.env.SHARE_IMAGE_SERVICE_API_KEY || (() => { throw new Error('share image service api key not defined') })()
+  share_image_service_url: process.env.SHARE_IMAGE_SERVICE_URL || test || throwError('share image service is not defined'),
+  share_image_service_api_key: process.env.SHARE_IMAGE_SERVICE_API_KEY || test || throwError('share image service api key not defined')
 }
 
 module.exports = config

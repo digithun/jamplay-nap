@@ -3,8 +3,8 @@ import Router from 'next/router'
 import 'isomorphic-fetch'
 import PropTypes from 'prop-types'
 
-const resetPassword = (token, password) =>
-  fetch('/reset-password-by-token', {
+const changeEmail = (token, password) =>
+  fetch('/change-email-by-token', {
     method: 'POST',
     body: JSON.stringify({ token, password }),
     headers: new Headers({
@@ -28,10 +28,14 @@ class Reset extends React.Component {
       return false
     }
 
-    resetPassword(token, password)
+    changeEmail(token, password)
       .then(json => {
-        if (json.data.isReset) {
-          return Router.push('/auth/reset-succeed')
+        if (json.errors) {
+          return alert(json.errors[0])
+        }
+
+        if (json.data.succeed) {
+          return Router.push('/auth/change-email-succeed')
         }
       })
       .catch(err => console.error(err)) // eslint-disable-line
@@ -40,10 +44,12 @@ class Reset extends React.Component {
   render () {
     return (
       <form onSubmit={this.handleSubmit}>
-        <h1>Reset Password</h1>
+        <h1>Change email</h1>
+        <p>This field is for debug only</p>
         <input placeholder='token' name='token' defaultValue={this.props.token} /><br />
-        <input placeholder='password' name='password' defaultValue='foobar' />
-        <button type='submit'>Reset</button>
+        <p>Please enter your password</p>
+        <input placeholder='Your Password' name='password' type='password' />
+        <button type='submit'>Submit</button>
         <style jsx>{`
       form {
         border-bottom: 1px solid #ececec
@@ -64,7 +70,7 @@ class Reset extends React.Component {
 }
 
 Reset.propTypes = () => ({
-  resetPassword: PropTypes.func.isRequired
+  changeEmail: PropTypes.func.isRequired
 })
 
 export default Reset
