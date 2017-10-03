@@ -84,6 +84,7 @@ const willSignUp = async (req, email, password, extraFields) => {
       verification_url
     })
     .catch(err => {
+      console.log(err)
       throw _emailError(` (${email}) : ${err.message}`)
     })
 
