@@ -1,6 +1,6 @@
 {
   "name": "nap",
-  "version": "1.19.0",
+  "version": "1.18.6",
   "main": "index.js",
   "scripts": {
     "postinstall": "cd graphql/content && npm install",
@@ -45,9 +45,9 @@
     "up-dev": "NODE_ENV=development docker-compose -f docker-compose.yml -f docker-compose.dev.yml build && docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d && docker ps -a || true && npm run attach",
     "attach": "docker attach $(docker ps -a -q --filter ancestor=digithun/jamplay-nap) || true",
     "graphiql": "docker run -it -p3001:3000 vitalcode/auth-graphiql",
-    "test": "NODE_ENV=test jest --watchAll --runInBand",
-    "test:once": "NODE_ENV=test jest --runInBand",
-    "cover": "NODE_ENV=test jest --coverage --no-cache",
+    "test": "jest --watchAll --runInBand",
+    "test:once": "jest --runInBand",
+    "cover": "jest --coverage --no-cache",
     "release": ". release.sh",
     "seed": "node ./graphql/content/seed.js",
     "gen-seed": "node ./scripts/seeds/gen-seed.js",
