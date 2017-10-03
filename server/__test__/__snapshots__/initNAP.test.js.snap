@@ -19,11 +19,13 @@ Object {
     "willLoginWithFacebook": [Function],
     "willLogout": [Function],
     "willResetPasswordViaEmail": [Function],
+    "willSendVerificationForUpdateEmail": [Function],
     "willSignUp": [Function],
     "willUnlinkFromFacebook": [Function],
     "willUpdateEmail": [Function],
     "willUpdatePassword": [Function],
     "willUpdatePasswordByToken": [Function],
+    "willVerifyEmailByToken": [Function],
   },
 }
 `;

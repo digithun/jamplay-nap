@@ -16,7 +16,7 @@ const initLocalStrategy = passport => {
 }
 const init = (app, passport) => {
   // Handler
-  const { auth_local_token, reset_password_by_token, auth_local } = require('./authen-local-passport').handler
+  const { auth_local_token, reset_password_by_token, change_email_by_token, auth_local } = require('./authen-local-passport').handler
 
   // Before verify
   app.get('/auth/local/:token', auth_local_token)
@@ -26,6 +26,9 @@ const init = (app, passport) => {
 
   // reset-password-by-token
   app.post('/reset-password-by-token', reset_password_by_token)
+
+  // change-email-by-token
+  app.post('/change-email-by-token', change_email_by_token)
 
   // Route
   const { auth_error_uri } = require('./config')
