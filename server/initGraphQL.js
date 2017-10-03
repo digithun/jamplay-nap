@@ -147,7 +147,7 @@ const init = ({ graphiql_enabled: graphiql, base_url, port, e_wallet_enabled }, 
       schema,
       graphiql,
       formatError: ({ originalError, message, stack }) => {
-        if (!(originalError instanceof GenericError)) {
+        if (originalError && !(originalError instanceof GenericError)) {
           console.error('GraphQL track:', originalError)
         }
         return {

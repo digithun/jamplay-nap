@@ -13,7 +13,7 @@ const init = ({ port }, nap) => {
   const { base_url } = require('./config')
   const health = require('express-ping')
   app.use(health.ping())
-  debug.info(`Ping : ${base_url}/ping`)
+  debug.info(`Ping    : ${base_url}/ping`)
 
   return app
 }

@@ -7,6 +7,7 @@ import SignUp from '../components/auth/SignUp'
 import Login from '../components/auth/Login'
 import Logout from '../components/auth/Logout'
 import Forget from '../components/auth/Forget'
+import ChangeEmail from '../components/auth/ChangeEmail'
 import userProfile from './userProfile.gql'
 import PropTypes from 'prop-types'
 
@@ -23,6 +24,7 @@ const UserProfile = ({ loading, user, errors, authen }) => {
         <div>
           Welcome : {user.name}<Logout /><hr />
           {actions}<hr />
+          <ChangeEmail />
         </div>
       )
     }
@@ -32,6 +34,7 @@ const UserProfile = ({ loading, user, errors, authen }) => {
   let info = errors && errors[0] ? errors[0].message : ''
   if (user) {
     switch (user.status) {
+      case 'WAIT_FOR_NEW_EMAIL_VERIFICATION':
       case 'WAIT_FOR_EMAIL_VERIFICATION':
       case 'WAIT_FOR_EMAIL_RESET':
         info = 'Please check you email'
