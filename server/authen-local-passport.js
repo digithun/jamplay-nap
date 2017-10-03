@@ -3,7 +3,7 @@ const ERRORS = require('./errors/codes')
 
 const { URL } = require('url')
 
-const createVerificationForEmailChangeURL = (auth_change_email_uri, base_url, token) => {
+const createVerificationForChangeEmailURL = (auth_change_email_uri, base_url, token) => {
   const url = new URL(auth_change_email_uri, base_url)
   url.pathname += `/${token}`
   return url.toString()
@@ -322,8 +322,6 @@ const willAddUnverifiedEmail = async (user, unverifiedEmail, token) => {
 }
 
 const willVerifyEmailByToken = async (token, password) => {
-  console.log(token, password)
-
   // Guard token
   let user = await NAP.User.findOne({ token })
   if (!user) throw ERRORS.AUTH_INVALID_ACTION_CODE
@@ -422,7 +420,7 @@ module.exports = {
   createVerificationURL,
   createPasswordResetURL,
   createNewPasswordResetURL,
-  createVerificationForEmailChangeURL,
+  createVerificationForChangeEmailURL,
   willSignUpNewUser,
   willValidateEmail,
   willValidateEmptyPassword,

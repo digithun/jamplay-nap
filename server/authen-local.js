@@ -25,8 +25,8 @@ const willSendVerificationForUpdateEmail = async (user, email, token) => {
 const _sendChageEmailVerification = async (email, token) => {
   // Will send email verification
   const { auth_change_email_uri, base_url } = require('./config')
-  const { createVerificationForEmailChangeURL } = require('./authen-local-passport')
-  const verification_url = createVerificationForEmailChangeURL(auth_change_email_uri, base_url, token)
+  const { createVerificationForChangeEmailURL } = require('./authen-local-passport')
+  const verification_url = createVerificationForChangeEmailURL(auth_change_email_uri, base_url, token)
 
   // New user, will need verification by email
   const config = require('./config')

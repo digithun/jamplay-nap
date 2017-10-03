@@ -22,15 +22,15 @@ describe('authen-local-passport', () => {
     })
 
     it('should create verification for email change url', async () => {
-      const { createVerificationForEmailChangeURL } = require('../authen-local-passport')
+      const { createVerificationForChangeEmailURL } = require('../authen-local-passport')
       const auth_change_email_uri = '/auth/change-email'
-      const verification_url = createVerificationForEmailChangeURL(auth_change_email_uri, base_url, token)
+      const verification_url = createVerificationForChangeEmailURL(auth_change_email_uri, base_url, token)
 
       // URL
       expect(verification_url).toMatchSnapshot()
 
       // Path
-      expect(createVerificationForEmailChangeURL(`${other_base_url}/${auth_change_email_uri}`, base_url, token)).toMatchSnapshot()
+      expect(createVerificationForChangeEmailURL(`${other_base_url}/${auth_change_email_uri}`, base_url, token)).toMatchSnapshot()
     })
 
     it('should create password reset url', async () => {
