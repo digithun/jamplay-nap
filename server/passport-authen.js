@@ -4,12 +4,12 @@ const _willCreateUserWithPayload = async (provider, payload) => {
   const { profile } = payload[provider]
 
   // Guard used provider -> not allow
-  const providerUser = NAP.User.findOne({ [provider + '.id']: profile.id })
+  const providerUser = await NAP.User.findOne({ [`${provider}.id`]: profile.id })
   if (providerUser) throw AUTH_CREDENTIAL_ALREADY_IN_USE
 
   // Guard used email -> ask to login and link
   const { email } = payload
-  const emailUser = NAP.User.findOne({ email, emailVerified: true })
+  const emailUser = await NAP.User.findOne({ email, emailVerified: true })
   if (emailUser) throw AUTH_CREDENTIAL_ALREADY_IN_USE
 
   // Create new user

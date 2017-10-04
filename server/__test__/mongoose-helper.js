@@ -9,8 +9,9 @@ jasmine.DEFAULT_TIMEOUT_INTERVAL = 60000
 let mongoServer
 
 // Mock data
+const EMAIL = 'foo@bar.com'
 const __mocked__verifiedLocalUserPayload = {
-  email: 'foo@bar.com',
+  email: EMAIL,
   password: 'foobar',
   emailVerified: true,
   role: 'user'
@@ -25,6 +26,8 @@ const __expected__seedVerifiedLocalUser = {
 }
 
 const __mocked__facebookUser = {
+  id: '10154646415997479',
+  token: 'SOME_ACCESS_TOKEN',
   profile: {
     photos: [
       {
@@ -33,7 +36,7 @@ const __mocked__facebookUser = {
     ],
     emails: [
       {
-        value: 'katopz@gmail.com'
+        value: EMAIL
       }
     ],
     gender: '',
@@ -57,6 +60,13 @@ const getMockedFacebookUser = () => __mocked__facebookUser
   emailVerified: true,
 */
 // Seeder
+const seedFacebookUser = async () =>
+  seedUserWithData({
+    name: __mocked__facebookUser.profile.displayName,
+    email: __mocked__facebookUser.profile.emails[0].value,
+    facebook: __mocked__facebookUser
+  })
+
 const seedAuthenByUserWithManyDevices = async (userId, authens) => {
   // Me with many devices
   const installs = authens.map(authen => authen.installationId)
@@ -85,7 +95,7 @@ const seedUserWithData = async data =>
     .collection('users')
     .insert(
       Object.assign(data, {
-        hashed_password: require('../../server/authen-local-passport').toHashedPassword(data.password),
+        hashed_password: data.password && require('../../server/authen-local-passport').toHashedPassword(data.password),
         role: data.role || 'user'
       })
     )
@@ -127,5 +137,7 @@ module.exports = {
   seedVerifiedLocalUser,
   __mocked__verifiedLocalUserPayload,
   __expected__seedVerifiedLocalUser,
-  getMockedFacebookUser
+  getMockedFacebookUser,
+  seedFacebookUser,
+  EMAIL
 }
