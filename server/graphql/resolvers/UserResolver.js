@@ -33,7 +33,7 @@ const updatePassword = async ({ args, context }) => {
 const forget = async ({ context, args }) => context.nap.willResetPasswordViaEmail(context, args.email).catch(onError(context))
 
 const updatePasswordByToken = async ({ context, args }) => context.nap.willUpdatePasswordByToken(args.token, args.password).catch(onError(context))
-const updateEmailByToken = async ({ context, args }) => context.nap.willVerifyEmailByToken(args.token, args.email).catch(onError(context))
+const updateEmailByToken = async ({ context, args }) => context.nap.willVerifyEmailByToken(args.token, args.password).catch(onError(context))
 
 const changeEmail = async ({ context, args }) => {
   const user = await willGetUserFromSession(context).catch(onError(context))
