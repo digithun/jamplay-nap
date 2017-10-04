@@ -1,5 +1,20 @@
-const { guard, errorBy } = require('./errors')
-const AUTH_PASSPORT_FAILED = require('./errors/codes').AUTH_PASSPORT_FAILED
+const { AUTH_PASSPORT_FAILED, AUTH_CREDENTIAL_ALREADY_IN_USE } = require('./errors/codes')
+
+const _willCreateUserWithPayload = async (provider, payload) => {
+  const { profile } = payload[provider]
+
+  // Guard used provider -> not allow
+  const providerUser = NAP.User.findOne({ [provider + '.id']: profile.id })
+  if (providerUser) throw AUTH_CREDENTIAL_ALREADY_IN_USE
+
+  // Guard used email -> ask to login and link
+  const { email } = payload
+  const emailUser = NAP.User.findOne({ email, emailVerified: true })
+  if (emailUser) throw AUTH_CREDENTIAL_ALREADY_IN_USE
+
+  // Create new user
+  return NAP.User.create(payload, { new: true, upsert: true })
+}
 
 const willAuthenWithPassport = (strategy, req) =>
   new Promise((resolve, reject) => {
@@ -7,32 +22,15 @@ const willAuthenWithPassport = (strategy, req) =>
     // @ts-ignore
     passport.authenticate(strategy, (err, payload) => {
       // Error?
-      if (err) {
-        return reject(err)
-      }
+      if (err) return reject(err)
 
       switch (strategy) {
         case 'local':
           return payload ? resolve(payload) : reject(AUTH_PASSPORT_FAILED)
+        case 'facebook-token':
+          return _willCreateUserWithPayload('facebook', payload).then(resolve).catch(reject)
         default:
-          const { email } = payload
-          guard({ email })
-
-          // Will find someone that has this email and update token
-          const user = NAP.User
-            .findOneAndUpdate(
-            {
-              email
-            },
-              payload,
-              { new: true, upsert: true }
-            )
-            .catch(err => {
-              reject(errorBy('AUTH_PASSPORT_FAILED', err.message))
-            })
-
-          // User?
-          return user ? resolve(user) : reject(AUTH_PASSPORT_FAILED)
+          return reject(AUTH_PASSPORT_FAILED)
       }
     })(req)
   })
@@ -65,4 +63,5 @@ const willGetProfileWithPassport = (provider, strategy, req) =>
     })(req)
   })
 
-module.exports = { willAuthenWithPassport, willGetProfileWithPassport }
+const __private = { _willCreateUserWithPayload }
+module.exports = { willAuthenWithPassport, willGetProfileWithPassport, __private }

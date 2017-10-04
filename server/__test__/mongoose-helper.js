@@ -23,6 +23,33 @@ const __expected__seedVerifiedLocalUser = {
   emailVerified: true,
   hashed_password: expect.any(String)
 }
+
+const __mocked__facebookUser = {
+  profile: {
+    photos: [
+      {
+        value: 'https://graph.facebook.com/v2.6/10154646415997479/picture?type=large'
+      }
+    ],
+    emails: [
+      {
+        value: 'katopz@gmail.com'
+      }
+    ],
+    gender: '',
+    name: {
+      middleName: '',
+      givenName: 'Katopz',
+      familyName: 'Todsaporn'
+    },
+    displayName: 'Katopz Todsaporn',
+    id: '10154646415997479',
+    provider: 'facebook'
+  }
+}
+
+const getMockedFacebookUser = () => __mocked__facebookUser
+
 /*
   _id: expect.any(ObjectId),
   email: expect.any(String),
@@ -99,5 +126,6 @@ module.exports = {
   seedInstalledAndVerifiedUser,
   seedVerifiedLocalUser,
   __mocked__verifiedLocalUserPayload,
-  __expected__seedVerifiedLocalUser
+  __expected__seedVerifiedLocalUser,
+  getMockedFacebookUser
 }
