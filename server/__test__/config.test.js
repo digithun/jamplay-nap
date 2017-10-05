@@ -14,6 +14,8 @@ process.env.STATIC_RESOLVE_URL = 'foo'
 process.env.SHARE_IMAGE_SERVICE_URL = 'bar'
 process.env.SHARE_IMAGE_SERVICE_API_KEY = 'baz'
 
+process.env.SESSIONS_TTL = 0
+
 const config = require('../config')
 
 describe('config', () => {

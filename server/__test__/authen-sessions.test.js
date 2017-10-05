@@ -1,12 +1,19 @@
 /* eslint-env jest */
-const _SESSIONS_TTL = 1000 * 60
-process.env.SESSIONS_TTL = _SESSIONS_TTL
+const _SESSIONS_TTL = require('../config').sessions_ttl
 
 const mongoose = require('mongoose')
 const { ObjectId } = mongoose.Types
 
 // Seeder
-const { setup, teardown, seedAuthenByUserWithManyDevices, seedInstalledAndVerifiedUser } = require('./mongoose-helper')
+const {
+  setup,
+  teardown,
+  seedAuthenByUserWithManyDevices,
+  seedInstalledAndVerifiedUser,
+  seedVerifiedLocalUser,
+  __mocked__verifiedLocalUserPayload,
+  __expected__seedVerifiedLocalUser
+} = require('./mongoose-helper')
 
 describe('authen-sessions', async () => {
   beforeAll(setup)
@@ -36,15 +43,115 @@ describe('authen-sessions', async () => {
       await mongoose.connection.collection('users').drop()
     })
 
-    it('should provide sessionToken that can be expire', async () => {
+    it('should not allow expired sessionToken', async () => {
       const { validateSession } = require('../authen-sessions')
 
       // Expired after 1 ms pass.
-      expect(
-        validateSession({
-          expireAt: new Date(+new Date() - _SESSIONS_TTL - 1).toISOString()
-        })
-      ).rejects.toMatchObject(require('../errors/codes').AUTH_USER_TOKEN_EXPIRED)
+      const result = await validateSession({
+        expireAt: new Date(+new Date() - _SESSIONS_TTL - 1).toISOString()
+      }).catch(err => {
+        expect(() => {
+          throw err
+        }).toThrowError(require('../errors/codes').AUTH_USER_TOKEN_EXPIRED)
+      })
+
+      expect(result).not.toBeDefined()
+    })
+
+    it('should never expire when SESSIONS_TTL is -1', async () => {
+      require('../config').sessions_ttl = -1
+      const { validateSession } = require('../authen-sessions')
+
+      // Provide expired sessionToken but will not expire
+      const isExpired = await validateSession({
+        expireAt: new Date(+new Date() - _SESSIONS_TTL - 1).toISOString()
+      })
+
+      // Not expired
+      expect(isExpired).toBeTruthy()
+      require('../config').sessions_ttl = _SESSIONS_TTL
+    })
+
+    it('should ignore error when no session provide', async () => {
+      const { willGetUserFromSession } = require('../authen-sessions')
+      const context = { nap: {} }
+      const result = await willGetUserFromSession(context)
+      expect(result).toBeNull()
+    })
+
+    it('should error when provide invalid session', async () => {
+      const { willGetUserFromSession } = require('../authen-sessions')
+      const context = { nap: { session: 'INVALID_SESSION_TOKEN' } }
+      const result = await willGetUserFromSession(context).catch(err => {
+        expect(() => {
+          throw err
+        }).toThrowError(require('../errors/codes').AUTH_INVALID_USER_TOKEN)
+      })
+
+      expect(result).not.toBeDefined()
+    })
+
+    it('should error when provide invalid expireAt', async () => {
+      const { willGetUserFromSession } = require('../authen-sessions')
+      const context = { nap: { session: { userId: 'SOME_USER_ID' } } }
+      const result = await willGetUserFromSession(context).catch(err => {
+        expect(() => {
+          throw err
+        }).toThrowErrorMatchingSnapshot()
+      })
+
+      expect(result).not.toBeDefined()
+    })
+
+    it('should error when provide expired session', async () => {
+      // mock
+      const req = {
+        nap: { errors: [] },
+        body: { isMockServer: true }
+      }
+
+      // Seed
+      await seedVerifiedLocalUser()
+
+      const { willLogin } = require('../authen-local')
+      const { email, password } = __mocked__verifiedLocalUserPayload
+      const user = await willLogin(req, email, password)
+      const { willGetUserFromSession } = require('../authen-sessions')
+      const context = { nap: { session: { userId: user.id, expireAt: new Date(+new Date() - _SESSIONS_TTL - 1).toISOString() } } }
+
+      const result = await willGetUserFromSession(context).catch(err => {
+        expect(() => {
+          throw err
+        }).toThrowError(require('../errors/codes').AUTH_USER_TOKEN_EXPIRED)
+      })
+
+      expect(result).not.toBeDefined()
+
+      // Dispose
+      await mongoose.connection.collection('users').drop()
+    })
+
+    it('should get user when provide valid session', async () => {
+      // mock
+      const req = {
+        nap: { errors: [] },
+        body: { isMockServer: true }
+      }
+
+      // Seed
+      await seedVerifiedLocalUser()
+
+      const { willLogin } = require('../authen-local')
+      const { email, password } = __mocked__verifiedLocalUserPayload
+      const user = await willLogin(req, email, password)
+      const { willGetUserFromSession } = require('../authen-sessions')
+      const context = { nap: { session: { userId: user.id, expireAt: new Date().toISOString() } } }
+      const result = await willGetUserFromSession(context)
+
+      expect(result).toEqual(expect.objectContaining(__expected__seedVerifiedLocalUser))
+
+      // Dispose
+      await mongoose.connection.collection('users').drop()
     })
 
     it('should install and authen then return authen', async () => {

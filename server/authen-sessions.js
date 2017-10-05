@@ -1,13 +1,18 @@
-const SESSIONS_TTL = require('./config').sessions_ttl
 const validateSession = async ({ expireAt }) => {
+  const { sessions_ttl } = require('./config')
+
+  // No expire
+  if (sessions_ttl === -1) return true
+
   // Guard
-  if (!expireAt) return false
+  const { guard } = require('./errors')
+  guard({ expireAt })
 
   // Expired?
   const expires = new Date(expireAt).valueOf()
   const now = new Date().valueOf()
 
-  if (now - expires > SESSIONS_TTL) {
+  if (now - expires > sessions_ttl) {
     throw require('./errors/codes').AUTH_USER_TOKEN_EXPIRED
   }
 
@@ -90,19 +95,24 @@ const willInstall = async device => NAP.Installation.create(device)
 
 const _getUserIdFromSession = session => (session ? session.userId : null)
 const willGetUserFromSession = async context => {
+  // No session provide, will ignore
   const { session } = context.nap
-  const userId = _getUserIdFromSession(session)
+  if (!session) return null
 
-  // Guard
+  // Provided session but invalid, will throw error
+  const userId = _getUserIdFromSession(session)
   if (!userId) {
-    return null
+    throw require('./errors/codes').AUTH_INVALID_USER_TOKEN
   }
 
   // Expire?
   const isValid = await validateSession(session)
+  if (!isValid) {
+    throw require('./errors/codes').AUTH_INVALID_USER_TOKEN
+  }
 
   // User
-  return isValid ? NAP.User.findById(userId) : null
+  return NAP.User.findById(userId)
 }
 
 const willCreateUser = async user => NAP.User.create(Object.assign(user, { role: 'user' }))
