@@ -3,9 +3,10 @@ const ERRORS = require('./errors/codes')
 
 const { URL } = require('url')
 
-const createVerificationForChangeEmailURL = (auth_change_email_uri, base_url, token) => {
+const createVerificationForChangeEmailURL = (oldEmail, newEmail, auth_change_email_uri, base_url, token) => {
   const url = new URL(auth_change_email_uri, base_url)
   url.pathname += `/${token}`
+  url.search = `oldEmail=${oldEmail}&newEmail=${newEmail}`
   return url.toString()
 }
 

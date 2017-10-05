@@ -91,7 +91,7 @@ module.exports.buildSchema = () => {
     updateEmailByToken: models.UserTC.getResolver('updateEmailByToken'),
     unlinkFromFacebook: models.UserTC.getResolver('unlinkFromFacebook'),
     linkWithFacebook: models.UserTC.getResolver('linkWithFacebook'),
-    updateEmail: models.UserTC.getResolver('updateEmail'),
+    // updateEmail: models.UserTC.getResolver('updateEmail'),
     update_GCMSenderId: models.InstallationTC.getResolver('update_GCMSenderId'),
     update_deviceToken: models.InstallationTC.getResolver('update_deviceToken'),
     errors: models.ErrorTC.getResolver('error')
