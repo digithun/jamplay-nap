@@ -47,13 +47,15 @@ describe('authen-sessions', async () => {
       const { validateSession } = require('../authen-sessions')
 
       // Expired after 1 ms pass.
-      await validateSession({
+      const result = await validateSession({
         expireAt: new Date(+new Date() - _SESSIONS_TTL - 1).toISOString()
       }).catch(err => {
         expect(() => {
           throw err
         }).toThrowError(require('../errors/codes').AUTH_USER_TOKEN_EXPIRED)
       })
+
+      expect(result).not.toBeDefined()
     })
 
     it('should never expire when SESSIONS_TTL is -1', async () => {
@@ -85,6 +87,20 @@ describe('authen-sessions', async () => {
           throw err
         }).toThrowError(require('../errors/codes').AUTH_INVALID_USER_TOKEN)
       })
+
+      expect(result).not.toBeDefined()
+    })
+
+    it('should error when provide invalid expireAt', async () => {
+      const { willGetUserFromSession } = require('../authen-sessions')
+      const context = { nap: { session: { userId: 'SOME_USER_ID' } } }
+      const result = await willGetUserFromSession(context).catch(err => {
+        expect(() => {
+          throw err
+        }).toThrowErrorMatchingSnapshot()
+      })
+
+      expect(result).not.toBeDefined()
     })
 
     it('should error when provide expired session', async () => {

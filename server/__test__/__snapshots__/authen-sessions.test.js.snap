@@ -9,3 +9,5 @@ Object {
   "usedEmails": Array [],
 }
 `;
+
+exports[`authen-sessions Single sessions should error when provide invalid expireAt 1`] = `"An invalid argument was provided. Required : expireAt"`;
