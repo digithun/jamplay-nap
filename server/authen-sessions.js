@@ -95,19 +95,24 @@ const willInstall = async device => NAP.Installation.create(device)
 
 const _getUserIdFromSession = session => (session ? session.userId : null)
 const willGetUserFromSession = async context => {
+  // No session provide, will ignore
   const { session } = context.nap
-  const userId = _getUserIdFromSession(session)
+  if (!session) return null
 
-  // Guard
+  // Provided session but invalid, will throw error
+  const userId = _getUserIdFromSession(session)
   if (!userId) {
-    return null
+    throw require('./errors/codes').AUTH_INVALID_USER_TOKEN
   }
 
   // Expire?
   const isValid = await validateSession(session)
+  if (!isValid) {
+    throw require('./errors/codes').AUTH_INVALID_USER_TOKEN
+  }
 
   // User
-  return isValid ? NAP.User.findById(userId) : null
+  return NAP.User.findById(userId)
 }
 
 const willCreateUser = async user => NAP.User.create(Object.assign(user, { role: 'user' }))
