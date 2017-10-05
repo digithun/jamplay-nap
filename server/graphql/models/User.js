@@ -59,6 +59,11 @@ module.exports = extendedSchema => {
       type: 'Boolean!',
       resolve: source => !!source.facebook,
       projection: { facebook: true }
+    },
+    hasPassword: {
+      type: 'Boolean!',
+      resolve: source => !!source.hashed_password,
+      projection: { hashed_password: true }
     }
   })
 

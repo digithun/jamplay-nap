@@ -72,7 +72,7 @@ module.exports = models => {
     kind: 'mutation',
     args: {
       token: 'String!',
-      email: 'String!'
+      password: 'String!'
     },
     type: models.UserTC,
     resolve: UserResolver.updateEmailByToken

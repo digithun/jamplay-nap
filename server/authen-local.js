@@ -14,7 +14,7 @@ const willSendVerificationForUpdateEmail = async (user, email, token) => {
     throw require('./errors/codes').AUTH_USER_NOT_FOUND
   }
 
-  const msg = await _sendChageEmailVerification(email, token)
+  const msg = await _sendChageEmailVerification(user.email, email, token)
 
   // Got msg?
   if (!msg) throw _emailError(` (${email})`)
@@ -22,11 +22,11 @@ const willSendVerificationForUpdateEmail = async (user, email, token) => {
   return user
 }
 
-const _sendChageEmailVerification = async (email, token) => {
+const _sendChageEmailVerification = async (oldEmail, email, token) => {
   // Will send email verification
   const { auth_change_email_uri, base_url } = require('./config')
   const { createVerificationForChangeEmailURL } = require('./authen-local-passport')
-  const verification_url = createVerificationForChangeEmailURL(auth_change_email_uri, base_url, token)
+  const verification_url = createVerificationForChangeEmailURL(oldEmail, email, auth_change_email_uri, base_url, token)
 
   // New user, will need verification by email
   const config = require('./config')
