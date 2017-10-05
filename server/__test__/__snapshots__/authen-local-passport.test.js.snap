@@ -18,9 +18,9 @@ exports[`authen-local-passport mock should create password reset url 1`] = `"htt
 
 exports[`authen-local-passport mock should create password reset url 2`] = `"http://localhost:4000//auth/reset/FOO_TOKEN"`;
 
-exports[`authen-local-passport mock should create verification for email change url 1`] = `"http://localhost:3000/auth/change-email/FOO_TOKEN"`;
+exports[`authen-local-passport mock should create verification for email change url 1`] = `"http://localhost:3000/auth/change-email/FOO_TOKEN?oldEmail=old@bar.com&newEmail=new@bar.com"`;
 
-exports[`authen-local-passport mock should create verification for email change url 2`] = `"http://localhost:4000//auth/change-email/FOO_TOKEN"`;
+exports[`authen-local-passport mock should create verification for email change url 2`] = `"http://localhost:4000//auth/change-email/FOO_TOKEN?oldEmail=old@bar.com&newEmail=new@bar.com"`;
 
 exports[`authen-local-passport mock should redirect non exist token to /auth/error?name=token-not-exist 1`] = `"/auth/error?name=auth/token-not-exist"`;
 
