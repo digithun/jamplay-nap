@@ -1,13 +1,18 @@
-const SESSIONS_TTL = require('./config').sessions_ttl
 const validateSession = async ({ expireAt }) => {
+  const { sessions_ttl } = require('./config')
+
+  // No expire
+  if (sessions_ttl === -1) return true
+
   // Guard
-  if (!expireAt) return false
+  const { guard } = require('./errors')
+  guard({ expireAt })
 
   // Expired?
   const expires = new Date(expireAt).valueOf()
   const now = new Date().valueOf()
 
-  if (now - expires > SESSIONS_TTL) {
+  if (now - expires > sessions_ttl) {
     throw require('./errors/codes').AUTH_USER_TOKEN_EXPIRED
   }
 

@@ -1,6 +1,5 @@
 /* eslint-env jest */
-const _SESSIONS_TTL = 1000 * 60
-process.env.SESSIONS_TTL = _SESSIONS_TTL
+const _SESSIONS_TTL = require('../config').sessions_ttl
 
 const mongoose = require('mongoose')
 const { ObjectId } = mongoose.Types
@@ -36,15 +35,31 @@ describe('authen-sessions', async () => {
       await mongoose.connection.collection('users').drop()
     })
 
-    it('should provide sessionToken that can be expire', async () => {
+    it('should not allow expired sessionToken', async () => {
       const { validateSession } = require('../authen-sessions')
 
       // Expired after 1 ms pass.
-      expect(
-        validateSession({
-          expireAt: new Date(+new Date() - _SESSIONS_TTL - 1).toISOString()
-        })
-      ).rejects.toMatchObject(require('../errors/codes').AUTH_USER_TOKEN_EXPIRED)
+      await validateSession({
+        expireAt: new Date(+new Date() - _SESSIONS_TTL - 1).toISOString()
+      }).catch(err => {
+        expect(() => {
+          throw err
+        }).toThrowError(require('../errors/codes').AUTH_USER_TOKEN_EXPIRED)
+      })
+    })
+
+    it('should never expire when SESSIONS_TTL is -1', async () => {
+      require('../config').sessions_ttl = -1
+      const { validateSession } = require('../authen-sessions')
+
+      // Provide expired sessionToken but will not expire
+      const isExpired = await validateSession({
+        expireAt: new Date(+new Date() - _SESSIONS_TTL - 1).toISOString()
+      })
+
+      // Not expired
+      expect(isExpired).toBeTruthy()
+      require('../config').sessions_ttl = _SESSIONS_TTL
     })
 
     it('should install and authen then return authen', async () => {
