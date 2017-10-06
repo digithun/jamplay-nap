@@ -49,6 +49,7 @@
     "test:once": "NODE_ENV=test jest --runInBand",
     "cover": "NODE_ENV=test jest --coverage --no-cache",
     "release": ". release.sh",
+    "migrate": "node -r dotenv/config ./graphql/content/scripts/migrate",
     "seed": "node ./graphql/content/seed.js",
     "gen-seed": "node ./scripts/seeds/gen-seed.js",
     "import-seed": "node ./scripts/seeds/import.js",
@@ -119,7 +120,6 @@
     "rimraf": "^2.6.2",
     "sharp": "^0.18.4",
     "superagent": "^3.6.0",
-    "tmp-promise": "^1.0.3",
     "uuid": "^3.1.0",
     "validator": "^8.2.0"
   },
