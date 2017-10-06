@@ -3,12 +3,8 @@ const { AUTH_PASSPORT_FAILED, AUTH_CREDENTIAL_ALREADY_IN_USE } = require('./erro
 const _willCreateUserWithPayload = async (provider, payload, req) => {
   const { profile, token } = payload[provider]
 
-  // Already link, will let user login
-  const { email } = payload
-  const user = await NAP.User.findOne({ [`${provider}.id`]: profile.id, emailVerified: true })
-  if (user) return user
-
   // Guard used email -> auto link
+  const { email } = payload
   const emailUser = await NAP.User.findOne({ email, emailVerified: true })
   if (emailUser) {
     const { willGetFacebookProfile } = require('./authen-facebook')
@@ -17,6 +13,14 @@ const _willCreateUserWithPayload = async (provider, payload, req) => {
     const profile = await willGetFacebookProfile(req, token)
     return willLinkWithFacebook(emailUser, profile, token)
   }
+
+  // Already linked or any Facebook user, will let user login
+  const user = await NAP.User.findOne({ [`${provider}.id`]: profile.id })
+  if (user) return user
+
+  // Already register but not verify, will update
+  const unverifiedUser = await NAP.User.findOneAndUpdate({ email, emailVerified: false }, payload)
+  if (unverifiedUser) return unverifiedUser
 
   // Create new user
   const { willCreateUser } = require('./authen-sessions')
