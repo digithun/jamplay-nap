@@ -1,19 +1,26 @@
 const { AUTH_PASSPORT_FAILED, AUTH_CREDENTIAL_ALREADY_IN_USE } = require('./errors/codes')
 
-const _willCreateUserWithPayload = async (provider, payload) => {
-  const { profile } = payload[provider]
+const _willCreateUserWithPayload = async (provider, payload, req) => {
+  const { profile, token } = payload[provider]
 
-  // Guard used provider -> not allow
-  const providerUser = await NAP.User.findOne({ [`${provider}.id`]: profile.id })
-  if (providerUser) throw AUTH_CREDENTIAL_ALREADY_IN_USE
-
-  // Guard used email -> ask to login and link
+  // Already link, will let user login
   const { email } = payload
+  const user = await NAP.User.findOne({ [`${provider}.id`]: profile.id, emailVerified: true })
+  if (user) return user
+
+  // Guard used email -> auto link
   const emailUser = await NAP.User.findOne({ email, emailVerified: true })
-  if (emailUser) throw AUTH_CREDENTIAL_ALREADY_IN_USE
+  if (emailUser) {
+    const { willGetFacebookProfile } = require('./authen-facebook')
+    const { willLinkWithFacebook } = require('./authen-link')
+
+    const profile = await willGetFacebookProfile(req, token)
+    return willLinkWithFacebook(emailUser, profile, token)
+  }
 
   // Create new user
-  return NAP.User.create(payload, { new: true, upsert: true })
+  const { willCreateUser } = require('./authen-sessions')
+  return willCreateUser(payload)
 }
 
 const willAuthenWithPassport = (strategy, req) =>
@@ -28,7 +35,7 @@ const willAuthenWithPassport = (strategy, req) =>
         case 'local':
           return payload ? resolve(payload) : reject(AUTH_PASSPORT_FAILED)
         case 'facebook-token':
-          return _willCreateUserWithPayload('facebook', payload).then(resolve).catch(reject)
+          return _willCreateUserWithPayload('facebook', payload, req).then(resolve).catch(reject)
         default:
           return reject(AUTH_PASSPORT_FAILED)
       }

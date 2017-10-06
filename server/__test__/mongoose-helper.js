@@ -64,6 +64,7 @@ const seedFacebookUser = async () =>
   seedUserWithData({
     name: __mocked__facebookUser.profile.displayName,
     email: __mocked__facebookUser.profile.emails[0].value,
+    emailVerified: true,
     facebook: __mocked__facebookUser
   })
 
@@ -120,6 +121,14 @@ const setup = async () => {
   NAP.Authen = require('../graphql/models/Authen')().Authen
   NAP.Installation = require('../graphql/models/Installation')().Installation
   NAP.User = require('../graphql/models/User')().User
+  NAP.Provider = class Provider {
+    constructor (providerData) {
+      const { id, token, profile } = providerData
+      this.id = id
+      this.token = token
+      this.profile = profile
+    }
+  }
 }
 
 const teardown = async () => {
