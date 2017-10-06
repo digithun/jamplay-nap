@@ -33,7 +33,7 @@ describe('passport-authen', async () => {
     expect(user).toEqual(
       expect.objectContaining({
         email: EMAIL,
-        emailVerified: true,
+        emailVerified: false,
         facebook: expect.objectContaining({
           id: payload.facebook.id
         })
@@ -75,5 +75,32 @@ describe('passport-authen', async () => {
 
     // Dispose
     await mongoose.connection.collection('users').drop()
+  })
+
+  it('should create user if no mathed facebook id or no linked found', async () => {
+    // Mock
+    const provider = 'facebook'
+    const payload = {
+      name: 'foo',
+      email: EMAIL,
+      facebook: getMockedFacebookUser()
+    }
+    const req = {
+      body: {
+        access_token: 'VALID_ACCESS_TOKEN'
+      }
+    }
+    const { _willCreateUserWithPayload } = require('../passport-authen').__private
+    const user = await _willCreateUserWithPayload(provider, payload, req)
+
+    expect(user).toEqual(
+      expect.objectContaining({
+        email: EMAIL,
+        emailVerified: false,
+        facebook: expect.objectContaining({
+          id: payload.facebook.id
+        })
+      })
+    )
   })
 })

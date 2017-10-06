@@ -53,18 +53,12 @@ const __mocked__facebookUser = {
 
 const getMockedFacebookUser = () => __mocked__facebookUser
 
-/*
-  _id: expect.any(ObjectId),
-  email: expect.any(String),
-  hashed_password: expect.any(String),
-  emailVerified: true,
-*/
 // Seeder
 const seedFacebookUser = async () =>
   seedUserWithData({
     name: __mocked__facebookUser.profile.displayName,
     email: __mocked__facebookUser.profile.emails[0].value,
-    emailVerified: true,
+    emailVerified: false,
     facebook: __mocked__facebookUser
   })
 
