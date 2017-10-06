@@ -8,7 +8,7 @@ const wallet = {
 
 const init = (config, app) => {
   const api = config.e_wallet_api
-  if (api === 'DEV') {
+  if (api === 'DEV' || true) {
     global.NAP.EWallet = {
       getEWallet: token => ({
         hasReceipt: async ({ refId, spendType }) => !!wallet.receipts.find(r => r === refId),
