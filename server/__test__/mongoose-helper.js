@@ -9,8 +9,9 @@ jasmine.DEFAULT_TIMEOUT_INTERVAL = 60000
 let mongoServer
 
 // Mock data
+const EMAIL = 'foo@bar.com'
 const __mocked__verifiedLocalUserPayload = {
-  email: 'foo@bar.com',
+  email: EMAIL,
   password: 'foobar',
   emailVerified: true,
   role: 'user'
@@ -23,6 +24,35 @@ const __expected__seedVerifiedLocalUser = {
   emailVerified: true,
   hashed_password: expect.any(String)
 }
+
+const __mocked__facebookUser = {
+  id: '10154646415997479',
+  token: 'SOME_ACCESS_TOKEN',
+  profile: {
+    photos: [
+      {
+        value: 'https://graph.facebook.com/v2.6/10154646415997479/picture?type=large'
+      }
+    ],
+    emails: [
+      {
+        value: EMAIL
+      }
+    ],
+    gender: '',
+    name: {
+      middleName: '',
+      givenName: 'Katopz',
+      familyName: 'Todsaporn'
+    },
+    displayName: 'Katopz Todsaporn',
+    id: '10154646415997479',
+    provider: 'facebook'
+  }
+}
+
+const getMockedFacebookUser = () => __mocked__facebookUser
+
 /*
   _id: expect.any(ObjectId),
   email: expect.any(String),
@@ -30,6 +60,14 @@ const __expected__seedVerifiedLocalUser = {
   emailVerified: true,
 */
 // Seeder
+const seedFacebookUser = async () =>
+  seedUserWithData({
+    name: __mocked__facebookUser.profile.displayName,
+    email: __mocked__facebookUser.profile.emails[0].value,
+    emailVerified: true,
+    facebook: __mocked__facebookUser
+  })
+
 const seedAuthenByUserWithManyDevices = async (userId, authens) => {
   // Me with many devices
   const installs = authens.map(authen => authen.installationId)
@@ -58,7 +96,7 @@ const seedUserWithData = async data =>
     .collection('users')
     .insert(
       Object.assign(data, {
-        hashed_password: require('../../server/authen-local-passport').toHashedPassword(data.password),
+        hashed_password: data.password && require('../../server/authen-local-passport').toHashedPassword(data.password),
         role: data.role || 'user'
       })
     )
@@ -83,6 +121,14 @@ const setup = async () => {
   NAP.Authen = require('../graphql/models/Authen')().Authen
   NAP.Installation = require('../graphql/models/Installation')().Installation
   NAP.User = require('../graphql/models/User')().User
+  NAP.Provider = class Provider {
+    constructor (providerData) {
+      const { id, token, profile } = providerData
+      this.id = id
+      this.token = token
+      this.profile = profile
+    }
+  }
 }
 
 const teardown = async () => {
@@ -99,5 +145,8 @@ module.exports = {
   seedInstalledAndVerifiedUser,
   seedVerifiedLocalUser,
   __mocked__verifiedLocalUserPayload,
-  __expected__seedVerifiedLocalUser
+  __expected__seedVerifiedLocalUser,
+  getMockedFacebookUser,
+  seedFacebookUser,
+  EMAIL
 }

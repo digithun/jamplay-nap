@@ -40,7 +40,7 @@ class welcome extends React.Component {
     return {
       userName: user.name,
       sessionToken: authen.sessionToken,
-      accessToken: authen.accessToken
+      accessToken: user.facebook.token
     }
   }
 

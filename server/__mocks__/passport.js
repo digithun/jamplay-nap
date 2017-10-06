@@ -20,7 +20,14 @@ passport.authenticate = (strategy, callback) => {
         if (req.body.access_token === 'WRONG_ACCESS_TOKEN') {
           callback(require('../errors/codes').AUTH_FACEBOOK_INVALID_TOKEN, null)
         } else {
-          callback(null, { _id: '58d0e20e7ff032b39c2a9a18', name: 'bar', email: 'foo@bar.com' })
+          const { getMockedFacebookUser } = require('../__test__/mongoose-helper')
+
+          callback(null, {
+            _id: '58d0e20e7ff032b39c2a9a18',
+            name: 'bar',
+            email: 'foo@bar.com',
+            facebook: getMockedFacebookUser()
+          })
         }
       }
   }
