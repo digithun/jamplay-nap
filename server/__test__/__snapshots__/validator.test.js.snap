@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`validator mock should be true for valid email 1`] = `true`;
+
+exports[`validator mock should be true for valid email and password 1`] = `true`;
+
+exports[`validator mock should be true for valid password 1`] = `true`;

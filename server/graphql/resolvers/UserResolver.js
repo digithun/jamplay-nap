@@ -41,6 +41,14 @@ const changeEmail = async ({ context, args }) => {
   return context.nap.willSendVerificationForUpdateEmail(user, email).catch(onError(context))
 }
 
+const deleteUser = async ({ args, context }) => {
+  const user = await willGetUserFromSession(context).catch(onError(context))
+  // Guard null user
+  if (!user) onError(context)(require('../../errors/codes').AUTH_INVALID_USER_TOKEN)
+  const { password } = args
+  return context.nap.willDeleteUser(user, password).catch(onError(context))
+}
+
 module.exports = {
   user: willReadUser,
   linkWithFacebook,
@@ -50,5 +58,6 @@ module.exports = {
   forget,
   updatePassword,
   updatePasswordByToken,
-  changeEmail
+  changeEmail,
+  deleteUser
 }

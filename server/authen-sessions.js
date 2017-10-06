@@ -116,6 +116,14 @@ const willGetUserFromSession = async context => {
 }
 
 const willCreateUser = async user => NAP.User.create(Object.assign(user, { role: 'user' }))
+const willDeleteUser = async (user, password) => {
+  const { isPasswordMatch } = require('./validator')
+  if (isPasswordMatch(password, user.hashed_password)) {
+    return user.remove()
+  } else {
+    throw require('./errors/codes').AUTH_INVALID_PASSWORD
+  }
+}
 
 const willInstallAndAuthen = async (args, user, provider) => {
   // Guard
@@ -148,5 +156,6 @@ module.exports = {
   willGetUserFromSession,
   willCreateUser,
   willInstallAndAuthen,
-  willInstallAndLimitAuthen
+  willInstallAndLimitAuthen,
+  willDeleteUser
 }

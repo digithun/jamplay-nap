@@ -3,7 +3,7 @@ const { willLinkWithFacebook, willUnlinkFromFacebook } = require('./authen-link'
 const { willSignUp, willLogin, willLogout, willResetPasswordViaEmail, willSendVerificationForUpdateEmail } = require('./authen-local')
 const { willUpdatePassword, willUpdatePasswordByToken, willUpdateEmail, willVerifyEmailByToken } = require('./authen-local-passport')
 const { willInstallAndAuthen } = require('./graphql/resolvers')
-const { willCreateUser } = require('./authen-sessions')
+const { willCreateUser, willDeleteUser } = require('./authen-sessions')
 const config = require('./config')
 
 class nap {
@@ -27,6 +27,7 @@ class nap {
     this.willVerifyEmailByToken = willVerifyEmailByToken
     this.willInstallAndAuthen = willInstallAndAuthen
     this.willCreateUser = willCreateUser
+    this.willDeleteUser = willDeleteUser
 
     // Notification service
     this.notificationService = require('../notification/controller').services
