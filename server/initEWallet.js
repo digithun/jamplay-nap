@@ -35,6 +35,9 @@ const init = (config, app) => {
             .set('Content-Type', 'application/json')
             // add token to data
             .set('authorization', process.env.E_WALLET_API_KEY)
+            .timeout({
+              response: 5000
+            })
             .send(Object.assign({
               token
             }, data))
@@ -66,19 +69,18 @@ const init = (config, app) => {
               const result = await callApi('user/getJelly')
               if (result.gold >= 0) { return result }
               return {gold: 0, silver: 0}
-            }           catch (e) {
+            } catch (e) {
               console.log(e)
               return {gold: 0, silver: 0}
             }
           },
           getMerchantEwallet: async () => {
             const result = await callApi('user/getMerchantEWallet')
-            try{
+            try {
               return result
-            }catch(e){
+            } catch (e) {
               return {gold: 0, silver: 0}
             }
-           
           },
           spendJelly: async ({ refId, spendType, merchantId, merchantAliasId, amount, currencyType, commissionRate, payload }) => {
             const result = await callApi('spend/spendJelly', { refId, spendType, merchantId, merchantAliasId, amount, currencyType, commissionRate, payload })
@@ -121,7 +123,7 @@ const init = (config, app) => {
           findIncomeByToken: async ({ token }) => {
             const result = await callApi('spend/findIncomeByToken', { token })
             return result.income || []
-          },          
+          },
           findIncomeByBook: async ({ bookId }) => {
             console.log('bookId ==>', bookId)
             const result = await callApi('spend/findIncomeByBook', { bookId })
