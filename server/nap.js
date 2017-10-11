@@ -4,6 +4,7 @@ const { willSignUp, willLogin, willLogout, willResetPasswordViaEmail, willSendVe
 const { willUpdatePassword, willUpdatePasswordByToken, willUpdateEmail, willVerifyEmailByToken } = require('./authen-local-passport')
 const { willInstallAndAuthen } = require('./graphql/resolvers')
 const { willCreateUser, willDeleteUser } = require('./authen-sessions')
+const { decodeToken } = require('./jwt-token')
 const config = require('./config')
 
 class nap {
@@ -28,6 +29,7 @@ class nap {
     this.willInstallAndAuthen = willInstallAndAuthen
     this.willCreateUser = willCreateUser
     this.willDeleteUser = willDeleteUser
+    this.decodeToken = decodeToken
 
     // Notification service
     this.notificationService = require('../notification/controller').services
