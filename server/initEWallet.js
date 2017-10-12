@@ -91,13 +91,9 @@ const init = (config, app) => {
             const result = await callApi('exchange/addExchange', { amountIn, amountOut, conversionType })
             return result
           },
-          getRateTable: async () => {
+          getRate: async ({collectionType}) => {
             const rateType = 'baht:gold'
-            const result = await callApi('rate/findRateActive', { rateType })
-            return result
-          },
-          createRateTable: async ({ keyValue }) => {
-            const result = await callApi('rate/createRate', { keyValue })
+            const result = await callApi('rate/findRateActive', { rateType, collectionType })
             return result
           },
           findExchangeByToken: async ({ token }) => {
@@ -125,14 +121,16 @@ const init = (config, app) => {
             return result.income || []
           },
           findIncomeByBook: async ({ bookId }) => {
-            console.log('bookId ==>', bookId)
             const result = await callApi('spend/findIncomeByBook', { bookId })
             return result.income || []
+          },
+          addExchangeByTruemoney: async ({token, cashcardNO}) => {
+            const result = await callApi('exchange/addExchangeByTruemoney', {token, cashcardNO})
+            return result || []
           }
         }
       }
     }
   }
 }
-
 module.exports = init
