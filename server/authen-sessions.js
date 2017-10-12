@@ -12,7 +12,7 @@ const validateSession = async ({ expireAt }) => {
   const expires = new Date(expireAt).valueOf()
   const now = new Date().valueOf()
 
-  if (now - expires > sessions_ttl) {
+  if (now > expires) {
     throw require('./errors/codes').AUTH_USER_TOKEN_EXPIRED
   }
 
@@ -116,6 +116,14 @@ const willGetUserFromSession = async context => {
 }
 
 const willCreateUser = async user => NAP.User.create(Object.assign(user, { role: 'user' }))
+const willDeleteUser = async (user, password) => {
+  const { isPasswordMatch } = require('./validator')
+  if (isPasswordMatch(password, user.hashed_password)) {
+    return user.remove()
+  } else {
+    throw require('./errors/codes').AUTH_INVALID_PASSWORD
+  }
+}
 
 const willInstallAndAuthen = async (args, user, provider) => {
   // Guard
@@ -148,5 +156,6 @@ module.exports = {
   willGetUserFromSession,
   willCreateUser,
   willInstallAndAuthen,
-  willInstallAndLimitAuthen
+  willInstallAndLimitAuthen,
+  willDeleteUser
 }

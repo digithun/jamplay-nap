@@ -2,6 +2,7 @@ const { guard } = require('./errors')
 const ERRORS = require('./errors/codes')
 
 const { URL } = require('url')
+const { isPasswordMatch, willValidateEmail, willValidatePassword, willValidateEmailAndPassword } = require('./validator')
 
 const createVerificationForChangeEmailURL = (oldEmail, newEmail, auth_change_email_uri, base_url, token) => {
   const url = new URL(auth_change_email_uri, base_url)
@@ -23,47 +24,6 @@ const createPasswordResetURL = (auth_reset_uri, base_url, token) => {
 const createNewPasswordResetURL = (auth_new_reset_uri, base_url) => {
   const url = new URL(auth_new_reset_uri, base_url)
   return url.toString()
-}
-
-const willValidateEmail = async email => {
-  const is = require('is_js')
-
-  guard({ email })
-
-  if (is.not.email(email)) {
-    throw ERRORS.AUTH_INVALID_EMAIL
-  }
-
-  return true
-}
-
-const willValidateEmptyPassword = async password => {
-  guard({ password })
-  return true
-}
-
-const willValidatePassword = async password => {
-  const is = require('is_js')
-
-  guard({ password })
-
-  if (is.not.within(password.length, 5, 256)) {
-    throw ERRORS.AUTH_WEAK_PASSWORD
-  }
-
-  return true
-}
-
-const willValidateEmailAndPassword = async (email, password) => {
-  let isValid = await willValidateEmail(email)
-  isValid = isValid && (await willValidatePassword(password))
-  return isValid
-}
-
-const willValidateEmailAndEmptyPassword = async (email, password) => {
-  let isValid = await willValidateEmail(email)
-  isValid = isValid && (await willValidateEmptyPassword(password))
-  return isValid
 }
 
 const toHashedPassword = password => {
@@ -183,21 +143,6 @@ const _willMarkUserAsVerifiedByToken = async token => {
   return user
 }
 
-const _willValidatePassword = async (password, hashed_password) => {
-  // Guard
-  guard({ password })
-  guard({ hashed_password })
-
-  // Password matched?
-  const bcrypt = require('bcryptjs')
-  const isPasswordMatch = bcrypt.compareSync(password, hashed_password)
-  if (!isPasswordMatch) {
-    throw ERRORS.AUTH_WRONG_PASSWORD
-  }
-
-  return true
-}
-
 const _getUserByEmailAndPassword = async (email, password) => {
   // Guard
   await willValidateEmailAndPassword(email, password)
@@ -215,8 +160,8 @@ const _getUserByEmailAndPassword = async (email, password) => {
     throw ERRORS.AUTH_EMAIL_NOT_VERIFIED
   }
 
-  const isPasswordMatch = await _willValidatePassword(password, user.hashed_password)
-  if (!isPasswordMatch) {
+  const isMatched = await isPasswordMatch(password, user.hashed_password)
+  if (!isMatched) {
     throw ERRORS.AUTH_WRONG_PASSWORD
   } else {
     return user
@@ -328,8 +273,8 @@ const willVerifyEmailByToken = async (token, password) => {
   if (!user) throw ERRORS.AUTH_INVALID_ACTION_CODE
 
   // Guard Password
-  const isValidPassword = await _willValidatePassword(password, user.hashed_password)
-  if (!isValidPassword) throw ERRORS.AUTH_INVALID_PASSWORD
+  const isMatched = await isPasswordMatch(password, user.hashed_password)
+  if (!isMatched) throw ERRORS.AUTH_INVALID_PASSWORD
 
   const email = user.unverifiedEmail
   await willUpdateEmail(user, email)
@@ -427,11 +372,6 @@ module.exports = {
   createNewPasswordResetURL,
   createVerificationForChangeEmailURL,
   willSignUpNewUser,
-  willValidateEmail,
-  willValidateEmptyPassword,
-  willValidateEmailAndEmptyPassword,
-  willValidatePassword,
-  willValidateEmailAndPassword,
   willSetUserStatusAsWaitForEmailReset,
   willUpdatePasswordByToken,
   willAddUnverifiedEmail,

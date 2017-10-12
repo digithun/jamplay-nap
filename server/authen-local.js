@@ -115,7 +115,7 @@ const _sendEmailVerification = async (email, token) => {
 // Register with email and password
 const willSignUp = async (req, email, password, extraFields) => {
   // Guard
-  const { willValidateEmailAndPassword } = require('./authen-local-passport')
+  const { willValidateEmailAndPassword } = require('./validator')
   const isValidEmailAndPassword = await willValidateEmailAndPassword(email, password)
   if (!isValidEmailAndPassword) {
     throw require('./errors/codes').AUTH_WRONG_PASSWORD
@@ -144,7 +144,7 @@ const willSignUp = async (req, email, password, extraFields) => {
 // Login with email
 const willLogin = async (req, email, password) => {
   // Guard
-  const { willValidateEmailAndEmptyPassword } = require('./authen-local-passport')
+  const { willValidateEmailAndEmptyPassword } = require('./validator')
   const isValidEmail = await willValidateEmailAndEmptyPassword(email, password)
 
   if (!isValidEmail) {

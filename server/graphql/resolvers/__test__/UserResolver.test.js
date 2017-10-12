@@ -53,6 +53,40 @@ describe('UserResolver', () => {
     expect(user).toMatchSnapshot()
   })
 
+  it('should able to delete existing user', async () => {
+    // Seed
+    const userId = await seedVerifiedLocalUser()
+    const { willDeleteUser } = require('../../../authen-sessions')
+    const { user: willReadUser } = require('../UserResolver')
+    const context = {
+      nap: {
+        session: { userId, expireAt: _NOW_PLUS_60SEC_ISO },
+        willDeleteUser
+      },
+      body: { isMockServer: true }
+    }
+
+    // Mock
+    const password = 'foobar'
+    const args = { password }
+    const { deleteUser } = require('../UserResolver')
+    const deletedUser = await deleteUser({ context, args })
+
+    // Delete succeed
+    expect(deletedUser).toEqual(
+      expect.objectContaining({
+        _id: userId
+      })
+    )
+
+    // Should not exist
+    const user = await willReadUser({ context })
+    expect(user).toBeNull()
+
+    // Dispose
+    await mongoose.connection.collection('users').drop()
+  })
+
   it('should able to update email', async () => {
     const context = {
       nap: {
@@ -66,6 +100,7 @@ describe('UserResolver', () => {
     const args = { email: 'foo@bar.com' }
 
     // stub
+    const _NAP = global.NAP
     global.NAP = {}
     NAP.User = {
       findById: jest.fn().mockImplementationOnce(async () => ({
@@ -81,6 +116,8 @@ describe('UserResolver', () => {
     const user = await updateEmail({ context, args })
     delete user.save
     expect(user).toMatchSnapshot()
+
+    global.NAP = _NAP
   })
 
   it('should not able to update existing email', async () => {
@@ -97,6 +134,7 @@ describe('UserResolver', () => {
     const args = { email: 'foo@bar.com' }
 
     // stub
+    const _NAP = global.NAP
     global.NAP = {}
     NAP.User = {
       findById: jest.fn().mockImplementationOnce(async () => ({
@@ -111,6 +149,14 @@ describe('UserResolver', () => {
     }
 
     const { updateEmail } = require('../UserResolver')
-    expect(updateEmail({ context, args })).rejects.toMatchObject(require('../../../errors/codes').AUTH_EMAIL_ALREADY_IN_USE)
+    const result = await updateEmail({ context, args }).catch(err => {
+      expect(() => {
+        throw err
+      }).toThrowError(require('../../../errors/codes').AUTH_EMAIL_ALREADY_IN_USE)
+    })
+
+    expect(result).toBeUndefined()
+
+    global.NAP = _NAP
   })
 })

@@ -60,7 +60,7 @@ describe('authen-local-passport', () => {
     })
 
     it('should throw error for empty email', async () => {
-      const { willValidateEmail } = require('../authen-local-passport')
+      const { willValidateEmail } = require('../validator')
       await willValidateEmail().catch(err => {
         expect(() => {
           throw err
@@ -69,7 +69,7 @@ describe('authen-local-passport', () => {
     })
 
     it('should throw error for invalid email', async () => {
-      const { willValidateEmail } = require('../authen-local-passport')
+      const { willValidateEmail } = require('../validator')
       await willValidateEmail('').catch(err => {
         expect(() => {
           throw err
@@ -78,12 +78,12 @@ describe('authen-local-passport', () => {
     })
 
     it('should be true for valid email', async () => {
-      const { willValidateEmail } = require('../authen-local-passport')
+      const { willValidateEmail } = require('../validator')
       expect(await willValidateEmail('foo@bar.com')).toMatchSnapshot()
     })
 
     it('should throw error for empty password', async () => {
-      const { willValidatePassword } = require('../authen-local-passport')
+      const { willValidatePassword } = require('../validator')
       await willValidatePassword().catch(err => {
         expect(() => {
           throw err
@@ -92,7 +92,7 @@ describe('authen-local-passport', () => {
     })
 
     it('should throw error for invalid password', async () => {
-      const { willValidatePassword } = require('../authen-local-passport')
+      const { willValidatePassword } = require('../validator')
       const { AUTH_WEAK_PASSWORD } = require('../errors/codes')
       await willValidatePassword('foo').catch(err => {
         expect(() => {
@@ -102,12 +102,12 @@ describe('authen-local-passport', () => {
     })
 
     it('should be true for valid password', async () => {
-      const { willValidatePassword } = require('../authen-local-passport')
+      const { willValidatePassword } = require('../validator')
       expect(await willValidatePassword('foofoobarbar')).toMatchSnapshot()
     })
 
     it('should be true for valid email and password', async () => {
-      const { willValidateEmailAndPassword } = require('../authen-local-passport')
+      const { willValidateEmailAndPassword } = require('../validator')
       expect(await willValidateEmailAndPassword('foo@bar.com', 'foofoobarbar')).toMatchSnapshot()
     })
 

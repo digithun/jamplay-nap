@@ -46,9 +46,9 @@ describe('authen-sessions', async () => {
     it('should not allow expired sessionToken', async () => {
       const { validateSession } = require('../authen-sessions')
 
-      // Expired after 1 ms pass.
+      // Expired after 1 sec pass.
       const result = await validateSession({
-        expireAt: new Date(+new Date() - _SESSIONS_TTL - 1).toISOString()
+        expireAt: new Date(+new Date() - 1000).toISOString()
       }).catch(err => {
         expect(() => {
           throw err

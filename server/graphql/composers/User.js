@@ -87,4 +87,14 @@ module.exports = models => {
     type: models.UserTC,
     resolve: UserResolver.changeEmail
   })
+
+  models.UserTC.addResolver({
+    name: 'deleteUser',
+    kind: 'mutation',
+    args: {
+      password: 'String!'
+    },
+    type: models.UserTC,
+    resolve: UserResolver.deleteUser
+  })
 }

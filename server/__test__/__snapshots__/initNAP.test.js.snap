@@ -12,6 +12,7 @@ Object {
     "session": null,
     "userEventHookService": [Function],
     "willCreateUser": [Function],
+    "willDeleteUser": [Function],
     "willGetFacebookProfile": [Function],
     "willInstallAndAuthen": [Function],
     "willLinkWithFacebook": [Function],

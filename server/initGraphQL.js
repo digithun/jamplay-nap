@@ -82,7 +82,7 @@ const init = ({ graphiql_enabled: graphiql, base_url, port, e_wallet_enabled }, 
   if (bigquery_service_endpoint) {
     const { insertQuery, initMiddleWare } = require('../bigquery/queryCollection')
     const chalk = require('chalk')
-    app.all('/bigQuery/insert', async (req, res) => {
+    app.all('/bigquery/insert', async (req, res) => {
       try {
         insertQuery(req, res)
       } catch (e) {
