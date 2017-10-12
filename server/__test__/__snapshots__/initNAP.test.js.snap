@@ -3,6 +3,7 @@
 exports[`NAP Server initNAP 1`] = `
 Object {
   "nap": nap {
+    "decodeToken": [Function],
     "errors": Array [],
     "notificationService": Object {
       "createNotification": [Function],
