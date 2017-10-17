@@ -116,6 +116,10 @@ describe('authen-sessions', async () => {
       const { willLogin } = require('../authen-local')
       const { email, password } = __mocked__verifiedLocalUserPayload
       const user = await willLogin(req, email, password)
+
+      const { willInstallAndAuthen } = require('../authen-sessions')
+      await willInstallAndAuthen({ email, password }, user, 'local')
+
       const { willGetUserFromSession } = require('../authen-sessions')
       const context = { nap: { session: { userId: user.id, expireAt: new Date(+new Date() - _SESSIONS_TTL - 1).toISOString() } } }
 
@@ -127,8 +131,13 @@ describe('authen-sessions', async () => {
 
       expect(result).not.toBeDefined()
 
+      // Should force log out
+      const loggedOutAuthen = await NAP.Authen.findOne({ userId: user.id })
+      expect(loggedOutAuthen.isLoggedIn).toBeFalsy()
+
       // Dispose
       await mongoose.connection.collection('users').drop()
+      await mongoose.connection.collection('authens').drop()
     })
 
     it('should get user when provide valid session', async () => {

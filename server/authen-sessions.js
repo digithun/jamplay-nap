@@ -94,6 +94,23 @@ const willAuthen = async (installationId, { _id: userId, emailVerified }, provid
 const willInstall = async device => NAP.Installation.create(device)
 
 const _getUserIdFromSession = session => (session ? session.userId : null)
+const willValidateSessionAndForceExpireIfNeed = async session =>
+  validateSession(session).catch(async err => {
+    if (err.code === require('./errors/codes').AUTH_USER_TOKEN_EXPIRED.code) {
+      await NAP.Authen.findOneAndUpdate(
+        { userId: session.userId },
+        {
+          loggedOutAt: new Date().toISOString(),
+          isLoggedIn: false,
+          sessionToken: null
+        },
+        { new: true, upsert: false }
+      )
+    }
+
+    throw err
+  })
+
 const willGetUserFromSession = async context => {
   // No session provide, will ignore
   const { session } = context.nap
@@ -105,8 +122,9 @@ const willGetUserFromSession = async context => {
     throw require('./errors/codes').AUTH_INVALID_USER_TOKEN
   }
 
-  // Expire?
-  const isValid = await validateSession(session)
+  // Expired?
+  const isValid = await willValidateSessionAndForceExpireIfNeed(session)
+
   if (!isValid) {
     throw require('./errors/codes').AUTH_INVALID_USER_TOKEN
   }
@@ -157,5 +175,6 @@ module.exports = {
   willCreateUser,
   willInstallAndAuthen,
   willInstallAndLimitAuthen,
-  willDeleteUser
+  willDeleteUser,
+  willValidateSessionAndForceExpireIfNeed
 }

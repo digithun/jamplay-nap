@@ -52,6 +52,11 @@ const authen = async ({ context }) => {
     return _noAuthen
   }
 
+  // Expired?
+  const { willValidateSessionAndForceExpireIfNeed } = require('../../authen-sessions')
+  const isValid = await willValidateSessionAndForceExpireIfNeed(context.nap.session).catch(() => {})
+  if (!isValid) return _noAuthen
+
   const { installationId, userId } = context.nap.session
   return NAP.Authen.findOne({ userId, installationId }).catch(err => onError(context)(err) && _noAuthen)
 }
