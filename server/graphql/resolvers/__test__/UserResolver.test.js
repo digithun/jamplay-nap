@@ -3,7 +3,13 @@ const _NOW_PLUS_60SEC_ISO = new Date(+new Date() + 1000 * 60).toISOString()
 
 // Seeder
 const mongoose = require('mongoose')
-const { setup, teardown, seedVerifiedLocalUser, __expected__seedVerifiedLocalUser } = require('../../../__test__/mongoose-helper')
+const {
+  setup,
+  teardown,
+  seedVerifiedLocalUser,
+  __expected__seedVerifiedLocalUser,
+  __mocked__verifiedLocalUserPayload
+} = require('../../../__test__/mongoose-helper')
 
 describe('UserResolver', () => {
   beforeAll(setup)
@@ -18,6 +24,38 @@ describe('UserResolver', () => {
 
     const user = await willReadUser({ context })
     expect(user).toBeNull()
+  })
+
+  it('should not return user and throw error if expired sessions has been provide', async () => {
+    const config = require('../../../config')
+
+    const { user: willReadUser } = require('../UserResolver')
+
+    // mock
+    const req = {
+      nap: { errors: [] },
+      body: { isMockServer: true }
+    }
+
+    // Seed
+    await seedVerifiedLocalUser()
+
+    const { willLogin } = require('../../../authen-local')
+    const { email, password } = __mocked__verifiedLocalUserPayload
+    const user = await willLogin(req, email, password)
+
+    const context = { nap: { session: { userId: user.id, expireAt: new Date(+new Date() - config.sessions_ttl - 1).toISOString() } } }
+
+    const result = await willReadUser({ context }).catch(err => {
+      expect(() => {
+        throw err
+      }).toThrowError(require('../../../errors/codes').AUTH_USER_TOKEN_EXPIRED)
+    })
+
+    expect(result).toBeUndefined()
+
+    // Dispose
+    await mongoose.connection.collection('users').drop()
   })
 
   it('should return user data if has session', async () => {

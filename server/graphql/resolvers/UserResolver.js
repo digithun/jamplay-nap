@@ -2,7 +2,7 @@ const { onError } = require('../../errors')
 const { willGetUserFromSession } = require('../../../server/authen-sessions')
 
 const willReadUser = async ({ context }) => {
-  const user = await willGetUserFromSession(context).catch(() => null)
+  const user = await willGetUserFromSession(context).catch(onError(context))
   return user
 }
 

@@ -11,7 +11,7 @@ import ChangeEmail from '../components/auth/ChangeEmail'
 import userProfile from './userProfile.gql'
 import PropTypes from 'prop-types'
 
-const UserProfile = ({ loading, user, errors, authen }) => {
+const UserProfile = ({ loading, user, error, authen }) => {
   if (loading) {
     return <div>Loading<hr /></div>
   }
@@ -31,7 +31,7 @@ const UserProfile = ({ loading, user, errors, authen }) => {
   }
 
   // Not logged in
-  let info = errors && errors[0] ? errors[0].message : ''
+  let info = error ? error.message : ''
   if (user) {
     switch (user.status) {
       case 'WAIT_FOR_NEW_EMAIL_VERIFICATION':
@@ -60,11 +60,11 @@ const UserProfile = ({ loading, user, errors, authen }) => {
 UserProfile.propTypes = () => ({
   loading: PropTypes.bool.isRequired,
   user: PropTypes.object.isRequired,
-  errors: PropTypes.array.isRequired,
+  error: PropTypes.array.isRequired,
   authen: PropTypes.object.isRequired
 })
 
 export default graphql(userProfile, {
   options: { fetchPolicy: 'cache-and-network' },
-  props: ({ data: { loading, user, errors, authen } }) => ({ loading, user, errors, authen })
+  props: ({ data: { loading, user, error, authen } }) => ({ loading, user, error, authen })
 })(UserProfile)
