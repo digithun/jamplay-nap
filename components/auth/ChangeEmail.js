@@ -44,10 +44,6 @@ mutation changeEmail($email: String!) {
   changeEmail(email: $email) {
     status
   }
-  errors {
-    code
-    message
-  }
 }
 `
 
@@ -63,9 +59,6 @@ export default graphql(changeEmail, {
         update: (proxy, { data }) => {
           // Read the data from our cache for this query.
           let cached = proxy.readQuery({ query: userProfile })
-
-          // Errors
-          cached.errors = data.errors
 
           // User
           cached.user = cached.user || {

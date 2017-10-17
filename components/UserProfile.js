@@ -18,7 +18,7 @@ const UserProfile = ({ loading, user, error, authen }) => {
 
   // Logged in
   if (authen && authen.isLoggedIn) {
-    if (user) {
+    if (user && user._id) {
       const actions = user.isLinkedWithFacebook ? <UnlinkFromFacebook /> : <LinkWithFacebook />
       return (
         <div>

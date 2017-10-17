@@ -81,10 +81,6 @@ mutation login($deviceInfo: String!, $email: String!, $password: String!) {
       deviceInfo
     }
   }
-  errors {
-    code
-    message
-  }
 }
 `
 
@@ -103,9 +99,6 @@ export default graphql(login, {
 
           // Read the data from our cache for this query.
           let cached = proxy.readQuery({ query: userProfile })
-
-          // Errors
-          cached.errors = data.errors
 
           // User
           if (data.login) {

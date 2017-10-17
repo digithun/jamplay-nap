@@ -14,10 +14,6 @@ mutation logout {
     isLoggedIn
     loggedOutAt
   }
-  errors {
-    code
-    message
-  }
 }
 `
 
@@ -35,9 +31,6 @@ export default graphql(logout, {
 
           // Read the data from our cache for this query.
           let cached = proxy.readQuery({ query: userProfile })
-
-          // Errors
-          cached.errors = data.errors
 
           // User
           cached.user = data.logout.user
