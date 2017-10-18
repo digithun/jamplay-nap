@@ -69,7 +69,11 @@ const config = {
   static_resolve_url: process.env.STATIC_RESOLVE_URL || test || throwError('static resolve url is not defined'),
   // ImageRenderService
   share_image_service_url: process.env.SHARE_IMAGE_SERVICE_URL || test || throwError('share image service is not defined'),
-  share_image_service_api_key: process.env.SHARE_IMAGE_SERVICE_API_KEY || test || throwError('share image service api key not defined')
+  share_image_service_api_key: process.env.SHARE_IMAGE_SERVICE_API_KEY || test || throwError('share image service api key not defined'),
+
+  //TWITTER
+  twitter_consumer_key: process.env.TWITTER_CONSUMER_KEY,
+  twitter_consumer_secret: process.env.TWITTER_CONSUMER_SECRET
 }
 
 module.exports = config
