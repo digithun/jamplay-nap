@@ -13,9 +13,11 @@ const init = (app, passport) => {
     new FacebookTokenStrategy(
       {
         clientID: process.env.FACEBOOK_APP_ID,
-        clientSecret: process.env.FACEBOOK_APP_SECRET
+        clientSecret: process.env.FACEBOOK_APP_SECRET,
+        profileFields: ['id', 'displayName', 'name', 'emails', 'birthday', 'gender']
       },
       (accessToken, refreshToken, profile, done) => {
+        const json = profile._json
         // No use
         delete profile._raw
         delete profile._json
@@ -27,11 +29,15 @@ const init = (app, passport) => {
           throw require('./errors/codes').AUTH_INVALID_EMAIL
         }
 
+        const gender = profile.gender === 'male' ? 'M' : profile.gender === 'female' ? 'F' : null
+
         // Upsert data
         const payload = {
           email,
           first_name: profile.name.givenName,
           last_name: profile.name.familyName,
+          birthday: json.birthday ? new Date(json.birthday) : null,
+          gender,
           name: profile.displayName,
           facebook: new NAP.Provider({
             id: profile.id,
