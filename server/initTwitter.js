@@ -1,26 +1,25 @@
 const { getOAuthRequestToken, getAccessToken } = require('../sharer/twitterHelper')
-const Twitter = require('twitter');
+const Twitter = require('twitter')
 
-//Init
+// Init
 const init = ({ twitter_consumer_key, twitter_consumer_secret }, app) => {
   const consumerKey = twitter_consumer_key
   const consumerSecret = twitter_consumer_secret
 
-  //EXPRESS
+  // EXPRESS
   app.get('/twitter/request_token', async (req, res) => {
     try {
-
       let { oauth_callback } = req.query
       oauth_callback = Buffer.from(oauth_callback, 'base64').toString('utf8')
       console.log(oauth_callback)
       let result = await getOAuthRequestToken({ consumerKey, consumerSecret, oauth_callback })
-      res.send(JSON.stringify(result))//send back url to login twitter
+      res.send(JSON.stringify(result)) // send back url to login twitter
     } catch (error) {
       console.log('/twitter/request_token error', { error })
     }
   })
 
-  //TWITTER hook callback
+  // TWITTER hook callback
   app.get('/twitter/access_token', async (req, res) => {
     try {
       console.log('/twitter/access_token query', req.query)
@@ -55,8 +54,8 @@ const init = ({ twitter_consumer_key, twitter_consumer_secret }, app) => {
       }
 
       res.send(JSON.stringify({ tweet }))
-      //console.log(tweet);  // Tweet body. 
-      //console.log(response);  // Raw response object. 
+      // console.log(tweet);  // Tweet body.
+      // console.log(response);  // Raw response object.
     })
   })
 }
