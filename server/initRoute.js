@@ -1,3 +1,13 @@
+const initRoute = app => {
+  // Before reset password with token
+  const { auth_reset_token } = require('./authen-local-passport').handler
+  app.get('/auth/reset/:token', auth_reset_token)
+
+  // Before change email with token
+  const { auth_change_email_token } = require('./authen-local-passport').handler
+  app.get('/auth/change-email/:token', auth_change_email_token)
+}
+
 const initNextRoute = (app, nextjs) => {
   // Next exist?
   if (!nextjs) {
@@ -17,10 +27,6 @@ const initNextRoute = (app, nextjs) => {
   // Handler
   const handler = nextjs.getRequestHandler()
 
-  // Before reset password with token
-  const { auth_reset_token } = require('./authen-local-passport').handler
-  app.get('/auth/reset/:token', auth_reset_token)
-
   // Authen.reset
   app.get('/auth/reset/*', (req, res, next) => {
     const { parse } = require('url')
@@ -38,10 +44,6 @@ const initNextRoute = (app, nextjs) => {
 
     nextjs.render(req, res, '/auth/reset', Object.assign(params, query))
   })
-
-  // Before change email with token
-  const { auth_change_email_token } = require('./authen-local-passport').handler
-  app.get('/auth/change-email/:token', auth_change_email_token)
 
   // Change email
   app.get('/auth/change-email/*', (req, res, next) => {
@@ -76,7 +78,10 @@ const gracefulShutdown = (server, signal) => {
 
 const init = ({ base_url }, app, nextjs) =>
   new Promise((resolve, reject) => {
-    // Next exist?
+    // Route
+    initRoute(app)
+
+    // Next Route
     initNextRoute(app, nextjs)
 
     // Server

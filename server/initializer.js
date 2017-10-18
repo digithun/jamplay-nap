@@ -21,14 +21,14 @@ module.exports = async (config, nextjs) => {
   !config.graphql_disabled && require('./initGraphQL')(config, app)
 
   // Twitter
-  config.twitter_consumer_key && config.twitter_consumer_secret &&  require('./initTwitter')(config, app)
-  
+  config.twitter_consumer_key && config.twitter_consumer_secret && require('./initTwitter')(config, app)
+
 
   global.NAP.userEventHook = require('./user-event-hook')(config)
 
   // Store
   require('./initStore')(mongoose)
 
-  // Next+Express
+  // Next+Express Route
   return require('./initRoute')(config, app, nextjs)
 }
