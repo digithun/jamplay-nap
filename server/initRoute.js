@@ -1,7 +1,7 @@
 const initRoute = app => {
   // Before reset password with token
   const { auth_reset_token } = require('./authen-local-passport').handler
-  app.get('/auth/reset/:token', auth_reset_token)
+  app.get('/auth/validate-reset/:token', auth_reset_token)
 
   // Before change email with token
   const { auth_change_email_token } = require('./authen-local-passport').handler

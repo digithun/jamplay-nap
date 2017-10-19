@@ -215,9 +215,21 @@ const auth_reset_token = (req, res, next) => {
   _guardToken(token, res, auth_error_uri)
 
   // Verify
-  _willValidateToken(token).then(() => next()).catch(() => {
-    res.redirect(`${auth_error_uri}?name=auth/token-not-exist`)
-  })
+  _willValidateToken(token)
+    .then(() => {
+      const { next_disabled, auth_reset_uri } = require('./config')
+      // No NextJS, will use auth_validate_reset_uri
+      if (next_disabled) {
+        res.redirect(`${auth_reset_uri}/${token}`)
+        return
+      }
+
+      // NextJS pass through
+      next()
+    })
+    .catch(() => {
+      res.redirect(`${auth_error_uri}?name=auth/token-not-exist`)
+    })
 }
 
 const auth_local_token = (req, res) => {
