@@ -10,9 +10,5 @@ query userProfile {
     status
     isLinkedWithFacebook
   }
-  errors {
-    code
-    message
-  }
 }
 `

@@ -50,10 +50,6 @@ mutation signUpWithEmailAndPassword($email: String!, $password: String!) {
     status
     isLinkedWithFacebook
   }
-  errors {
-    code
-    message
-  }
 }
 `
 
@@ -69,9 +65,6 @@ export default graphql(signUpWithEmailAndPassword, {
         update: (proxy, { data }) => {
           // Read the data from our cache for this query.
           let cached = proxy.readQuery({ query: userProfile })
-
-          // Errors
-          cached.errors = data.errors
 
           // User
           cached.user = data.signUpWithEmailAndPassword

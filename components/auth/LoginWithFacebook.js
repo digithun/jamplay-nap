@@ -87,10 +87,6 @@ mutation loginWithFacebook($deviceInfo: String!, $accessToken: String!) {
       isLinkedWithFacebook
     }
   }
-  errors {
-    code
-    message
-  }
 }
 `
 
@@ -109,9 +105,6 @@ const withGraphQL = graphql(loginWithFacebook, {
 
           // Read the data from our cache for this query.
           let cached = proxy.readQuery({ query: userProfile })
-
-          // Errors
-          cached.errors = data.errors
 
           // User
           cached.user = data.loginWithFacebook.user

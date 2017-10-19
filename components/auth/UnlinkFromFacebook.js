@@ -44,10 +44,6 @@ mutation unlinkFromFacebook {
     status
     isLinkedWithFacebook
   }
-  errors {
-    code
-    message
-  }
 }
 `
 
@@ -61,18 +57,8 @@ const withGraphQL = graphql(unlinkFromFacebook, {
       mutate({
         variables: { accessToken },
         update: (proxy, { data }) => {
-          // Guard
-          const { errors } = data
-          if (errors && errors[0]) {
-            window.alert(errors[0].message)
-            return
-          }
-
           // Read the data from our cache for this query.
           let cached = proxy.readQuery({ query: userProfile })
-
-          // Errors
-          cached.errors = errors
 
           // User
           cached.user = data.unlinkFromFacebook
