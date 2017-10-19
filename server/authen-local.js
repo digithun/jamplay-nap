@@ -59,9 +59,9 @@ const willResetPasswordViaEmail = async (req, email, token) => {
   }
 
   // Will send email verification
-  const { auth_reset_uri, auth_new_reset_uri, base_url } = require('./config')
+  const { auth_validate_reset_uri, auth_new_reset_uri, base_url } = require('./config')
   const { createPasswordResetURL, createNewPasswordResetURL } = require('./authen-local-passport')
-  const password_reset_url = createPasswordResetURL(auth_reset_uri, base_url, token)
+  const password_reset_url = createPasswordResetURL(auth_validate_reset_uri, base_url, token)
   const new_password_reset_url = createNewPasswordResetURL(auth_new_reset_uri, base_url)
 
   // New user, will need verification by email
