@@ -41,6 +41,7 @@ const config = {
   jwt_secret: process.env.JWT_SECRET || 'foo',
   sessions_ttl: parseInt(process.env.SESSIONS_TTL || '0') || _SESSIONS_TTL_ONE_WEEK,
   auth_local_uri: process.env.AUTH_LOCAL_URI || '/auth/local',
+  auth_validate_reset_uri: process.env.AUTH_VALIDATE_RESET_URI || '/auth/validate-reset',
   auth_reset_uri: process.env.AUTH_RESET_URI || '/auth/reset',
   auth_new_reset_uri: process.env.AUTH_NEW_RESET_URI || '/auth/reset',
   auth_verified_uri: process.env.AUTH_VERIFIED_URI || '/auth/verified',

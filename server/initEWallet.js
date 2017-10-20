@@ -96,11 +96,11 @@ const init = (config, app) => {
             const result = await callApi('rate/findRateActive', { rateType, collectionType })
             return result
           },
-          findExchangeByToken: async ({ token }) => {
+          findExchangeByToken: async () => {
             const result = await callApi('exchange/findByToken', { token })
             return result.exchanges
           },
-          findSpendByToken: async ({ token }) => {
+          findSpendByToken: async () => {
             const result = await callApi('spend/findByToken', { token })
             return result.spends
           },
@@ -108,15 +108,15 @@ const init = (config, app) => {
             const result = await callGetApi('config/findConfig')
             return result
           },
-          createWithdraw: async ({token, balance, amount, fee, tax}) => {
+          createWithdraw: async ({balance, amount, fee, tax}) => {
             const result = await callApi('withdraw/addWithdraw', {token, balance, amount, fee, tax})
             return result
           },
-          findWithdrawByToken: async ({ token }) => {
+          findWithdrawByToken: async () => {
             const result = await callApi('withdraw/findWithdrawByToken', { token })
             return result.withdraws || []
           },
-          findIncomeByToken: async ({ token }) => {
+          findIncomeByToken: async () => {
             const result = await callApi('spend/findIncomeByToken', { token })
             return result.income || []
           },
@@ -124,8 +124,8 @@ const init = (config, app) => {
             const result = await callApi('spend/findIncomeByBook', { bookId })
             return result.income || []
           },
-          addExchangeByTruemoney: async ({token, cashcardNO}) => {
-            const result = await callApi('exchange/addExchangeByTruemoney', {token, cashcardNO})
+          addExchangeByTruemoney: async ({cashcardNO}) => {
+            const result = await callApi('exchange/addExchangeByTruemoney', {cashcardNO})
             return result || []
           }
         }

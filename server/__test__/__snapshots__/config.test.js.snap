@@ -9,6 +9,7 @@ Object {
   "auth_local_uri": "http://localhost:4000/auth/local",
   "auth_new_reset_uri": "http://localhost:4000/auth/reset",
   "auth_reset_uri": "http://localhost:4000/auth/reset",
+  "auth_validate_reset_uri": "/auth/validate-reset",
   "auth_verified_uri": "http://localhost:4000/auth/verified",
   "base_url": "http://127.0.0.1:8080",
   "bigquery_service_endpoint": null,
