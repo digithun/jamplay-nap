@@ -109,6 +109,10 @@ module.exports.setBuildGraphQLContext = function (contextBuilder) {
   buildContext = contextBuilder
 }
 
-module.exports.getGraphQLContextBuilder = () => {
-  return buildContext()
+module.exports.getGraphQLExtendedContext = () => {
+  if (typeof buildContext === 'function') {
+    return buildContext()
+  } else {
+    return {}
+  }
 }

@@ -143,13 +143,14 @@ const init = ({ graphiql_enabled: graphiql, tracing_enabled: tracing, base_url, 
     authenticate,
     initEWallet,
     graphqlExpress(req => {
-      const contextBuilder = require('./graphql').getGraphQLContextBuilder()
+      const extendContext = require('./graphql').getGraphQLExtendedContext()
+      // }
       return ({
         schema,
         tracing,
         context: {
           ...req,
-          ...contextBuilder
+          ...extendContext
         },
         formatError: ({ originalError, message, stack }) => {
           if (originalError && !(originalError instanceof GenericError)) {
