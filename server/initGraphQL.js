@@ -48,11 +48,10 @@ function removeUpload (ms) {
 
 const init = ({ graphiql_enabled: graphiql, tracing_enabled: tracing, base_url, port, e_wallet_enabled }, app) => {
   // Custom GraphQL
-  const loader = {
 
-  }
   NAP.expose = {
     extendModel: require('./graphql').extendModel,
+    setBuildGraphQLContext: require('./graphql').setBuildGraphQLContext,
     setBuildGraphqlSchema: require('./graphql').setBuildGraphqlSchema,
     FileType: require('./graphql/types/File'),
     GenderType: require('./graphql/types/Gender'),
@@ -74,10 +73,10 @@ const init = ({ graphiql_enabled: graphiql, tracing_enabled: tracing, base_url, 
   // GraphQL
   const { graphqlExpress, graphiqlExpress } = require('apollo-server-express')
 
-  const { buildSchema } = require('./graphql')
+  const { buildSchema, buildDataLoader } = require('./graphql')
 
   const { authenticate } = require('./jwt-token')
-  const schema = is_optics_enabled ? OpticsAgent.instrumentSchema(buildSchema(loader)) : buildSchema(loader)
+  const schema = is_optics_enabled ? OpticsAgent.instrumentSchema(buildSchema()) : buildSchema()
   is_optics_enabled && app.use(OpticsAgent.middleware())
 
   // attach middleware
@@ -144,12 +143,13 @@ const init = ({ graphiql_enabled: graphiql, tracing_enabled: tracing, base_url, 
     authenticate,
     initEWallet,
     graphqlExpress(req => {
+      const contextBuilder = require('./graphql').getGraphQLContextBuilder()
       return ({
         schema,
         tracing,
         context: {
           ...req,
-          loader
+          ...contextBuilder
         },
         formatError: ({ originalError, message, stack }) => {
           if (originalError && !(originalError instanceof GenericError)) {
