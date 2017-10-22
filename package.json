@@ -1,6 +1,6 @@
 {
   "name": "nap",
-  "version": "1.21.1",
+  "version": "1.22.0",
   "main": "index.js",
   "scripts": {
     "postinstall": "cd graphql/content && npm install",
@@ -59,6 +59,7 @@
   },
   "dependencies": {
     "apollo-client": "1.9.3",
+    "apollo-server-express": "^1.1.7",
     "apollo-upload-server": "^2.0.4",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.18.2",

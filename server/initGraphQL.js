@@ -47,7 +47,7 @@ function removeUpload (ms) {
   })
 }
 
-const init = ({ graphiql_enabled: graphiql, base_url, port, e_wallet_enabled }, app) => {
+const init = ({ graphiql_enabled: graphiql, tracing_enabled: tracing, base_url, port, e_wallet_enabled }, app) => {
   // Custom GraphQL
   NAP.expose = {
     extendModel: require('./graphql').extendModel,
@@ -70,7 +70,7 @@ const init = ({ graphiql_enabled: graphiql, base_url, port, e_wallet_enabled }, 
   app.use(helmet())
 
   // GraphQL
-  const graphqlHTTP = require('express-graphql')
+  const { graphqlExpress, graphiqlExpress } = require('apollo-server-express')
 
   const { buildSchema } = require('./graphql')
 
@@ -128,9 +128,7 @@ const init = ({ graphiql_enabled: graphiql, base_url, port, e_wallet_enabled }, 
 
       function listen () {
         req.on('data', function (chunk) {
-          received += Buffer.isBuffer(chunk)
-          ? chunk.length
-          : Buffer.byteLength(chunk)
+          received += Buffer.isBuffer(chunk) ? chunk.length : Buffer.byteLength(chunk)
 
           if (received > bytes) req.destroy()
         })
@@ -143,9 +141,10 @@ const init = ({ graphiql_enabled: graphiql, base_url, port, e_wallet_enabled }, 
     }),
     authenticate,
     initEWallet,
-    graphqlHTTP(() => ({
+    graphqlExpress(req => ({
       schema,
-      graphiql,
+      tracing,
+      context: req,
       formatError: ({ originalError, message, stack }) => {
         if (originalError && !(originalError instanceof GenericError)) {
           console.error('GraphQL track:', originalError)
@@ -158,6 +157,8 @@ const init = ({ graphiql_enabled: graphiql, base_url, port, e_wallet_enabled }, 
       }
     }))
   )
+
+  graphiql && app.get('/graphiql', graphiqlExpress({ endpointURL: '/graphql' }))
 
   // Status
   debug.info(`GraphQL :`, graphiql ? `${base_url}/graphql` : 'N/A')
