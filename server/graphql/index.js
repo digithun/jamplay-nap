@@ -19,7 +19,7 @@ module.exports.getFile = (fileInput, context) => {
 }
 module.exports.extendModel = require('./models').extendModel
 module.exports.setBuildGraphqlSchema = builder => (buildGraphqlSchema = builder)
-module.exports.buildSchema = (loader) => {
+module.exports.buildSchema = () => {
   let authenChannel
   async function loginMiddleware ({ rp }, next) {
     const authen = await next()
@@ -99,7 +99,7 @@ module.exports.buildSchema = (loader) => {
   })
 
   if (buildGraphqlSchema) {
-    return buildGraphqlSchema({ GQC, models, loader })
+    return buildGraphqlSchema({ GQC, models })
   }
   return defaultBuildSchema({ GQC })
 }
