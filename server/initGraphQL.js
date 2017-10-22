@@ -73,7 +73,7 @@ const init = ({ graphiql_enabled: graphiql, tracing_enabled: tracing, base_url, 
   // GraphQL
   const { graphqlExpress, graphiqlExpress } = require('apollo-server-express')
 
-  const { buildSchema, buildDataLoader } = require('./graphql')
+  const { buildSchema } = require('./graphql')
 
   const { authenticate } = require('./jwt-token')
   const schema = is_optics_enabled ? OpticsAgent.instrumentSchema(buildSchema()) : buildSchema()
