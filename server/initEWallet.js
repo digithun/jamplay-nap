@@ -27,9 +27,11 @@ const init = (config, app) => {
       })
     }
   } else {
+    const chalk = require('chalk')
     global.NAP.EWallet = {
       getEWallet: token => {
         const callApi = async (path, data = {}) => {
+          console.log(chalk.yellow('Ewallet: ') + `External api call ${path}`, data)
           const result = await request
             .post(`${api}/v1/${path}`)
             .set('Content-Type', 'application/json')

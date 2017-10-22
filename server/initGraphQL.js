@@ -6,7 +6,6 @@ const { bigquery_service_endpoint, is_optics_enabled, dev } = require('./config'
 const OpticsAgent = require('optics-agent')
 const rimraf = require('rimraf')
 const CronJob = require('cron').CronJob
-
 // isomorphic-fetch
 require('es6-promise').polyfill()
 require('isomorphic-fetch')
@@ -49,6 +48,9 @@ function removeUpload (ms) {
 
 const init = ({ graphiql_enabled: graphiql, tracing_enabled: tracing, base_url, port, e_wallet_enabled }, app) => {
   // Custom GraphQL
+  const loader = {
+
+  }
   NAP.expose = {
     extendModel: require('./graphql').extendModel,
     setBuildGraphqlSchema: require('./graphql').setBuildGraphqlSchema,
@@ -75,7 +77,7 @@ const init = ({ graphiql_enabled: graphiql, tracing_enabled: tracing, base_url, 
   const { buildSchema } = require('./graphql')
 
   const { authenticate } = require('./jwt-token')
-  const schema = is_optics_enabled ? OpticsAgent.instrumentSchema(buildSchema()) : buildSchema()
+  const schema = is_optics_enabled ? OpticsAgent.instrumentSchema(buildSchema(loader)) : buildSchema(loader)
   is_optics_enabled && app.use(OpticsAgent.middleware())
 
   // attach middleware
@@ -141,22 +143,27 @@ const init = ({ graphiql_enabled: graphiql, tracing_enabled: tracing, base_url, 
     }),
     authenticate,
     initEWallet,
-    graphqlExpress(req => ({
-      schema,
-      tracing,
-      context: req,
-      formatError: ({ originalError, message, stack }) => {
-        if (originalError && !(originalError instanceof GenericError)) {
-          console.error('GraphQL track:', originalError)
+    graphqlExpress(req => {
+      return ({
+        schema,
+        tracing,
+        context: {
+          ...req,
+          loader
+        },
+        formatError: ({ originalError, message, stack }) => {
+          if (originalError && !(originalError instanceof GenericError)) {
+            console.error('GraphQL track:', originalError)
+          }
+          return {
+            message: message,
+            code: originalError ? originalError.code : null,
+            stack: dev ? stack.split('\n') : null
+          }
         }
-        return {
-          message: message,
-          code: originalError ? originalError.code : null,
-          stack: dev ? stack.split('\n') : null
-        }
-      }
-    }))
-  )
+      })
+    }
+  ))
 
   graphiql && app.get('/graphiql', graphiqlExpress({ endpointURL: '/graphql' }))
 
