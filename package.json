@@ -3,7 +3,6 @@
   "version": "1.22.0",
   "config": {
     "express_logger_enabled": true,
-    "express_logger_test_enabled": true,
     "express_logger_error_enabled": true
   },
   "main": "index.js",

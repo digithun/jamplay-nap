@@ -28,17 +28,21 @@ module.exports = async (config, nextjs) => {
   // Store
   require('./initStore')(mongoose)
 
-  // Log
-  process.env.npm_package_config_express_logger_enabled && require('./logs').initLogger(app)
+  // Logs (Don't change  order from now on!)
+  const logs = require('./logs')
 
-  // For test
-  process.env.npm_package_config_express_logger_test_enabled && require('./logs').initLoggerTest(app)
+  // Log
+  const { ignoredRoutes, options } = require('./logs/winston')
+  if (process.env.npm_package_config_express_logger_enabled) {
+    logs.initLoggerIgnore(ignoredRoutes)
+    logs.initLogger(app, options)
+  }
 
   // Next+Express Route
   await require('./initRoute')(config, app, nextjs)
 
   // Log Error
-  process.env.npm_package_config_express_logger_error_enabled && require('./logs').initErrorLogger(app)
+  process.env.npm_package_config_express_logger_error_enabled && logs.initErrorLogger(app, options)
 
   // Finally
   await require('./finalizer')(config, app)
