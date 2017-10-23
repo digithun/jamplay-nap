@@ -29,16 +29,16 @@ module.exports = async (config, nextjs) => {
   require('./initStore')(mongoose)
 
   // Log
-  require('./logs').initLogger(app)
+  process.env.npm_package_config_express_logger_enabled && require('./logs').initLogger(app)
 
   // For test
-  require('./logs').initLoggerTest(app)
+  process.env.npm_package_config_express_logger_test_enabled && require('./logs').initLoggerTest(app)
 
   // Next+Express Route
   await require('./initRoute')(config, app, nextjs)
 
   // Log Error
-  require('./logs').initErrorLogger(app)
+  process.env.npm_package_config_express_logger_error_enabled && require('./logs').initErrorLogger(app)
 
   // Finally
   await require('./finalizer')(config, app)

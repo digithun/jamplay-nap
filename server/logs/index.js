@@ -1,5 +1,11 @@
 const winston = require('winston')
 const expressWinston = require('express-winston')
+const ignoredRoutesString = process.env.EXPRESS_LOGS_IGNORE_ROUTES || ''
+const ignoredRoutes = ignoredRoutesString.split(',')
+expressWinston.ignoredRoutes.concat(ignoredRoutes)
+expressWinston.ignoredRoutes.push('/test-ok', '/_next/on-demand-entries-ping')
+
+console.log(';;', expressWinston.ignoredRoutes)
 
 // TODO : katopz move to jest
 // For testing purpose
@@ -25,8 +31,7 @@ const initLogger = app =>
       transports: [
         new winston.transports.Console({
           json: true,
-          colorize: true,
-          ignoredRoutes: ['on-demand-entries-ping']
+          colorize: true
         })
       ]
     })
