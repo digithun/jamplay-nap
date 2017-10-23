@@ -5,6 +5,16 @@ module.exports = async (config, nextjs) => {
   // Express
   const app = require('./initExpress')(config, nap)
 
+  // Logs (Don't change  order from now on!)
+  const logs = require('./logs')
+
+  // Log
+  const { ignoredRoutes, options, errorOptions } = require('./logs/winston')
+  if (process.env.npm_package_config_express_logger_enabled) {
+    logs.initLoggerIgnore(ignoredRoutes)
+    logs.initLogger(app, options)
+  }
+
   // MubSub
   config.mubsub_enabled && require('./initMubsub')()
 
@@ -28,21 +38,11 @@ module.exports = async (config, nextjs) => {
   // Store
   require('./initStore')(mongoose)
 
-  // Logs (Don't change  order from now on!)
-  const logs = require('./logs')
-
-  // Log
-  const { ignoredRoutes, options } = require('./logs/winston')
-  if (process.env.npm_package_config_express_logger_enabled) {
-    logs.initLoggerIgnore(ignoredRoutes)
-    logs.initLogger(app, options)
-  }
-
   // Next+Express Route
   await require('./initRoute')(config, app, nextjs)
 
   // Log Error
-  process.env.npm_package_config_express_logger_error_enabled && logs.initErrorLogger(app, options)
+  process.env.npm_package_config_express_logger_error_enabled && logs.initErrorLogger(app, errorOptions)
 
   // Finally
   await require('./finalizer')(config, app)

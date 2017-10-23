@@ -26,7 +26,10 @@ WORKDIR /usr/app
 # Plugins
 RUN mkdir -p /usr/app/providers && \
   mkdir -p /usr/app/templates && \
-  mkdir -p /usr/app/server
+  mkdir -p /usr/app/server && \
+  mkdir -p /usr/app/logs && \
+  mkdir -p /usr/app/errors
+
 
 COPY providers /usr/app/providers
 COPY templates /usr/app/templates

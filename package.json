@@ -131,7 +131,8 @@
     "twitter": "^1.7.1",
     "uuid": "^3.1.0",
     "validator": "^8.2.0",
-    "winston": "^2.4.0"
+    "winston": "^2.4.0",
+    "winston-daily-rotate-file": "^1.7.2"
   },
   "author": "katopz@gmail.com",
   "license": "MIT",
