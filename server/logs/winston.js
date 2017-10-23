@@ -11,11 +11,21 @@ require('winston-daily-rotate-file')
 const dirname = process.env.express_logger_dirname || `logs`
 const filename = `${process.env.express_logger_filename || require('../../package.json').name}.log`
 
+// UI
+const { base_url, log_port } = require('../config')
+const { URL } = require('url')
+const { port, origin } = new URL(base_url)
+require('winston-node-monitor-ui')
+
 debug.info(`Logs    : ${dirname}/${filename}`)
 
 // Winston's option
 const options = {
   transports: [
+    new winston.transports.NodeMonitorUI({
+      port: log_port,
+      level: 'info'
+    }),
     new winston.transports.DailyRotateFile({
       dirname,
       filename,
@@ -45,5 +55,10 @@ const errorOptions = {
   ],
   ignoreRoute
 }
+
+// UI
+const metrics = require('node-monitor-ui')
+metrics.init(log_port)
+debug.info(`Logs UI : ${origin.split(`:${port}`)[0]}:${log_port}`)
 
 module.exports = { ignoredRoutes, options, errorOptions }

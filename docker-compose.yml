@@ -6,6 +6,7 @@ services:
     env_file: .env
     environment:
       - PORT=${PORT:-3000}
+      - LOG_PORT=${LOG_PORT:-3001}
     image: digithun/jamplay-nap
     restart: on-failure
     links:
@@ -14,6 +15,7 @@ services:
     working_dir: /usr/app
     ports:
       - "${PORT:-3000}:${PORT:-3000}" # HTTP port
+      - "${LOG_PORT:-3001}:${LOG_PORT:-3001}" # HTTP port
     volumes:
       - ./.env:/usr/app/.env
       - ./pages:/usr/app/pages

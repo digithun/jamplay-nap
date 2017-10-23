@@ -27,6 +27,9 @@ const config = {
   // Environments
   dev,
 
+  // logs
+  log_port: process.env.LOG_PORT || 3001,
+
   // Passport
   mailgun_api_key: process.env.MAILGUN_API_KEY,
   mailgun_domain: process.env.MAILGUN_DOMAIN,

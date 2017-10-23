@@ -29,6 +29,6 @@ WORKDIR /usr/app
 COPY . /usr/app/
 
 # HTTP port, default to 3000
-EXPOSE ${PORT:-3000}
+EXPOSE ${PORT:-3000} ${LOG_PORT:-3001}
 
 CMD ["npm", "run", "_serve"]

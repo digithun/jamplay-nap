@@ -26,7 +26,9 @@ WORKDIR /usr/app
 # Plugins
 RUN mkdir -p /usr/app/providers && \
   mkdir -p /usr/app/templates && \
-  mkdir -p /usr/app/server
+  mkdir -p /usr/app/server && \
+  mkdir -p /usr/app/logs && \
+  mkdir -p /usr/app/errors
 
 COPY providers /usr/app/providers
 COPY templates /usr/app/templates
@@ -39,4 +41,4 @@ COPY nodemon.json /usr/app/
 VOLUME ["/usr/app/.env", "/usr/app/pages", "/usr/app/components", "/usr/app/lib", "/usr/app/public", "/usr/app/graphql", "/usr/app/routes", "/usr/app/providers", "/usr/app/templates", "/usr/app/server", "/usr/app/notification"]
 
 # HTTP port, default to 3000
-EXPOSE ${PORT:-3000}
+EXPOSE ${PORT:-3000} ${LOG_PORT:-3001}

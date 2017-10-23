@@ -41,4 +41,4 @@ COPY index.js /usr/app/
 VOLUME ["/usr/app/.env", "/usr/app/pages", "/usr/app/components", "/usr/app/lib", "/usr/app/public", "/usr/app/graphql", "/usr/app/routes", "/usr/app/providers", "/usr/app/templates", "/usr/app/server"]
 
 # HTTP port, default to 3000
-EXPOSE ${PORT:-3000}
+EXPOSE ${PORT:-3000} ${LOG_PORT:-3001}
