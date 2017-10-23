@@ -28,6 +28,20 @@ module.exports = async (config, nextjs) => {
   // Store
   require('./initStore')(mongoose)
 
+  // Log
+  require('./logs').initLogger(app)
+
+  // For test
+  require('./logs').initLoggerTest(app)
+
   // Next+Express Route
-  return require('./initRoute')(config, app, nextjs)
+  await require('./initRoute')(config, app, nextjs)
+
+  // Log Error
+  require('./logs').initErrorLogger(app)
+
+  // Finally
+  await require('./finalizer')(config, app)
+
+  return app
 }
