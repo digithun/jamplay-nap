@@ -10,32 +10,31 @@ const _print = (type, any) => {
     return _console[type].apply(null, [`${type} | ${new Date().toISOString()} |`, ...any])
   } catch (err) {
     console.error(err) // eslint-disable-line
-    return
   }
 }
 
 global.debug = class debug {
-  static set logger(value) {
+  static set logger (value) {
     _console = value
   }
 
-  static log(...any) {
+  static log (...any) {
     return _print(LOG, any)
   }
 
-  static info(...any) {
+  static info (...any) {
     return _print(INFO, any)
   }
 
-  static warn(...any) {
+  static warn (...any) {
     return _print(WARN, any)
   }
 
-  static error(...any) {
+  static error (...any) {
     return _print(ERROR, any)
   }
 
-  static debug(...any) {
+  static debug (...any) {
     return _print(DEBUG, any)
   }
 }

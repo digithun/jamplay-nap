@@ -5,6 +5,16 @@ module.exports = async (config, nextjs) => {
   // Express
   const app = require('./initExpress')(config, nap)
 
+  // Logs (Don't change  order from now on!)
+  const logs = require('./logs')
+
+  // Log
+  const { ignoredRoutes, options, errorOptions } = require('./logs/winston')
+  if (config.express_logger_logs_enabled) {
+    logs.initLoggerIgnore(ignoredRoutes)
+    logs.initLogger(app, options)
+  }
+
   // MubSub
   config.mubsub_enabled && require('./initMubsub')()
 
@@ -29,5 +39,13 @@ module.exports = async (config, nextjs) => {
   require('./initStore')(mongoose)
 
   // Next+Express Route
-  return require('./initRoute')(config, app, nextjs)
+  await require('./initRoute')(config, app, nextjs)
+
+  // Log Error
+  config.express_logger_errors_enabled && logs.initErrorLogger(app, errorOptions)
+
+  // Finally
+  await require('./finalizer')(config, app)
+
+  return app
 }
