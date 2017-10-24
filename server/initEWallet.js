@@ -1,4 +1,5 @@
 const request = require('superagent')
+const DataLoader = require('dataloader')
 
 const wallet = {
   silver: 0,
@@ -54,10 +55,12 @@ const init = (config, app) => {
             .set('authorization', process.env.E_WALLET_API_KEY)
           return result.body.data
         }
+        const hasReceipt = new DataLoader(keys => {
+          return callApi('spend/hasReceipts', { receipts: keys })
+        })
         return {
           hasReceipt: async ({ refId, spendType }) => {
-            const result = await callApi('spend/hasReceipt', { refId, spendType })
-            return result.status
+            return hasReceipt.load({ refId, spendType })
           },
           hasCard: async ({ token }) => {
             const result = await callApi('creditcard/hasCard', { token })
