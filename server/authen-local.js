@@ -1,5 +1,4 @@
 const { guard, errorBy } = require('./errors')
-
 const _emailError = msg => errorBy('AUTH_EMAIL_NOT_SENT', msg)
 
 const willSendVerificationForUpdateEmail = async (user, email, token) => {
