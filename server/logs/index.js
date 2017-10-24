@@ -14,12 +14,6 @@ const initAccessLogger = (app, options) => {
 
 // express-winston errorLogger makes sense AFTER the router.
 const initErrorLogger = (app, options) => {
-  // For testing error
-  app.get('/test-error', (req, res, next) => {
-    // here we cause an error in the pipeline so we see express-winston in action.
-    return next(new Error('This is an error and it should be logged to the console'))
-  })
-
   app.use(expressWinston.errorLogger(options))
   debug.info(`Error   : Will log by express-winston`)
 }
