@@ -17,6 +17,7 @@ Object {
   "dev": true,
   "e_wallet_api": undefined,
   "e_wallet_enabled": false,
+  "e_wallet_secret": undefined,
   "express_logger_errors_enabled": false,
   "express_logger_ignored_routes": "",
   "express_logger_logs_enabled": false,
