@@ -21,8 +21,7 @@ RUN apk add make gcc g++ python vips-dev fftw-dev --no-cache --repository https:
   mkdir -p /usr/app && cp -a /tmp/node_modules /usr/app/ && \
   rm -rf /tmp && \
   apk del make gcc g++ python && \
-  mkdir -p /usr/app/logs && \
-  mkdir -p /usr/app/errors
+  mkdir -p /usr/app/logs
 WORKDIR /usr/app
 
 # Plugins
