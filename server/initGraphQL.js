@@ -143,7 +143,7 @@ const init = ({ graphiql_enabled: graphiql, tracing_enabled: tracing, base_url, 
     authenticate,
     initEWallet,
     graphqlExpress(req => {
-      const extendContext = require('./graphql').getGraphQLExtendedContext()
+      const extendContext = require('./graphql').getGraphQLExtendedContext(req)
       // }
       return ({
         schema,

@@ -26,7 +26,7 @@ const signup = async ({ context, args }) =>
 
 const logout = async ({ context }) => {
   // Logout from cookie
-  context.logout()
+  context.logout && context.logout()
   context.session && context.session.destroy()
 
   // Guard
