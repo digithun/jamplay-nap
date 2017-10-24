@@ -94,9 +94,9 @@ const init = ({ graphiql_enabled: graphiql, tracing_enabled: tracing, base_url, 
     app.use(initMiddleWare())
   }
 
-  const initEWallet = (req, res, next) => {
+  const initEwallet = (req, res, next) => {
     if (e_wallet_enabled) {
-      req.ewallet = global.NAP.EWallet.getEWallet(req.token)
+      req.ewallet = global.NAP.Ewallet.getEwallet(req.token)
     }
     next()
   }
@@ -141,7 +141,7 @@ const init = ({ graphiql_enabled: graphiql, tracing_enabled: tracing, base_url, 
       uploadDir
     }),
     authenticate,
-    initEWallet,
+    initEwallet,
     graphqlExpress(req => {
       const extendContext = require('./graphql').getGraphQLExtendedContext(req)
       // }

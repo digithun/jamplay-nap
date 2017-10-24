@@ -9,12 +9,12 @@ const wallet = {
 const init = (config, app) => {
   const api = config.e_wallet_api
   if (api === 'DEV') {
-    global.NAP.EWallet = {
-      getEWallet: token => ({
+    global.NAP.Ewallet = {
+      getEwallet: token => ({
         hasReceipt: async ({ refId, spendType }) => !!wallet.receipts.find(r => r === refId),
         getJelly: async () => ({ gold: wallet.gold, silver: wallet.silver }),
         spendJelly: async ({ refId, spendType, merchantId, merchantAliasId, amount, currencyType, commissionRate, payload }) => {
-          console.log('EWallet.DEV.spendJelly: ', { refId, spendType, merchantId, merchantAliasId, amount, currencyType, commissionRate, payload })
+          console.log('Ewallet.DEV.spendJelly: ', { refId, spendType, merchantId, merchantAliasId, amount, currencyType, commissionRate, payload })
           if (currencyType === 'gold') {
             wallet.gold -= amount
           } else {
@@ -28,8 +28,8 @@ const init = (config, app) => {
     }
   } else {
     const chalk = require('chalk')
-    global.NAP.EWallet = {
-      getEWallet: token => {
+    global.NAP.Ewallet = {
+      getEwallet: token => {
         const callApi = async (path, data = {}) => {
           console.log(chalk.yellow('Ewallet: ') + `External api call ${path}`, data)
           const result = await request
@@ -78,7 +78,7 @@ const init = (config, app) => {
             }
           },
           getMerchantEwallet: async () => {
-            const result = await callApi('user/getMerchantEWallet')
+            const result = await callApi('user/getMerchantEwallet')
             try {
               return result
             } catch (e) {
