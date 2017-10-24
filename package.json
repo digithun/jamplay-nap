@@ -1,6 +1,6 @@
 {
   "name": "nap",
-  "version": "1.22.1",
+  "version": "1.22.2",
   "main": "index.js",
   "scripts": {
     "postinstall": "cd graphql/content && npm install",
