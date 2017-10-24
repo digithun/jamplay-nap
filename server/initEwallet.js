@@ -1,4 +1,5 @@
 const request = require('superagent')
+const DataLoader = require('dataloader')
 
 const wallet = {
   silver: 0,
@@ -9,12 +10,12 @@ const wallet = {
 const init = (config, app) => {
   const api = config.e_wallet_api
   if (api === 'DEV') {
-    global.NAP.EWallet = {
-      getEWallet: token => ({
+    global.NAP.Ewallet = {
+      getEwallet: token => ({
         hasReceipt: async ({ refId, spendType }) => !!wallet.receipts.find(r => r === refId),
         getJelly: async () => ({ gold: wallet.gold, silver: wallet.silver }),
         spendJelly: async ({ refId, spendType, merchantId, merchantAliasId, amount, currencyType, commissionRate, payload }) => {
-          console.log('EWallet.DEV.spendJelly: ', { refId, spendType, merchantId, merchantAliasId, amount, currencyType, commissionRate, payload })
+          console.log('Ewallet.DEV.spendJelly: ', { refId, spendType, merchantId, merchantAliasId, amount, currencyType, commissionRate, payload })
           if (currencyType === 'gold') {
             wallet.gold -= amount
           } else {
@@ -27,14 +28,17 @@ const init = (config, app) => {
       })
     }
   } else {
-    global.NAP.EWallet = {
-      getEWallet: token => {
+    const chalk = require('chalk')
+    global.NAP.Ewallet = {
+      getEwallet: token => {
         const callApi = async (path, data = {}) => {
+          console.log(chalk.yellow('Ewallet: ') + `External api call ${path}`, data)
           const result = await request
             .post(`${api}/v1/${path}`)
             .set('Content-Type', 'application/json')
             // add token to data
             .set('authorization', process.env.E_WALLET_API_KEY)
+            .set('x-app-secret', process.env.E_WALLET_APP_SECRET || 'undefined')
             .timeout({
               response: 5000
             })
@@ -51,10 +55,12 @@ const init = (config, app) => {
             .set('authorization', process.env.E_WALLET_API_KEY)
           return result.body.data
         }
+        const hasReceipt = new DataLoader(keys => {
+          return callApi('spend/hasReceipts', { receipts: keys })
+        })
         return {
           hasReceipt: async ({ refId, spendType }) => {
-            const result = await callApi('spend/hasReceipt', { refId, spendType })
-            return result.status
+            return hasReceipt.load({ refId, spendType })
           },
           hasCard: async ({ token }) => {
             const result = await callApi('creditcard/hasCard', { token })
@@ -75,7 +81,7 @@ const init = (config, app) => {
             }
           },
           getMerchantEwallet: async () => {
-            const result = await callApi('user/getMerchantEWallet')
+            const result = await callApi('user/getMerchantEwallet')
             try {
               return result
             } catch (e) {

@@ -131,7 +131,8 @@ npm run cover
 - [x] Link/Unlink with `Facebook` from `NextJS`
 
 ## DOING
-- [ ] [User can logged in with limited device numbers](https://github.com/digithun/jamplay-nap/issues/9)
+- [ ] Node Report : https://github.com/nodejs/node-report
+- [ ] Tracing : https://dev-blog.apollodata.com/exposing-trace-data-for-your-graphql-server-with-apollo-tracing-97c5dd391385
 
 ## TODO
 - [ ] [lusca](https://github.com/krakenjs/lusca) for web application security middleware.
@@ -144,7 +145,6 @@ npm run cover
 - [ ] Don't run as root : https://github.com/jdleesmiller/docker-chat-demo/blob/master/Dockerfile
 - [ ] Don't run as root : https://github.com/davidbarton/docker-node-tini/blob/master/Dockerfile#L34
 - [ ] Separated Dockerfile : https://docs.docker.com/compose/compose-file/#build
-- [ ] More secure with [lusca](https://github.com/krakenjs/lusca)
 - [ ] Securing a Containerized Instance of MongoDB : http://rancher.com/securing-containerized-instance-mongodb/
 - [ ] Docker Secrets : https://semaphoreci.com/community/tutorials/managing-secrets-in-docker-swarm
 
@@ -168,7 +168,6 @@ npm run cover
 - [ ] Docker multi-stage build : https://codefresh.io/blog/node_docker_multistage/
 
 ## TOHAVE
-- [ ] Node Report : https://github.com/nodejs/node-report
 - [ ] Docker driver [`lvm-direct`](https://hackernoon.com/how-to-properly-run-docker-on-rhel-and-friends-d055754414e5#.1z2ps9ycr)
 - [ ] Use base-image? https://github.com/phusion/passenger-docker
 - [ ] GraphQL subscriptions :https://github.com/apollographql/graphql-subscriptions

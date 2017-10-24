@@ -27,6 +27,22 @@ const config = {
   // Environments
   dev,
 
+  // logs
+  log_port: process.env.LOG_PORT || 3001,
+  express_logger_logs_enabled: isTrue(process.env.EXPRESS_LOGGER_LOGS_ENABLED),
+  express_logger_errors_enabled: isTrue(process.env.EXPRESS_LOGGER_ERRORS_ENABLED),
+
+  // Blacklist routes
+  express_logger_ignored_routes: process.env.EXPRESS_LOGGER_IGNORED_ROUTES || '',
+  // Log dir name default to `logs`
+  logger_logs_dirname: process.env.LOGGER_LOGS_DIRNAME || 'logs',
+  // Log file name default to `package.name.log`
+  logger_logs_filename: process.env.LOGGER_LOGS_FILENAME || `${require('../package.json').name}.log`,
+  // Error dir name default to `errors`
+  logger_errors_dirname: process.env.LOGGER_ERRORS_DIRNAME || 'errors',
+  // Error file name default to `package.name.error`
+  logger_errors_filename: process.env.LOGGER_ERRORS_FILENAME || `${require('../package.json').name}.error`,
+
   // Passport
   mailgun_api_key: process.env.MAILGUN_API_KEY,
   mailgun_domain: process.env.MAILGUN_DOMAIN,
@@ -53,12 +69,14 @@ const config = {
   passport_disabled: isTrue(process.env.PASSPORT_DISABLED),
   graphql_disabled: isTrue(process.env.GRAPHQL_SERVER_DISABLED),
   graphiql_enabled: dev || isTrue(process.env.GRAPHIQL_ENABLED),
+  tracing_enabled: dev || isTrue(process.env.TRACING_ENABLED),
 
   mubsub: process.env.MUBSUB_URI,
   mubsub_enabled: process.env.MUBSUB_URI !== undefined && !!process.env.MUBSUB_URI,
 
   e_wallet_api: process.env.E_WALLET_API,
   e_wallet_enabled: process.env.E_WALLET_API !== undefined && !!process.env.E_WALLET_API,
+  e_wallet_secret: process.env.E_WALLET_SECRET,
 
   // Apollo optics
   is_optics_enabled: isTrue(process.env.IS_OPTICS_ENABLED),
