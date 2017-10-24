@@ -33,6 +33,7 @@ Object {
   "share_image_service_api_key": "baz",
   "share_image_service_url": "bar",
   "static_resolve_url": "foo",
+  "tracing_enabled": true,
   "twitter_consumer_key": undefined,
   "twitter_consumer_secret": undefined,
 }

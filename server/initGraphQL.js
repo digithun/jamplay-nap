@@ -6,7 +6,6 @@ const { bigquery_service_endpoint, is_optics_enabled, dev } = require('./config'
 const OpticsAgent = require('optics-agent')
 const rimraf = require('rimraf')
 const CronJob = require('cron').CronJob
-
 // isomorphic-fetch
 require('es6-promise').polyfill()
 require('isomorphic-fetch')
@@ -47,10 +46,12 @@ function removeUpload (ms) {
   })
 }
 
-const init = ({ graphiql_enabled: graphiql, base_url, port, e_wallet_enabled }, app) => {
+const init = ({ graphiql_enabled: graphiql, tracing_enabled: tracing, base_url, port, e_wallet_enabled }, app) => {
   // Custom GraphQL
+
   NAP.expose = {
     extendModel: require('./graphql').extendModel,
+    setBuildGraphQLContext: require('./graphql').setBuildGraphQLContext,
     setBuildGraphqlSchema: require('./graphql').setBuildGraphqlSchema,
     FileType: require('./graphql/types/File'),
     GenderType: require('./graphql/types/Gender'),
@@ -70,7 +71,7 @@ const init = ({ graphiql_enabled: graphiql, base_url, port, e_wallet_enabled }, 
   app.use(helmet())
 
   // GraphQL
-  const graphqlHTTP = require('express-graphql')
+  const { graphqlExpress, graphiqlExpress } = require('apollo-server-express')
 
   const { buildSchema } = require('./graphql')
 
@@ -128,9 +129,7 @@ const init = ({ graphiql_enabled: graphiql, base_url, port, e_wallet_enabled }, 
 
       function listen () {
         req.on('data', function (chunk) {
-          received += Buffer.isBuffer(chunk)
-          ? chunk.length
-          : Buffer.byteLength(chunk)
+          received += Buffer.isBuffer(chunk) ? chunk.length : Buffer.byteLength(chunk)
 
           if (received > bytes) req.destroy()
         })
@@ -143,21 +142,31 @@ const init = ({ graphiql_enabled: graphiql, base_url, port, e_wallet_enabled }, 
     }),
     authenticate,
     initEWallet,
-    graphqlHTTP(() => ({
-      schema,
-      graphiql,
-      formatError: ({ originalError, message, stack }) => {
-        if (originalError && !(originalError instanceof GenericError)) {
-          console.error('GraphQL track:', originalError)
+    graphqlExpress(req => {
+      const extendContext = require('./graphql').getGraphQLExtendedContext(req)
+      // }
+      return ({
+        schema,
+        tracing,
+        context: {
+          ...req,
+          ...extendContext
+        },
+        formatError: ({ originalError, message, stack }) => {
+          if (originalError && !(originalError instanceof GenericError)) {
+            console.error('GraphQL track:', originalError)
+          }
+          return {
+            message: message,
+            code: originalError ? originalError.code : null,
+            stack: dev ? stack.split('\n') : null
+          }
         }
-        return {
-          message: message,
-          code: originalError ? originalError.code : null,
-          stack: dev ? stack.split('\n') : null
-        }
-      }
-    }))
-  )
+      })
+    }
+  ))
+
+  graphiql && app.get('/graphiql', graphiqlExpress({ endpointURL: '/graphql' }))
 
   // Status
   debug.info(`GraphQL :`, graphiql ? `${base_url}/graphql` : 'N/A')

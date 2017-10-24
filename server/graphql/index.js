@@ -6,7 +6,7 @@ const defaultBuildSchema = ({ GQC }) => {
 }
 
 let buildGraphqlSchema = null
-
+let buildContext = null
 module.exports = {}
 module.exports.getFile = (fileInput, context) => {
   if (!fileInput || !fileInput.mapKey) {
@@ -102,4 +102,17 @@ module.exports.buildSchema = () => {
     return buildGraphqlSchema({ GQC, models })
   }
   return defaultBuildSchema({ GQC })
+}
+
+module.exports.setBuildGraphQLContext = function (contextBuilder) {
+  console.log('set context builder')
+  buildContext = contextBuilder
+}
+
+module.exports.getGraphQLExtendedContext = (req) => {
+  if (typeof buildContext === 'function') {
+    return buildContext(req)
+  } else {
+    return {}
+  }
 }
