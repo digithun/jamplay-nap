@@ -33,7 +33,7 @@ const init = ({ twitter_consumer_key, twitter_consumer_secret }, app) => {
   app.get('/twitter/access_token', (req, res) => {
     try {
       const { oauth_token, oauth_verifier, oauth_token_secret } = req.query
-      let result = getAccessToken({ oauth_token, oauth_token_secret, oauth_verifier, consumerKey, consumerSecret })
+      getAccessToken({ oauth_token, oauth_token_secret, oauth_verifier, consumerKey, consumerSecret })
         .then(result => res.send(JSON.stringify(result)))
         .catch(error => {
           console.log('/twitter/access_token error/getAccessToken', { error })
