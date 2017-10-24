@@ -10,7 +10,7 @@ module.exports = async (config, nextjs) => {
 
   // Log
   const { ignoredRoutes, options, errorOptions } = require('./logs/winston')
-  if (process.env.npm_package_config_express_logger_enabled) {
+  if (config.express_logger_logs_enabled) {
     logs.initLoggerIgnore(ignoredRoutes)
     logs.initLogger(app, options)
   }
@@ -42,7 +42,7 @@ module.exports = async (config, nextjs) => {
   await require('./initRoute')(config, app, nextjs)
 
   // Log Error
-  process.env.npm_package_config_express_logger_error_enabled && logs.initErrorLogger(app, errorOptions)
+  config.express_logger_errors_enabled && logs.initErrorLogger(app, errorOptions)
 
   // Finally
   await require('./finalizer')(config, app)

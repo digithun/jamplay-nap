@@ -3,7 +3,7 @@ const expressWinston = require('express-winston')
 // Ignore
 const initLoggerIgnore = ignoredRoutes => {
   expressWinston.ignoredRoutes = expressWinston.ignoredRoutes.concat(ignoredRoutes)
-  ignoredRoutes && debug.info(`Logs    : Ignore... ${expressWinston.ignoredRoutes}`)
+  if (expressWinston.ignoredRoutes.length > 0) debug.info(`Logs    : Ignore... ${expressWinston.ignoredRoutes}`)
 }
 
 // express-winston logger makes sense BEFORE the router.
@@ -17,6 +17,8 @@ const initLogger = (app, options) => {
     return next(new Error('This is an error and it should be logged to the console'))
   })
   */
+
+  debug.info(`Logger  : express-winston`)
 }
 
 // express-winston errorLogger makes sense AFTER the router.
