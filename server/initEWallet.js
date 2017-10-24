@@ -37,6 +37,7 @@ const init = (config, app) => {
             .set('Content-Type', 'application/json')
             // add token to data
             .set('authorization', process.env.E_WALLET_API_KEY)
+            .set('x-app-secret', process.env.E_WALLET_APP_SECRET || 'undefined')
             .timeout({
               response: 5000
             })

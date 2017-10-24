@@ -76,6 +76,7 @@ const config = {
 
   e_wallet_api: process.env.E_WALLET_API,
   e_wallet_enabled: process.env.E_WALLET_API !== undefined && !!process.env.E_WALLET_API,
+  e_wallet_secret: process.env.E_WALLET_SECRET,
 
   // Apollo optics
   is_optics_enabled: isTrue(process.env.IS_OPTICS_ENABLED),
