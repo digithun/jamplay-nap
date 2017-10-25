@@ -1,6 +1,5 @@
 const request = require('superagent')
 const DataLoader = require('dataloader')
-
 const wallet = {
   silver: 0,
   gold: 0,

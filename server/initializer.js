@@ -5,14 +5,12 @@ module.exports = async (config, nextjs) => {
   // Express
   const app = require('./initExpress')(config, nap)
 
-  // Logs (Don't change  order from now on!)
-  const logs = require('./logs')
-
   // Log
-  const { ignoredRoutes, options, errorOptions } = require('./logs/winston')
-  if (config.express_logger_logs_enabled) {
-    logs.initLoggerIgnore(ignoredRoutes)
-    logs.initLogger(app, options)
+  if (config.express_logger_access_enabled) {
+    const logs = require('./logs')
+    const { ignoredRoutes, accessOptions } = require('./logs/winston')
+    logs.initAccessLoggerIgnore(ignoredRoutes)
+    logs.initAccessLogger(app, accessOptions)
   }
 
   // MubSub
@@ -42,7 +40,11 @@ module.exports = async (config, nextjs) => {
   await require('./initRoute')(config, app, nextjs)
 
   // Log Error
-  config.express_logger_errors_enabled && logs.initErrorLogger(app, errorOptions)
+  if (config.express_logger_error_enabled) {
+    const logs = require('./logs')
+    const { errorOptions } = require('./logs/winston')
+    logs.initErrorLogger(app, errorOptions)
+  }
 
   // Finally
   await require('./finalizer')(config, app)

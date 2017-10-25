@@ -29,19 +29,17 @@ const config = {
 
   // logs
   log_port: process.env.LOG_PORT || 3001,
-  express_logger_logs_enabled: isTrue(process.env.EXPRESS_LOGGER_LOGS_ENABLED),
-  express_logger_errors_enabled: isTrue(process.env.EXPRESS_LOGGER_ERRORS_ENABLED),
+  express_logger_access_enabled: isTrue(process.env.EXPRESS_LOGGER_ACCESS_ENABLED),
+  express_logger_error_enabled: isTrue(process.env.EXPRESS_LOGGER_ERROR_ENABLED),
 
   // Blacklist routes
   express_logger_ignored_routes: process.env.EXPRESS_LOGGER_IGNORED_ROUTES || '',
   // Log dir name default to `logs`
   logger_logs_dirname: process.env.LOGGER_LOGS_DIRNAME || 'logs',
-  // Log file name default to `package.name.log`
-  logger_logs_filename: process.env.LOGGER_LOGS_FILENAME || `${require('../package.json').name}.log`,
-  // Error dir name default to `errors`
-  logger_errors_dirname: process.env.LOGGER_ERRORS_DIRNAME || 'errors',
+  // Log file name default to `package.name.access`
+  logger_access_filename: process.env.LOGGER_ACCESS_FILENAME || `${require('../package.json').name}.access`,
   // Error file name default to `package.name.error`
-  logger_errors_filename: process.env.LOGGER_ERRORS_FILENAME || `${require('../package.json').name}.error`,
+  logger_error_filename: process.env.LOGGER_ERROR_FILENAME || `${require('../package.json').name}.error`,
 
   // Passport
   mailgun_api_key: process.env.MAILGUN_API_KEY,
@@ -64,7 +62,7 @@ const config = {
   auth_change_email_uri: process.env.AUTH_CHANGE_EMAIL_URI || '/auth/change-email',
   auth_error_uri: process.env.AUTH_ERROR_URI || '/auth/error',
   achievement_service_url: process.env.ACHIEVEMENT_SERVICE_URL,
-  achievement_service_api_key: process.env.ACHIEVEMENT_SERVICE_API_KEY,
+  achievement_service_access_token: process.env.ACHIEVEMENT_SERVICE_ACCESS_TOKEN,
   next_disabled: isTrue(process.env.NEXT_DISABLED),
   passport_disabled: isTrue(process.env.PASSPORT_DISABLED),
   graphql_disabled: isTrue(process.env.GRAPHQL_SERVER_DISABLED),
@@ -77,9 +75,6 @@ const config = {
   e_wallet_api: process.env.E_WALLET_API,
   e_wallet_enabled: process.env.E_WALLET_API !== undefined && !!process.env.E_WALLET_API,
   e_wallet_secret: process.env.E_WALLET_SECRET,
-
-  // Apollo optics
-  is_optics_enabled: isTrue(process.env.IS_OPTICS_ENABLED),
 
   // BigQuery
   bigquery_service_endpoint: process.env.BIGQUERY_SERVICE_ENDPOINT || null,
