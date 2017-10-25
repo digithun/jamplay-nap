@@ -62,7 +62,7 @@ const config = {
   auth_change_email_uri: process.env.AUTH_CHANGE_EMAIL_URI || '/auth/change-email',
   auth_error_uri: process.env.AUTH_ERROR_URI || '/auth/error',
   achievement_service_url: process.env.ACHIEVEMENT_SERVICE_URL,
-  achievement_service_api_key: process.env.ACHIEVEMENT_SERVICE_API_KEY,
+  achievement_service_access_token: process.env.ACHIEVEMENT_SERVICE_ACCESS_TOKEN,
   next_disabled: isTrue(process.env.NEXT_DISABLED),
   passport_disabled: isTrue(process.env.PASSPORT_DISABLED),
   graphql_disabled: isTrue(process.env.GRAPHQL_SERVER_DISABLED),

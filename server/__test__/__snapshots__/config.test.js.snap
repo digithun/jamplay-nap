@@ -2,7 +2,7 @@
 
 exports[`config should return config 1`] = `
 Object {
-  "achievement_service_api_key": undefined,
+  "achievement_service_access_token": undefined,
   "achievement_service_url": undefined,
   "auth_change_email_uri": "/auth/change-email",
   "auth_error_uri": "/auth/error",
