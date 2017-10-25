@@ -5669,15 +5669,6 @@ onetime@^2.0.0:
   dependencies:
     mimic-fn "^1.0.0"
 
-optics-agent@^1.1.7:
-  version "1.1.7"
-  resolved "https://registry.yarnpkg.com/optics-agent/-/optics-agent-1.1.7.tgz#95af446c56c1453f8b5d058d3a25969e5b0b8b23"
-  dependencies:
-    graphql-tools "^1"
-    on-finished "^2.3.0"
-    protobufjs-no-cli "^5.0.1"
-    request "^2.74.0"
-
 optimist@^0.6.1:
   version "0.6.1"
   resolved "https://registry.yarnpkg.com/optimist/-/optimist-0.6.1.tgz#da3ea74686fa21a19a111c326e90eb15a0196686"

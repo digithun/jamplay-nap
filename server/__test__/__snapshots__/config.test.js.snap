@@ -23,7 +23,6 @@ Object {
   "express_logger_ignored_routes": "",
   "graphiql_enabled": true,
   "graphql_disabled": false,
-  "is_optics_enabled": false,
   "jwt_secret": "foo",
   "log_port": 3001,
   "logger_access_filename": "nap.access",

@@ -76,9 +76,6 @@ const config = {
   e_wallet_enabled: process.env.E_WALLET_API !== undefined && !!process.env.E_WALLET_API,
   e_wallet_secret: process.env.E_WALLET_SECRET,
 
-  // Apollo optics
-  is_optics_enabled: isTrue(process.env.IS_OPTICS_ENABLED),
-
   // BigQuery
   bigquery_service_endpoint: process.env.BIGQUERY_SERVICE_ENDPOINT || null,
 

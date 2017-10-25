@@ -6,6 +6,14 @@ const init = ({ port }, nap) => {
   // NAP as First class
   app.use(nap)
 
+  // CORS
+  const cors = require('cors')
+  app.use(cors())
+
+  // Helmet
+  const helmet = require('helmet')
+  app.use(helmet())
+
   // Static
   app.use(express.static('public'))
 
