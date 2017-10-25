@@ -1,6 +1,5 @@
 const request = require('superagent')
 const DataLoader = require('dataloader')
-
 const wallet = {
   silver: 0,
   gold: 0,
@@ -37,8 +36,7 @@ const init = (config, app) => {
             .post(`${api}/v1/${path}`)
             .set('Content-Type', 'application/json')
             // add token to data
-            .set('x-app-id', process.env.E_WALLET_APP_ID || 'undefined')
-            .set('x-app-secret', process.env.E_WALLET_APP_SECRET || 'undefined')
+            .set('x-access-token', process.env.E_WALLET_ACCESS_TOKEN || 'undefined')
             .timeout({
               response: 5000
             })
