@@ -1,4 +1,4 @@
-FROM node:8.7.0-alpine
+FROM node:8.8.0-alpine
 MAINTAINER Todsaporn Banjerdkit <katopz@gmail.com>
 
 # Use production environments
@@ -16,13 +16,7 @@ RUN apk add make gcc g++ python vips-dev fftw-dev --no-cache --repository https:
   npm i --production --quiet --depth 0 --no-shrinkwrap && \
   cd graphql/content && \  
   npm i --production --quiet --depth 0 --no-shrinkwrap && \
-  cd / && \
-  npm i --production -g --quiet --depth 0 modclean && \
-  modclean -r -D /tmp/node_modules && \
-  npm r -g --quiet modclean && du -ms . && \
-  mkdir -p /usr/app && cp -a /tmp/node_modules /usr/app/ && \
-  rm -rf /tmp && \
-  apk del make gcc g++ python
+  cd /
 WORKDIR /usr/app
 
 # Plugins
