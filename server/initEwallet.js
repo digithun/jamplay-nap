@@ -43,6 +43,7 @@ const init = (config, app) => {
             .send(Object.assign({
               token
             }, data))
+
           return result.body.data
         }
         const callGetApi = async (path, data = {}) => {
@@ -70,7 +71,7 @@ const init = (config, app) => {
           },
           getJelly: async () => {
             try {
-              const result = await callApi('user/getJelly')
+              const result = await callApi('user/getJelly', { token })
               if (result.gold >= 0) { return result }
               return { gold: 0, silver: 0 }
             } catch (e) {
@@ -79,7 +80,8 @@ const init = (config, app) => {
             }
           },
           getMerchantEwallet: async () => {
-            const result = await callApi('user/getMerchantEwallet')
+            console.log('getMerchantEwallet')
+            const result = await callApi('user/getMerchantEwallet', { token })
             try {
               return result
             } catch (e) {
