@@ -16,7 +16,14 @@ RUN apk add make gcc g++ python vips-dev fftw-dev --no-cache --repository https:
   npm i --production --quiet --depth 0 --no-shrinkwrap && \
   cd graphql/content && \  
   npm i --production --quiet --depth 0 --no-shrinkwrap && \
-  cd /
+  cd / && \
+  npm i --production -g --quiet --depth 0 modclean && \
+  modclean -r -D /tmp/node_modules && \
+  npm r -g --quiet modclean && du -ms . && \
+  mkdir -p /usr/app && cp -a /tmp/node_modules /usr/app/ && \
+  mkdir -p /usr/app/logs && \
+  rm -rf /tmp && \
+  apk del make gcc g++ python
 WORKDIR /usr/app
 
 # Plugins
@@ -33,7 +40,7 @@ COPY package.json /usr/app/
 COPY index.js /usr/app/
 
 # Make volume path
-VOLUME ["/usr/app/.env", "/usr/app/pages", "/usr/app/components", "/usr/app/lib", "/usr/app/public", "/usr/app/graphql", "/usr/app/routes", "/usr/app/providers", "/usr/app/templates", "/usr/app/server"]
+VOLUME ["/usr/app/.env", "/usr/app/pages", "/usr/app/components", "/usr/app/lib", "/usr/app/public", "/usr/app/graphql", "/usr/app/routes", "/usr/app/providers", "/usr/app/templates", "/usr/app/server", "/usr/app/notification"]
 
 # HTTP port, default to 3000
 EXPOSE ${PORT:-3000} ${LOG_PORT:-3001}

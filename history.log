@@ -1,23 +1,22 @@
 IMAGE               CREATED             CREATED BY                                      SIZE                COMMENT
-64936af87a61        28 minutes ago      /bin/sh -c #(nop)  EXPOSE 3000/tcp 3001/tcp     0B                  
-40915f630df8        28 minutes ago      /bin/sh -c #(nop)  VOLUME [/usr/app/.env /...   0B                  
-2925f2c4737a        28 minutes ago      /bin/sh -c #(nop) COPY file:bc5f7c4d5d634c...   472B                
-8cb81d3d6434        28 minutes ago      /bin/sh -c #(nop) COPY file:6e49fab265b24c...   251B                
-9a0914f1e7f6        28 minutes ago      /bin/sh -c #(nop) COPY file:ec012282f6c37a...   7.93kB              
-7e87c0519fa8        28 minutes ago      /bin/sh -c #(nop) COPY dir:3040400e2997559...   184kB               
-9c325682dd94        28 minutes ago      /bin/sh -c #(nop) COPY dir:b063f3c2ae440b5...   49.6kB              
-b60db8481614        28 minutes ago      /bin/sh -c #(nop) COPY dir:31559e89d0aa793...   2.25kB              
-bba6b980fe39        28 minutes ago      /bin/sh -c mkdir -p /usr/app/providers && ...   0B                  
-1a760a884d8a        28 minutes ago      /bin/sh -c #(nop) WORKDIR /usr/app              0B                  
-00f5789fb18b        28 minutes ago      /bin/sh -c apk add make gcc g++ python vip...   349MB               
-a0dd96f1396c        37 minutes ago      /bin/sh -c #(nop) COPY file:ec012282f6c37a...   7.93kB              
-b3e38f56b70d        2 days ago          /bin/sh -c #(nop)  ENV NODE_ENV=development     0B                  
-11f57f8e2474        2 days ago          /bin/sh -c #(nop)  MAINTAINER Todsaporn Ba...   0B                  
-a47a5669ac57        13 days ago         /bin/sh -c #(nop)  CMD ["node"]                 0B                  
-<missing>           13 days ago         /bin/sh -c apk add --no-cache --virtual .b...   4.18MB              
-<missing>           13 days ago         /bin/sh -c #(nop)  ENV YARN_VERSION=1.2.0       0B                  
-<missing>           13 days ago         /bin/sh -c addgroup -g 1000 node     && ad...   57.1MB              
-<missing>           13 days ago         /bin/sh -c #(nop)  ENV NODE_VERSION=8.7.0       0B                  
-<missing>           5 weeks ago         /bin/sh -c #(nop)  ENV NPM_CONFIG_LOGLEVEL...   0B                  
-<missing>           5 weeks ago         /bin/sh -c #(nop)  CMD ["/bin/sh"]              0B                  
-<missing>           5 weeks ago         /bin/sh -c #(nop) ADD file:4583e12bf5caec4...   3.97MB              
+81681f3e71c7        2 hours ago         /bin/sh -c #(nop)  EXPOSE 3001 3000             0B                  
+45d43f8e6d45        2 hours ago         /bin/sh -c #(nop)  VOLUME [/usr/app/.env /...   0B                  
+7807dbfc6fd4        2 hours ago         /bin/sh -c #(nop) COPY file:7c9847d79fc1e2...   485B                
+cf1390c03299        2 hours ago         /bin/sh -c #(nop) COPY file:6e49fab265b24c...   251B                
+ae915a2668aa        2 hours ago         /bin/sh -c #(nop) COPY file:479f441fa12624...   7.93kB              
+fbe46a628fd4        2 hours ago         /bin/sh -c #(nop) COPY dir:920d1156946673e...   185kB               
+1ba0ab6e2efc        3 hours ago         /bin/sh -c #(nop) COPY dir:41137470676db75...   53kB                
+e2d107266135        3 hours ago         /bin/sh -c #(nop) COPY dir:31559e89d0aa793...   2.25kB              
+0e70b5b705e5        3 hours ago         /bin/sh -c mkdir -p /usr/app/providers && ...   0B                  
+ff4e893bae66        3 hours ago         /bin/sh -c #(nop) WORKDIR /usr/app              0B                  
+d40cef1b5c4d        3 hours ago         /bin/sh -c apk add make gcc g++ python vip...   349MB               
+e514d53441bd        3 hours ago         /bin/sh -c #(nop) COPY file:479f441fa12624...   7.93kB              
+77d87c26edfd        3 hours ago         /bin/sh -c #(nop)  ENV NODE_ENV=development     0B                  
+cb20701518ce        3 hours ago         /bin/sh -c #(nop)  MAINTAINER Todsaporn Ba...   0B                  
+04a3ba95f191        14 hours ago        /bin/sh -c #(nop)  CMD ["node"]                 0B                  
+<missing>           14 hours ago        /bin/sh -c apk add --no-cache --virtual .b...   4.18MB              
+<missing>           14 hours ago        /bin/sh -c #(nop)  ENV YARN_VERSION=1.2.1       0B                  
+<missing>           14 hours ago        /bin/sh -c addgroup -g 1000 node     && ad...   56.4MB              
+<missing>           14 hours ago        /bin/sh -c #(nop)  ENV NODE_VERSION=8.8.1       0B                  
+<missing>           32 hours ago        /bin/sh -c #(nop)  CMD ["/bin/sh"]              0B                  
+<missing>           32 hours ago        /bin/sh -c #(nop) ADD file:1e87ff33d1b6765...   3.97MB              

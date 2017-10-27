@@ -21,6 +21,7 @@ RUN apk add make gcc g++ python vips-dev fftw-dev --no-cache --repository https:
   modclean -r -D /tmp/node_modules && \
   npm r -g --quiet modclean && du -ms . && \
   mkdir -p /usr/app && cp -a /tmp/node_modules /usr/app/ && \
+  mkdir -p /usr/app/logs && \
   rm -rf /tmp && \
   apk del make gcc g++ python
 WORKDIR /usr/app
