@@ -188,54 +188,51 @@ const validateLocalStrategy = (email, password, done) => {
     })
 }
 
-const _guardToken = (token, res, auth_error_uri) => {
+const _guardToken = (token, res) => {
   if (!token || token.trim() === '') {
-    return res.redirect(`${auth_error_uri}?name=auth/token-not-provided`)
+    return res.redirect(`${require('./config').auth_error_uri}?name=auth/token-not-provided`)
   }
 }
 
 const auth_change_email_token = (req, res, next) => {
-  const { auth_error_uri } = require('./config')
-
   // Guard
   const token = req.params.token
-  _guardToken(token, res, auth_error_uri)
+  _guardToken(token, res)
 
   // Verify
   _willValidateToken(token).then(() => next()).catch(() => {
-    res.redirect(`${auth_error_uri}?name=auth/token-not-exist`)
+    res.redirect(`${require('./config').auth_error_action_token_not_exist}`)
   })
 }
 
 const auth_reset_token = (req, res, next) => {
-  const { auth_error_uri } = require('./config')
-
   // Guard
   const token = req.params.token
-  _guardToken(token, res, auth_error_uri)
+  _guardToken(token, res)
 
   // Verify
   _willValidateToken(token)
     .then(() => {
-      const { auth_reset_uri } = require('./config')
-      res.redirect(`${auth_reset_uri}/${token}`)
+      res.redirect(`${require('./config').auth_reset_uri}/${token}`)
     })
     .catch(() => {
-      res.redirect(`${auth_error_uri}?name=auth/token-not-exist`)
+      res.redirect(`${require('./config').auth_error_action_token_not_exist}`)
     })
 }
 
 const auth_local_token = (req, res) => {
-  const { auth_verified_uri, auth_error_uri } = require('./config')
-
   // Guard
   const token = req.params.token
-  _guardToken(token, res, auth_error_uri)
+  _guardToken(token, res)
 
   // Verify
-  _willMarkUserAsVerifiedByToken(token).then(() => res.redirect(auth_verified_uri)).catch(() => {
-    res.redirect(`${auth_error_uri}?name=auth/token-not-exist`)
-  })
+  _willMarkUserAsVerifiedByToken(token)
+    .then(() => {
+      res.redirect(require('./config').auth_verified_uri)
+    })
+    .catch(() => {
+      res.redirect(`${require('./config').auth_error_action_token_not_exist}`)
+    })
 }
 
 const willUpdatePasswordByToken = async (token, password) => {
