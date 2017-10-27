@@ -61,6 +61,7 @@ const config = {
   auth_verified_uri: process.env.AUTH_VERIFIED_URI || '/auth/verified',
   auth_change_email_uri: process.env.AUTH_CHANGE_EMAIL_URI || '/auth/change-email',
   auth_error_uri: process.env.AUTH_ERROR_URI || '/auth/error',
+  auth_error_action_token_not_exist: `${process.env.AUTH_ERROR_URI || '/auth/error'}?name=auth/token-not-exist&code=401`,
   achievement_service_url: process.env.ACHIEVEMENT_SERVICE_URL,
   achievement_service_access_token: process.env.ACHIEVEMENT_SERVICE_ACCESS_TOKEN,
   next_disabled: isTrue(process.env.NEXT_DISABLED),

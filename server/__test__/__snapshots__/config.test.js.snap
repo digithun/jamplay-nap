@@ -5,6 +5,7 @@ Object {
   "achievement_service_access_token": undefined,
   "achievement_service_url": undefined,
   "auth_change_email_uri": "/auth/change-email",
+  "auth_error_action_token_not_exist": "/auth/error?name=auth/token-not-exist&code=401",
   "auth_error_uri": "/auth/error",
   "auth_local_uri": "http://localhost:4000/auth/local",
   "auth_new_reset_uri": "http://localhost:4000/auth/reset",
