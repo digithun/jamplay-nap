@@ -1,6 +1,5 @@
 const request = require('superagent')
 const DataLoader = require('dataloader')
-
 const wallet = {
   silver: 0,
   gold: 0,
@@ -22,7 +21,7 @@ const init = (config, app) => {
             wallet.silver -= amount
           }
           wallet.receipts.push(refId)
-          return { gold: wallet.gold, silver: wallet.silver}
+          return { gold: wallet.gold, silver: wallet.silver }
         }
         // addExchange: async () =>({token, amountIn, amountOut, conversionType, progressBarcode, status})
       })
@@ -33,30 +32,38 @@ const init = (config, app) => {
       getEwallet: token => {
         const callApi = async (path, data = {}) => {
           console.log(chalk.yellow('Ewallet: ') + `External api call ${path}`, data)
-          const result = await request
+
+          try {
+            const result = await request
             .post(`${api}/v1/${path}`)
             .set('Content-Type', 'application/json')
             // add token to data
-            .set('authorization', process.env.E_WALLET_API_KEY)
-            .set('x-app-secret', process.env.E_WALLET_APP_SECRET || 'undefined')
+            .set('x-access-token', process.env.E_WALLET_ACCESS_TOKEN || 'undefined')
             .timeout({
               response: 5000
             })
             .send(Object.assign({
               token
             }, data))
-          return result.body.data
+
+            return result.body.data
+          } catch (e) {
+            console.log('init ewallet: error on call api')
+            console.error(e)
+          }
         }
         const callGetApi = async (path, data = {}) => {
           const result = await request
             .get(`${api}/v1/${path}`)
             .set('Content-Type', 'application/json')
             // add token to data
-            .set('authorization', process.env.E_WALLET_API_KEY)
+            .set('x-access-token', process.env.E_WALLET_ACCESS_TOKEN || 'undefined')
           return result.body.data
         }
         const hasReceipt = new DataLoader(keys => {
           return callApi('spend/hasReceipts', { receipts: keys })
+        }, {
+          cacheKeyFn: ({ refId, spendType }) => `${spendType}/${refId}`
         })
         return {
           hasReceipt: async ({ refId, spendType }) => {
@@ -72,20 +79,21 @@ const init = (config, app) => {
           },
           getJelly: async () => {
             try {
-              const result = await callApi('user/getJelly')
+              const result = await callApi('user/getJelly', { token })
               if (result.gold >= 0) { return result }
-              return {gold: 0, silver: 0}
+              return { gold: 0, silver: 0 }
             } catch (e) {
               console.log(e)
-              return {gold: 0, silver: 0}
+              return { gold: 0, silver: 0 }
             }
           },
           getMerchantEwallet: async () => {
-            const result = await callApi('user/getMerchantEwallet')
+            console.log('getMerchantEwallet')
+            const result = await callApi('user/getMerchantEwallet', { token })
             try {
               return result
             } catch (e) {
-              return {gold: 0, silver: 0}
+              return { gold: 0, silver: 0 }
             }
           },
           spendJelly: async ({ refId, spendType, merchantId, merchantAliasId, amount, currencyType, commissionRate, payload }) => {
@@ -97,7 +105,7 @@ const init = (config, app) => {
             const result = await callApi('exchange/addExchange', { amountIn, amountOut, conversionType })
             return result
           },
-          getRate: async ({collectionType}) => {
+          getRate: async ({ collectionType }) => {
             const rateType = 'baht:gold'
             const result = await callApi('rate/findRateActive', { rateType, collectionType })
             return result
@@ -114,8 +122,8 @@ const init = (config, app) => {
             const result = await callGetApi('config/findConfig')
             return result
           },
-          createWithdraw: async ({balance, amount, fee, tax}) => {
-            const result = await callApi('withdraw/addWithdraw', {token, balance, amount, fee, tax})
+          createWithdraw: async ({ balance, amount, fee, tax }) => {
+            const result = await callApi('withdraw/addWithdraw', { token, balance, amount, fee, tax })
             return result
           },
           findWithdrawByToken: async () => {
@@ -130,8 +138,8 @@ const init = (config, app) => {
             const result = await callApi('spend/findIncomeByBook', { bookId })
             return result.income || []
           },
-          addExchangeByTruemoney: async ({cashcardNO}) => {
-            const result = await callApi('exchange/addExchangeByTruemoney', {cashcardNO})
+          addExchangeByTruemoney: async ({ cashcardNO }) => {
+            const result = await callApi('exchange/addExchangeByTruemoney', { cashcardNO })
             return result || []
           }
         }

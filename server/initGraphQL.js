@@ -2,8 +2,7 @@ const fs = require('fs')
 const path = require('path')
 const bodyParser = require('body-parser')
 const { apolloUploadExpress } = require('apollo-upload-server')
-const { bigquery_service_endpoint, is_optics_enabled, dev } = require('./config')
-const OpticsAgent = require('optics-agent')
+const { bigquery_service_endpoint, dev } = require('./config')
 const rimraf = require('rimraf')
 const CronJob = require('cron').CronJob
 // isomorphic-fetch
@@ -48,7 +47,6 @@ function removeUpload (ms) {
 
 const init = ({ graphiql_enabled: graphiql, tracing_enabled: tracing, base_url, port, e_wallet_enabled }, app) => {
   // Custom GraphQL
-
   NAP.expose = {
     extendModel: require('./graphql').extendModel,
     setBuildGraphQLContext: require('./graphql').setBuildGraphQLContext,
@@ -62,22 +60,12 @@ const init = ({ graphiql_enabled: graphiql, tracing_enabled: tracing, base_url, 
     require('../graphql/setup')
   }
 
-  // CORS
-  const cors = require('cors')
-  app.use(cors())
-
-  // Helmet
-  const helmet = require('helmet')
-  app.use(helmet())
-
   // GraphQL
   const { graphqlExpress, graphiqlExpress } = require('apollo-server-express')
-
   const { buildSchema } = require('./graphql')
+  const schema = buildSchema()
 
   const { authenticate } = require('./jwt-token')
-  const schema = is_optics_enabled ? OpticsAgent.instrumentSchema(buildSchema()) : buildSchema()
-  is_optics_enabled && app.use(OpticsAgent.middleware())
 
   // attach middleware
   if (bigquery_service_endpoint) {
@@ -145,7 +133,7 @@ const init = ({ graphiql_enabled: graphiql, tracing_enabled: tracing, base_url, 
     graphqlExpress(req => {
       const extendContext = require('./graphql').getGraphQLExtendedContext(req)
       // }
-      return ({
+      return {
         schema,
         tracing,
         context: {
@@ -162,9 +150,9 @@ const init = ({ graphiql_enabled: graphiql, tracing_enabled: tracing, base_url, 
             stack: dev ? stack.split('\n') : null
           }
         }
-      })
-    }
-  ))
+      }
+    })
+  )
 
   graphiql && app.get('/graphiql', graphiqlExpress({ endpointURL: '/graphql' }))
 

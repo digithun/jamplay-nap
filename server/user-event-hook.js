@@ -1,6 +1,6 @@
 require('isomorphic-fetch')
 const chalk = require('chalk')
-module.exports = function ({ achievement_service_url, achievement_service_api_key }, notificationService) {
+module.exports = function ({ achievement_service_url, achievement_service_access_token }, notificationService) {
   return async ({ type, sessionToken, payload, user }) => {
     if (process.env.NODE_ENV === 'development' && process.env.USER_EVENT_HOOK_MOCK) {
       console.log(chalk.bgRed('user-event-hook: development mode in active, will mock response from acheivement service'))
@@ -34,7 +34,7 @@ module.exports = function ({ achievement_service_url, achievement_service_api_ke
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-api-key': achievement_service_api_key
+          'x-access-token': achievement_service_access_token
         },
         body: JSON.stringify(bodyPayload),
         timeout: 5000

@@ -1,4 +1,4 @@
-FROM node:8.7.0-alpine
+FROM node:8-alpine
 MAINTAINER Todsaporn Banjerdkit <katopz@gmail.com>
 
 # Use production environments
@@ -13,16 +13,16 @@ COPY package.json /tmp/package.json
 RUN apk add make gcc g++ python vips-dev fftw-dev --no-cache --repository https://dl-3.alpinelinux.org/alpine/edge/testing/ && \
   npm config set registry https://registry.npmjs.org/ && \
   cd /tmp && \
-  npm i --production --quiet --depth 0 --update-binary --no-shrinkwrap && \
+  npm i --production --quiet --depth 0 --no-shrinkwrap && \
+  cd graphql/content && \  
+  npm i --production --quiet --depth 0 --no-shrinkwrap && \
   cd / && \
   npm i --production -g --quiet --depth 0 modclean && \
   modclean -r -D /tmp/node_modules && \
   npm r -g --quiet modclean && du -ms . && \
   mkdir -p /usr/app && cp -a /tmp/node_modules /usr/app/ && \
   rm -rf /tmp && \
-  apk del make gcc g++ python && \
-  mkdir -p /usr/app/logs && \
-  mkdir -p /usr/app/errors
+  apk del make gcc g++ python
 WORKDIR /usr/app
 
 # Plugins

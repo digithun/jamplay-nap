@@ -123,6 +123,9 @@ const setup = async () => {
       this.profile = profile
     }
   }
+
+  // Hold on for next tick
+  return new Promise(resolve => setTimeout(resolve, 1000))
 }
 
 const teardown = async () => {

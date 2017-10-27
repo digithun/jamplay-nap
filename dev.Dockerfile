@@ -1,4 +1,4 @@
-FROM node:8.7.0-alpine
+FROM node:8-alpine
 MAINTAINER Todsaporn Banjerdkit <katopz@gmail.com>
 
 # Use development environments
@@ -27,8 +27,7 @@ WORKDIR /usr/app
 RUN mkdir -p /usr/app/providers && \
   mkdir -p /usr/app/templates && \
   mkdir -p /usr/app/server && \
-  mkdir -p /usr/app/logs && \
-  mkdir -p /usr/app/errors
+  mkdir -p /usr/app/logs
 
 COPY providers /usr/app/providers
 COPY templates /usr/app/templates
