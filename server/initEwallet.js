@@ -62,6 +62,8 @@ const init = (config, app) => {
         }
         const hasReceipt = new DataLoader(keys => {
           return callApi('spend/hasReceipts', { receipts: keys })
+        }, {
+          cacheKeyFn: ({ refId, spendType }) => `${spendType}/${refId}`
         })
         return {
           hasReceipt: async ({ refId, spendType }) => {
