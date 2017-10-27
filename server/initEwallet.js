@@ -32,7 +32,9 @@ const init = (config, app) => {
       getEwallet: token => {
         const callApi = async (path, data = {}) => {
           console.log(chalk.yellow('Ewallet: ') + `External api call ${path}`, data)
-          const result = await request
+
+          try {
+            const result = await request
             .post(`${api}/v1/${path}`)
             .set('Content-Type', 'application/json')
             // add token to data
@@ -44,7 +46,11 @@ const init = (config, app) => {
               token
             }, data))
 
-          return result.body.data
+            return result.body.data
+          } catch (e) {
+            console.log('init ewallet: error on call api')
+            console.error(e)
+          }
         }
         const callGetApi = async (path, data = {}) => {
           const result = await request
