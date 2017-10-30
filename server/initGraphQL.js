@@ -2,6 +2,7 @@ const fs = require('fs')
 const path = require('path')
 const bodyParser = require('body-parser')
 const { apolloUploadExpress } = require('apollo-upload-server')
+const connectors = require('./connectors')
 const { bigquery_service_endpoint, dev } = require('./config')
 const rimraf = require('rimraf')
 const CronJob = require('cron').CronJob
@@ -45,7 +46,8 @@ function removeUpload (ms) {
   })
 }
 
-const init = ({ graphiql_enabled: graphiql, tracing_enabled: tracing, base_url, port, e_wallet_enabled }, app) => {
+const init = (config, app) => {
+  const { graphiql_enabled: graphiql, tracing_enabled: tracing, base_url, port, e_wallet_enabled } = config
   // Custom GraphQL
   NAP.expose = {
     extendModel: require('./graphql').extendModel,
@@ -82,12 +84,6 @@ const init = ({ graphiql_enabled: graphiql, tracing_enabled: tracing, base_url, 
     app.use(initMiddleWare())
   }
 
-  const initEwallet = (req, res, next) => {
-    if (e_wallet_enabled) {
-      req.ewallet = global.NAP.Ewallet.getEwallet(req.token)
-    }
-    next()
-  }
   const _removeUpload = () => removeUpload(24 * 60 * 60 * 1000)
   _removeUpload()
   const job = new CronJob({
@@ -129,7 +125,6 @@ const init = ({ graphiql_enabled: graphiql, tracing_enabled: tracing, base_url, 
       uploadDir
     }),
     authenticate,
-    initEwallet,
     graphqlExpress(req => {
       const extendContext = require('./graphql').getGraphQLExtendedContext(req)
       // }
@@ -138,7 +133,8 @@ const init = ({ graphiql_enabled: graphiql, tracing_enabled: tracing, base_url, 
         tracing,
         context: {
           ...req,
-          ...extendContext
+          ...extendContext,
+          ...connectors({ req, config })
         },
         formatError: ({ originalError, message, stack }) => {
           if (originalError && !(originalError instanceof GenericError)) {

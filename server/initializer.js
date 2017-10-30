@@ -22,9 +22,6 @@ module.exports = async (config, nextjs) => {
   // Passport
   !config.passport_disabled && require('./initPassport')(config, app)
 
-  // Ewallet
-  config.e_wallet_enabled && require('./initEwallet')(config, app)
-
   // GraphQL
   !config.graphql_disabled && require('./initGraphQL')(config, app)
 
