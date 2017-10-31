@@ -47,7 +47,8 @@ function removeUpload (ms) {
 }
 
 const init = (config, app) => {
-  const { graphiql_enabled: graphiql, tracing_enabled: tracing, base_url, port, e_wallet_enabled } = config
+  const { graphiql_enabled, tracing_enabled, tracing_uri, base_url } = config
+
   // Custom GraphQL
   NAP.expose = {
     extendModel: require('./graphql').extendModel,
@@ -92,6 +93,10 @@ const init = (config, app) => {
     timeZone: 'Asia/Bangkok'
   })
   job.start()
+
+  // Tracing
+  tracing_enabled && tracing_uri && require('./logs/graphql-tracing').init(tracing_uri)
+
   app.use(
     '/graphql',
     // http://www.senchalabs.org/connect/limit.html
@@ -126,11 +131,12 @@ const init = (config, app) => {
     }),
     authenticate,
     graphqlExpress(req => {
+      const { referer } = req.headers
       const extendContext = require('./graphql').getGraphQLExtendedContext(req)
       // }
       return {
         schema,
-        tracing,
+        tracing: tracing_enabled,
         context: {
           ...req,
           ...extendContext,
@@ -145,15 +151,25 @@ const init = (config, app) => {
             code: originalError ? originalError.code : null,
             stack: dev ? stack.split('\n') : null
           }
+        },
+        formatResponse: res => {
+          if (tracing_enabled) {
+            require('./logs/graphql-tracing').trace(referer, res.extensions.tracing)
+            debug.info(`Tracing : ${tracing_uri}`)
+          }
+
+          return res
         }
       }
     })
   )
 
-  graphiql && app.get('/graphiql', graphiqlExpress({ endpointURL: '/graphql' }))
+  // GraphiQL
+  graphiql_enabled && app.get('/graphiql', graphiqlExpress({ endpointURL: '/graphql' }))
 
   // Status
-  debug.info(`GraphQL :`, graphiql ? `${base_url}/graphql` : 'N/A')
+  graphiql_enabled && debug.info(`GraphiQL: ${base_url}/graphiql`)
+  debug.info(`GraphQL : ${base_url}/graphql`)
 }
 
 module.exports = init

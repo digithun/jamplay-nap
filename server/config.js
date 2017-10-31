@@ -67,8 +67,11 @@ const config = {
   next_disabled: isTrue(process.env.NEXT_DISABLED),
   passport_disabled: isTrue(process.env.PASSPORT_DISABLED),
   graphql_disabled: isTrue(process.env.GRAPHQL_SERVER_DISABLED),
+
+  // Develop
   graphiql_enabled: dev || isTrue(process.env.GRAPHIQL_ENABLED),
   tracing_enabled: dev || isTrue(process.env.TRACING_ENABLED),
+  tracing_uri: process.env.TRACING_URI,
 
   mubsub: process.env.MUBSUB_URI,
   mubsub_enabled: process.env.MUBSUB_URI !== undefined && !!process.env.MUBSUB_URI,

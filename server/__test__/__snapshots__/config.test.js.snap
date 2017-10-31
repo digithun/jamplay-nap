@@ -42,6 +42,7 @@ Object {
   "share_image_service_url": "bar",
   "static_resolve_url": "foo",
   "tracing_enabled": true,
+  "tracing_uri": undefined,
   "twitter_consumer_key": undefined,
   "twitter_consumer_secret": undefined,
 }

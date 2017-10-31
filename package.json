@@ -61,6 +61,7 @@
   },
   "dependencies": {
     "apollo-client": "1.9.3",
+    "apollo-fetch": "^0.6.0",
     "apollo-server-express": "^1.2.0",
     "apollo-upload-server": "^2.0.4",
     "bcryptjs": "^2.4.3",
