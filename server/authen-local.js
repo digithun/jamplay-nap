@@ -120,6 +120,9 @@ const willSignUp = async (req, email, password, extraFields) => {
     throw require('./errors/codes').AUTH_WRONG_PASSWORD
   }
 
+  // Clean up
+  email = email.toLowerCase().trim()
+
   // Token
   const token = require('uuid/v4')()
 
@@ -149,6 +152,9 @@ const willLogin = async (req, email, password) => {
   if (!isValidEmail) {
     throw require('./errors/codes').AUTH_INVALID_LOGIN
   }
+
+  // Clean up
+  email = email.toLowerCase().trim()
 
   // To let passport-local consume
   req.body.email = email

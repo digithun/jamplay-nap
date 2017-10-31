@@ -143,6 +143,51 @@ describe('authen-local', () => {
     await mongoose.connection.collection('users').drop()
   })
 
+  it('should able to login with uppercase email but register with lowercase', async () => {
+    // mock
+    const req = {
+      nap: { errors: [] },
+      body: { isMockServer: true }
+    }
+
+    // Seed
+    await seedVerifiedLocalUser()
+
+    const { willLogin } = require('../authen-local')
+    const { password } = __mocked__verifiedLocalUserPayload
+    const user = await willLogin(req, 'FoO@bar.com', password)
+
+    // Expect
+    expect(user).toEqual(expect.objectContaining(__expected__seedVerifiedLocalUser))
+
+    // Dispose
+    await mongoose.connection.collection('users').drop()
+  })
+
+  it('should able to register with uppercase but login with lowercase', async () => {
+    // mock
+    const req = {
+      nap: { errors: [] },
+      body: { isMockServer: true }
+    }
+
+    // Seed
+    const { email, password } = __mocked__verifiedLocalUserPayload
+    const { willSignUp } = require('../authen-local')
+    const signUpUser = await willSignUp(req, 'FoO@bar.com', password)
+    signUpUser.emailVerified = true
+    await signUpUser.save()
+
+    const { willLogin } = require('../authen-local')
+    const user = await willLogin(req, email, password)
+
+    // Expect
+    expect(user).toEqual(expect.objectContaining(__expected__seedVerifiedLocalUser))
+
+    // Dispose
+    await mongoose.connection.collection('users').drop()
+  })
+
   it('should logout', async () => {
     const userId = await seedVerifiedLocalUser()
     const user = { _id: userId, emailVerified: true }

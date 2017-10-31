@@ -82,6 +82,13 @@ const _guardDuplicatedUserByEmail = user => {
 }
 
 const willSignUpNewUser = async (email, password, extraFields, token) => {
+  // Guard
+  guard({ email })
+  guard({ password })
+
+  // Clean up
+  email = email.toLowerCase().trim()
+
   // Guard existing user
   const user = await NAP.User.findOne({ email })
   _guardDuplicatedUserByEmail(user)
@@ -99,6 +106,9 @@ const willSetUserStatusAsWaitForEmailReset = async (email, token) => {
 
   // Guard
   await willValidateEmail(email)
+
+  // Clean up
+  email = email.toLowerCase().trim()
 
   // Use existing user
   return NAP.User.findOneAndUpdate(
@@ -146,6 +156,9 @@ const _willMarkUserAsVerifiedByToken = async token => {
 const _getUserByEmailAndPassword = async (email, password) => {
   // Guard
   await willValidateEmailAndPassword(email, password)
+
+  // Clean up
+  email = email.toLowerCase().trim()
 
   // Guard unverified or not existing user
   const user = await NAP.User.findOne({ email })
@@ -256,6 +269,9 @@ const willAddUnverifiedEmail = async (user, unverifiedEmail, token) => {
   const isValid = await willValidateEmail(unverifiedEmail)
   if (!isValid) throw ERRORS.AUTH_INVALID_EMAIL
 
+  // Clean up
+  unverifiedEmail = unverifiedEmail.toLowerCase().trim()
+
   // Guard existing user that's not owner
   const otherUser = await NAP.User.findOne({ _id: { $ne: user._id }, email: unverifiedEmail })
   _guardDuplicatedUserByEmail(otherUser)
@@ -292,6 +308,9 @@ const willUpdateEmail = async (user, email) => {
   // Guard
   guard({ user })
   guard({ email })
+
+  // Clean up
+  email = email.toLowerCase().trim()
 
   // Guard : valid email
   await willValidateEmail(email)
