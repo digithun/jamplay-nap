@@ -143,7 +143,7 @@ describe('authen-local-passport', () => {
       const token = require('uuid/v4')()
       const { AUTH_EMAIL_ALREADY_IN_USE } = require('../errors/codes')
 
-      await willSignUpNewUser('foo@bar.com', 'foofoobarbar', token).catch(err => {
+      await willSignUpNewUser('foo@bar.com', 'foofoobarbar', {}, token).catch(err => {
         expect(() => {
           throw err
         }).toThrow(AUTH_EMAIL_ALREADY_IN_USE)
@@ -171,7 +171,7 @@ describe('authen-local-passport', () => {
 
       const { willSignUpNewUser } = require('../authen-local-passport')
       const token = require('uuid/v4')()
-      expect(await willSignUpNewUser('foo@bar.com', 'foofoobarbar', token)).toMatchSnapshot()
+      expect(await willSignUpNewUser('foo@bar.com', 'foofoobarbar', {}, token)).toMatchSnapshot()
     })
 
     it('should reset password if user exist', async () => {
