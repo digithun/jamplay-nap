@@ -154,7 +154,7 @@ describe('authen-sessions', async () => {
       const { email, password } = __mocked__verifiedLocalUserPayload
       const user = await willLogin(req, email, password)
       const { willGetUserFromSession } = require('../authen-sessions')
-      const context = { nap: { session: { userId: user.id, expireAt: new Date().toISOString() } } }
+      const context = { nap: { session: { userId: user.id, expireAt: new Date(+new Date() + _SESSIONS_TTL).toISOString() } } }
       const result = await willGetUserFromSession(context)
 
       expect(result).toEqual(expect.objectContaining(__expected__seedVerifiedLocalUser))
