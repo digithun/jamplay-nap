@@ -13,15 +13,12 @@ COPY package.json /tmp/package.json
 RUN apk add make gcc g++ python vips-dev fftw-dev --no-cache --repository https://dl-3.alpinelinux.org/alpine/edge/testing/ && \
   npm config set registry https://registry.npmjs.org/ && \
   cd /tmp && \
-  npm i --production --quiet --depth 0 --no-shrinkwrap && \
-  cd graphql/content && \  
-  npm i --production --quiet --depth 0 --no-shrinkwrap && \
+  npm i --production --quiet --depth 0 --no-shrinkwrap --unsafe-perm && \
   cd / && \
   npm i --production -g --quiet --depth 0 modclean && \
   modclean -r -D /tmp/node_modules && \
   npm r -g --quiet modclean && du -ms . && \
   mkdir -p /usr/app && cp -a /tmp/node_modules /usr/app/ && \
-  mkdir -p /usr/app/logs && \
   rm -rf /tmp && \
   apk del make gcc g++ python
 WORKDIR /usr/app
@@ -32,7 +29,7 @@ RUN mkdir -p /usr/app/providers && \
   mkdir -p /usr/app/server && \
   mkdir -p /usr/app/logs
 
-
+COPY graphql /usr/app/graphql
 COPY providers /usr/app/providers
 COPY templates /usr/app/templates
 COPY server /usr/app/server

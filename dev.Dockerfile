@@ -13,10 +13,9 @@ COPY package.json /tmp/package.json
 RUN apk add make gcc g++ python vips-dev fftw-dev --no-cache --repository https://dl-3.alpinelinux.org/alpine/edge/testing/ && \
   npm config set registry https://registry.npmjs.org/ && \
   cd /tmp && \
-  npm i --depth 0 --no-shrinkwrap && \
+  npm i --depth 0 --no-shrinkwrap  --unsafe-perm && \
   cd / && \
   mkdir -p /usr/app && cp -a /tmp/node_modules /usr/app/ && \
-  mkdir -p /usr/app/logs && \
   rm -rf /tmp
 WORKDIR /usr/app
 
@@ -24,8 +23,10 @@ WORKDIR /usr/app
 RUN mkdir -p /usr/app/providers && \
   mkdir -p /usr/app/templates && \
   mkdir -p /usr/app/server && \
+  mkdir -p /usr/app/graphql && \
   mkdir -p /usr/app/logs
 
+COPY graphql /usr/app/graphql
 COPY providers /usr/app/providers
 COPY templates /usr/app/templates
 COPY server /usr/app/server

@@ -47,7 +47,7 @@ function removeUpload (ms) {
 }
 
 const init = (config, app) => {
-  const { graphiql_enabled, tracing_enabled, tracing_uri, base_url } = config
+  const { graphiql_enabled, tracing_enabled, tracing_uri, base_url, optics_api_key } = config
 
   // Custom GraphQL
   NAP.expose = {
@@ -66,7 +66,8 @@ const init = (config, app) => {
   // GraphQL
   const { graphqlExpress, graphiqlExpress } = require('apollo-server-express')
   const { buildSchema } = require('./graphql')
-  const schema = buildSchema()
+  optics_api_key && app.use(require('optics-agent').middleware())
+  const schema = (optics_api_key && require('optics-agent').instrumentSchema(buildSchema())) || buildSchema()
 
   const { authenticate } = require('./jwt-token')
 
@@ -133,6 +134,7 @@ const init = (config, app) => {
     graphqlExpress(req => {
       const { referer } = req.headers
       const extendContext = require('./graphql').getGraphQLExtendedContext(req)
+      const opticsContext = optics_api_key && require('optics-agent').context(req)
       // }
       return {
         schema,
@@ -140,6 +142,7 @@ const init = (config, app) => {
         context: {
           ...req,
           ...extendContext,
+          opticsContext,
           ...connectors({ req, config })
         },
         formatError: ({ originalError, message, stack }) => {

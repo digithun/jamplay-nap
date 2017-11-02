@@ -31,6 +31,7 @@ const config = {
   log_port: process.env.LOG_PORT || 3001,
   express_logger_access_enabled: isTrue(process.env.EXPRESS_LOGGER_ACCESS_ENABLED),
   express_logger_error_enabled: isTrue(process.env.EXPRESS_LOGGER_ERROR_ENABLED),
+  optics_api_key: process.env.OPTICS_API_KEY,
 
   // Blacklist routes
   express_logger_ignored_routes: process.env.EXPRESS_LOGGER_IGNORED_ROUTES || '',

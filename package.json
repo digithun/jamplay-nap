@@ -3,7 +3,7 @@
   "version": "1.22.5",
   "main": "index.js",
   "scripts": {
-    "postinstall": "cd graphql/content && npm install",
+    "postinstall": "cd graphql/content && npm install || true",
     "setup": "echo \"# See .env.example for more\" > .env",
     "lint": "eslint . || true",
     "_dev": "next",
@@ -108,6 +108,7 @@
     "mubsub": "^1.4.0",
     "next": "^3.2.2",
     "node-monitor-ui": "^1.0.6",
+    "optics-agent": "^1.1.8",
     "passport": "^0.4.0",
     "passport-facebook": "^2.1.1",
     "passport-facebook-token": "^3.3.0",
