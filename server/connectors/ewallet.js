@@ -60,7 +60,7 @@ const createConnector = (config, { token }) => {
       return result.body.data
     }
     const hasReceipt = new DataLoader(keys => {
-      return callApi('spend/hasReceipts', { receipts: keys })
+      return callApi('spend/hasReceipts', { receipts: keys }).catch(error => keys.map(() => error))
     }, {
       cacheKeyFn: ({ refId, spendType }) => `${spendType}/${refId}`
     })
