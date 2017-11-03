@@ -13,6 +13,7 @@ process.env.AUTH_VERIFIED_URI = 'http://localhost:4000/auth/verified'
 process.env.STATIC_RESOLVE_URL = 'foo'
 process.env.SHARE_IMAGE_SERVICE_URL = 'bar'
 process.env.SHARE_IMAGE_SERVICE_API_KEY = 'baz'
+process.env.OPTICS_API_KEY = 'bas'
 
 process.env.SESSIONS_TTL = 0
 

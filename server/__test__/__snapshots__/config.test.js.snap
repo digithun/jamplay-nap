@@ -35,6 +35,7 @@ Object {
   "mubsub": undefined,
   "mubsub_enabled": false,
   "next_disabled": false,
+  "optics_api_key": "bas",
   "passport_disabled": false,
   "redis_url": "redis://redis",
   "sessions_ttl": 604800000,
