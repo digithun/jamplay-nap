@@ -19,7 +19,7 @@ const _willCreateUserWithPayload = async (provider, payload, req) => {
   }
 
   // Already register but not verify, will update
-  const unverifiedUser = await NAP.User.findOneAndUpdate({ email, emailVerified: false }, payload)
+  const unverifiedUser = await NAP.User.findOneAndUpdate({ email, emailVerified: { $ne: true } }, payload)
   if (unverifiedUser) return unverifiedUser
 
   // Create new user
