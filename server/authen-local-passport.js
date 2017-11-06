@@ -192,6 +192,8 @@ const validateLocalStrategy = (email, password, done) => {
         case ERRORS.AUTH_USER_NOT_FOUND.code:
         case ERRORS.AUTH_WRONG_PASSWORD.code:
         case ERRORS.AUTH_WEAK_PASSWORD.code:
+        case ERRORS.AUTH_INVALID_ARGUMENT.code:
+        case ERRORS.AUTH_EMAIL_NOT_VERIFIED.code:
           done(ERRORS.AUTH_INVALID_LOGIN)
           break
         default:
