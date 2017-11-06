@@ -66,6 +66,9 @@ const init = (config, app) => {
   // GraphQL
   const { graphqlExpress, graphiqlExpress } = require('apollo-server-express')
   const { buildSchema } = require('./graphql')
+
+  // Optics
+  optics_api_key && debug.info(`Optics  : ${config.optics_api_key}`)
   optics_api_key && app.use(require('optics-agent').middleware())
   const schema = (optics_api_key && require('optics-agent').instrumentSchema(buildSchema())) || buildSchema()
 
