@@ -22,7 +22,7 @@ const _willSendByBuilder = async ({ mailgun_api_key, mailgun_domain, email, veri
 }
 
 const willSendVerification = async ({ mailgun_api_key, mailgun_domain, email, verification_url }) => {
-  const builder = require('../templates/email-signin')
+  const builder = require('../templates/email-signup')
   return _willSendByBuilder({ mailgun_api_key, mailgun_domain, email, verification_url, builder })
 }
 
