@@ -1,3 +1,0 @@
-{
-  "setupFiles": ["dotenv/config", "isomorphic-fetch"]
-}
