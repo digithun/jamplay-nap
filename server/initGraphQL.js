@@ -161,7 +161,7 @@ const init = (config, app) => {
         formatResponse: res => {
           if (tracing_enabled) {
             require('./logs/graphql-tracing').trace(referer, res.extensions.tracing)
-            debug.info(`Tracing : ${tracing_uri}`)
+            tracing_uri && debug.info(`Tracing : ${tracing_uri}`)
           }
 
           return res
