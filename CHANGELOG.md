@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.23.0"></a>
+# [1.23.0](https://github.com/digithun/jamplay-nap/compare/v1.22.5...v1.23.0) (2017-11-14)
+
+
+### Bug Fixes
+
+* **authen:** invalid-argument will throw invalid-login instead ([c644c36](https://github.com/digithun/jamplay-nap/commit/c644c36))
+* **authen:** Will lower case and trim email ([8505b15](https://github.com/digithun/jamplay-nap/commit/8505b15))
+* **connectors/ewallet:** map error for dataloader ([fe93b6b](https://github.com/digithun/jamplay-nap/commit/fe93b6b))
+* **passport-authen:** fillter emailVerified from false to { $ne: true } ([6005f0f](https://github.com/digithun/jamplay-nap/commit/6005f0f))
+* **seo:** fix schema ([66a3735](https://github.com/digithun/jamplay-nap/commit/66a3735))
+
+
+### Features
+
+* **logs:** Add optics ([a8661e9](https://github.com/digithun/jamplay-nap/commit/a8661e9))
+* **SEO:** add seo schema & seed ([6a7a840](https://github.com/digithun/jamplay-nap/commit/6a7a840))
+* **tracing:** Add tracing (will need new endpoint) ([f880219](https://github.com/digithun/jamplay-nap/commit/f880219))
+
+
+
 <a name="1.22.5"></a>
 ## [1.22.5](https://github.com/digithun/jamplay-nap/compare/v1.22.4...v1.22.5) (2017-10-27)
 
