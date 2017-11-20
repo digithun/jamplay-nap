@@ -13,7 +13,7 @@ const validateSession = async ({ expireAt }) => {
   const expires = new Date(expireAt).valueOf()
   const now = new Date().valueOf()
 
-   if (now > expires || true) {
+   if (now > expires) {
     throw require('./errors/codes').AUTH_USER_TOKEN_EXPIRED
   }
 
