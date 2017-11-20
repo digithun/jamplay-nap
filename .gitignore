@@ -2,6 +2,7 @@ node_modules
 dist
 npm-debug.log
 .next
+*.swp
 .env
 coverage
 yarn-error.log
