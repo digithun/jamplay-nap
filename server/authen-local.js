@@ -13,7 +13,7 @@ const willSendVerificationForUpdateEmail = async (user, email, token) => {
     throw require('./errors/codes').AUTH_USER_NOT_FOUND
   }
 
-  const msg = await _sendChageEmailVerification(user.email, email, token)
+  const msg = await _sendChageEmailVerification(user.first_name + ' ' + user.lasst_name, user.email, email, token)
 
   // Got msg?
   if (!msg) throw _emailError(` (${email})`)
@@ -21,7 +21,7 @@ const willSendVerificationForUpdateEmail = async (user, email, token) => {
   return user
 }
 
-const _sendChageEmailVerification = async (oldEmail, email, token) => {
+const _sendChageEmailVerification = async (fullName, oldEmail, email, token) => {
   // Will send email verification
   const { auth_change_email_uri, base_url } = require('./config')
   const { createVerificationForChangeEmailURL } = require('./authen-local-passport')
@@ -36,7 +36,8 @@ const _sendChageEmailVerification = async (oldEmail, email, token) => {
       mailgun_api_key: config.mailgun_api_key,
       mailgun_domain: config.mailgun_domain,
       email,
-      verification_url
+      verification_url,
+      fullName
     })
     .catch(err => {
       throw _emailError(` (${email}) : ${err.message}`)
@@ -62,7 +63,7 @@ const willResetPasswordViaEmail = async (req, email, token) => {
   const { createPasswordResetURL, createNewPasswordResetURL } = require('./authen-local-passport')
   const password_reset_url = createPasswordResetURL(auth_validate_reset_uri, base_url, token)
   const new_password_reset_url = createNewPasswordResetURL(auth_new_reset_uri, base_url)
-
+  const fullName = user.first_name + ' ' + user.lasst_name
   // New user, will need verification by email
   const { mailgun_api_key, mailgun_domain } = require('./config')
   guard({ mailgun_api_key })
@@ -75,7 +76,8 @@ const willResetPasswordViaEmail = async (req, email, token) => {
       mailgun_domain,
       email,
       password_reset_url,
-      new_password_reset_url
+      new_password_reset_url,
+      fullName
     })
     .catch(err => {
       throw _emailError(` (${email}) : ${err.message}`)
@@ -88,7 +90,7 @@ const willResetPasswordViaEmail = async (req, email, token) => {
   return user
 }
 
-const _sendEmailVerification = async (email, token) => {
+const _sendEmailVerification = async (email, token, fullName) => {
   // Will send email verification
   const { auth_local_uri, base_url } = require('./config')
   const { createVerificationURL } = require('./authen-local-passport')
@@ -103,7 +105,8 @@ const _sendEmailVerification = async (email, token) => {
       mailgun_api_key: config.mailgun_api_key,
       mailgun_domain: config.mailgun_domain,
       email,
-      verification_url
+      verification_url,
+      fullName
     })
     .catch(err => {
       throw _emailError(` (${email}) : ${err.message}`)
@@ -135,7 +138,7 @@ const willSignUp = async (req, email, password, extraFields) => {
     throw require('./errors/codes').AUTH_USER_NOT_FOUND
   }
 
-  const msg = await _sendEmailVerification(email, token)
+  const msg = await _sendEmailVerification(email, token, user.first_name + ' ' + user.lasst_name)
 
   // Got msg?
   if (!msg) throw _emailError(` (${email})`)

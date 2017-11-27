@@ -23,6 +23,7 @@ describe('mailer', () => {
   it('should return verification mail body', async () => {
     const { createVerificationURL } = require('../authen-local-passport')
     const email = 'katopz@gmail.com'
+    const fullName = 'katopz katopz'
     const auth_local_uri = '/auth/local'
     const base_url = 'http://localhost:3000'
     const token = 'FOO_TOKEN'
@@ -33,7 +34,8 @@ describe('mailer', () => {
       mailgun_api_key: config.mailgun_api_key,
       mailgun_domain: config.mailgun_domain,
       email,
-      verification_url
+      verification_url,
+      fullName
     })
 
     expect(payload).toMatchSnapshot()
@@ -42,6 +44,7 @@ describe('mailer', () => {
   it('should return reset mail body', async () => {
     const { createPasswordResetURL, createNewPasswordResetURL } = require('../authen-local-passport')
     const email = 'katopz@gmail.com'
+    const fullName = 'katopz katopz'
     const auth_reset_uri = '/auth/reset'
     const auth_new_reset_uri = '/auth/reset'
     const base_url = 'http://localhost:3000'
@@ -55,7 +58,8 @@ describe('mailer', () => {
       mailgun_domain: config.mailgun_domain,
       email,
       password_reset_url,
-      new_password_reset_url
+      new_password_reset_url,
+      fullName
     })
 
     expect(msg).toMatchSnapshot()
