@@ -2,6 +2,13 @@
   "name": "nap",
   "version": "1.23.0",
   "main": "index.js",
+  "standard": {
+    "globals": [
+      "it",
+      "describe",
+      "expect"
+    ]
+  },
   "scripts": {
     "postinstall": "cd graphql/content && npm install || true",
     "setup": "echo \"# See .env.example for more\" > .env",
@@ -60,6 +67,7 @@
     "seed-episode-binary": "node ./scripts/seeds/seed-episode-binary.js"
   },
   "dependencies": {
+    "@types/draft-js": "^0.10.18",
     "apollo-client": "1.9.3",
     "apollo-fetch": "^0.6.0",
     "apollo-server-express": "^1.2.0",
