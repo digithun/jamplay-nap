@@ -13,7 +13,7 @@ const willSendVerificationForUpdateEmail = async (user, email, token) => {
     throw require('./errors/codes').AUTH_USER_NOT_FOUND
   }
 
-  const msg = await _sendChageEmailVerification(user.first_name + ' ' + user.lasst_name, user.email, email, token)
+  const msg = await _sendChageEmailVerification(user.first_name + ' ' + user.last_name, user.email, email, token)
 
   // Got msg?
   if (!msg) throw _emailError(` (${email})`)
@@ -63,7 +63,8 @@ const willResetPasswordViaEmail = async (req, email, token) => {
   const { createPasswordResetURL, createNewPasswordResetURL } = require('./authen-local-passport')
   const password_reset_url = createPasswordResetURL(auth_validate_reset_uri, base_url, token)
   const new_password_reset_url = createNewPasswordResetURL(auth_new_reset_uri, base_url)
-  const fullName = user.first_name + ' ' + user.lasst_name
+  const fullName = user.first_name + ' ' + user.last_name
+  console.log('user', user, fullName)
   // New user, will need verification by email
   const { mailgun_api_key, mailgun_domain } = require('./config')
   guard({ mailgun_api_key })
@@ -138,7 +139,7 @@ const willSignUp = async (req, email, password, extraFields) => {
     throw require('./errors/codes').AUTH_USER_NOT_FOUND
   }
 
-  const msg = await _sendEmailVerification(email, token, user.first_name + ' ' + user.lasst_name)
+  const msg = await _sendEmailVerification(email, token, user.first_name + ' ' + user.last_name)
 
   // Got msg?
   if (!msg) throw _emailError(` (${email})`)

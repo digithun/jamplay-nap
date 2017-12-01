@@ -120,7 +120,7 @@ const willSetUserStatusAsWaitForEmailReset = async (email, token) => {
       status: 'WAIT_FOR_EMAIL_RESET'
     },
     {
-      projection: { _id: 1, status: 1 },
+      projection: { _id: 1, status: 1, first_name: 1, last_name: 1 },
       new: true,
       upsert: false
     }
