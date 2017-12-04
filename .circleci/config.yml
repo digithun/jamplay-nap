@@ -7,29 +7,35 @@ jobs:
     steps:
       - checkout
       - run: git submodule update --init --recursive
-      - restore_cache:
-          keys:
-          - v1-dependencies-{{ checksum "package.json" }}-{{ checksum "graphql/content/package.json" }}
-          - v1-dependencies-
-      - run: npm install
-      - save_cache:
-          paths:
-            - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}-{{ checksum "graphql/content/package.json" }}
-      - run: npm run test:once
-  deploy-develop:
-    - image: circleci:node:8.9.1
+      # - restore_cache:
+      #     keys:
+      #     - v1-dependencies-{{ checksum "package.json" }}-{{ checksum "graphql/content/package.json" }}
+      #     - v1-dependencies-
+      # - run: npm install
+      # - save_cache:
+      #     paths:
+      #       - node_modules
+      #     key: v1-dependencies-{{ checksum "package.json" }}-{{ checksum "graphql/content/package.json" }}
+      # - run: npm run test:once
+  deploy-local:
+    docker:
+      - image: node:8.9.1
     working_directory: ~/repo
     steps:
+      - run: apt-get update -y
+      - run: apt-get install -y rsync
       - run: tar --exclude='.git' --exclude='.env' --exclude='./graphql/content/node_modules' --exclude='./graphql/content/lib/validator/node_modules' --exclude='./node_modules' --exclude='./.vscode' -czf ./dist/artifact.tar ./
-      - run: rsync -avz ./dist/artifact.tar root@$DEPLOY_TARGET:/root/jamplay-nap.tar
-      - run: ssh -t root@$DEPLOY_TARGET 'cd /root && ls && tar -xvf jamplay-nap.tar -C /root/jamplay-nap && cd jamplay-nap && npm install'
+      - run: rsync -o “StrictHostKeyChecking=no” -avz ./dist/artifact.tar root@$DEPLOY_TARGET:/root/jamplay-nap.tar
+      - run: ssh -o “StrictHostKeyChecking=no” -t root@$DEPLOY_TARGET 'cd /root && ls && tar -xvf jamplay-nap.tar -C /root/jamplay-nap && cd jamplay-nap && npm install'
 
 workflows:
   version: 2
-  build-deploy:
+  buld-and-deploy:
     jobs:
       - test
-      - deploy-develop:
-          requirees:
+      - deploy-local:
+          requires:
             - test
+          filters:
+            branches:
+              only: develop
