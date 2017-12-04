@@ -30,3 +30,6 @@ workflows:
   build-deploy:
     jobs:
       - test
+      - deploy-develop:
+          requirees:
+            - test
