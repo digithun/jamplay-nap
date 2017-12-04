@@ -17,6 +17,13 @@ jobs:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}-{{ checksum "graphql/content/package.json" }}
       - run: npm run test:once
+  deploy-develop:
+    - image: circleci:node:8.9.1
+    working_directory: ~/repo
+    steps:
+      - run: tar --exclude='.git' --exclude='.env' --exclude='./graphql/content/node_modules' --exclude='./graphql/content/lib/validator/node_modules' --exclude='./node_modules' --exclude='./.vscode' -czf ./dist/artifact.tar ./
+      - run: rsync -avz ./dist/artifact.tar root@$DEPLOY_TARGET:/root/jamplay-nap.tar
+      - run: ssh -t root@$DEPLOY_TARGET 'cd /root && ls && tar -xvf jamplay-nap.tar -C /root/jamplay-nap && cd jamplay-nap && npm install'
 
 workflows:
   version: 2
