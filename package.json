@@ -34,7 +34,7 @@
     "docker:push-image-alpha": "docker push reg.jamplay.world/jamplay/jamplay-nap-alpha",
     "docker:push-image-beta": "docker push reg.jamplay.world/jamplay/jamplay-nap-beta",
     "docker:push-image-local": "docker push reg.jamplay.world/jamplay/jamplay-nap-local",
-    "build:image": "docker build --no-cache -t digithun/jamplay-nap:$(node -p \"require('./package.json').version\") -f jamplay.Dockerfile . && docker tag digithun/jamplay-nap:$(node -p \"require('./package.json').version\") digithun/jamplay-nap:latest || true",
+    "build:image": "docker build -t digithun/jamplay-nap:$(node -p \"require('./package.json').version\") -f jamplay.Dockerfile . && docker tag digithun/jamplay-nap:$(node -p \"require('./package.json').version\") digithun/jamplay-nap:latest || true",
     "image-dev": "NODE_ENV=development docker build --no-cache -t digithun/jamplay-nap . || true",
     "history": "docker history digithun/jamplay-nap > history.log && cat history.log || true",
     "size": "echo $(docker image inspect digithun/jamplay-nap -f {{.Size}})",

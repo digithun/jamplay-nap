@@ -1,4 +1,6 @@
 node_modules
+graphql/content/node_modules
+graphql/content/lib/validator/node_modules
 npm-debug.log
 .env
 .next
