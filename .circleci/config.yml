@@ -17,6 +17,10 @@ jobs:
       #       - node_modules
       #     key: v1-dependencies-{{ checksum "package.json" }}-{{ checksum "graphql/content/package.json" }}
       # - run: npm run test:once
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - repo
   deploy-local:
     docker:
       - image: node:8.9.1
