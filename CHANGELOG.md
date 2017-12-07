@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.25.0"></a>
+# [1.25.0](https://github.com/digithun/jamplay-nap/compare/v1.23.0...v1.25.0) (2017-12-07)
+
+
+### Bug Fixes
+
+* **content:** update submodule ([cdecaa9](https://github.com/digithun/jamplay-nap/commit/cdecaa9))
+* **graphql.Authen:** add isFirst ([3d08e09](https://github.com/digithun/jamplay-nap/commit/3d08e09))
+* **share:** fix share image urls ([01aea5b](https://github.com/digithun/jamplay-nap/commit/01aea5b))
+* **share:** fix share path (module content) ([9923666](https://github.com/digithun/jamplay-nap/commit/9923666))
+
+
+### Features
+
+* **withdraw:** send email when request withdraw ([3a4ac23](https://github.com/digithun/jamplay-nap/commit/3a4ac23))
+
+
+
 <a name="1.24.0"></a>
 # [1.24.0](https://github.com/digithun/jamplay-nap/compare/v1.23.0...v1.24.0) (2017-11-30)
 
