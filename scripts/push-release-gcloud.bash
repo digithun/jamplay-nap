@@ -1,0 +1,2 @@
+docker tag digithun/jamplay-nap gcr.io/$(gcloud config get-value project)/jamplay-nap:$(node -p \"require('./package.json').version\")
+gcloud docker -- push gcr.io/$(gcloud config get-value project)/jamplay-nap:$(node -p \"require('./package.json').version\")
