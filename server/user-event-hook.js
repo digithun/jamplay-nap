@@ -40,7 +40,7 @@ module.exports = function ({ achievement_service_url, achievement_service_access
         timeout: 5000
       })
       if (response.status !== 200) {
-        throw new Error('Response error')
+        throw response
       }
       const result = await response.json()
       console.log(result)
@@ -60,7 +60,6 @@ module.exports = function ({ achievement_service_url, achievement_service_access
       }
     } catch (e) {
       console.log('user-event-hook: error')
-      console.log(e.name)
       switch (e.name) {
         case 'Parameter "url" must be a string, not undefined':
           console.error('achievement_service_url not define in env')
@@ -74,8 +73,8 @@ module.exports = function ({ achievement_service_url, achievement_service_access
           throw error
         }
         default:
-          console.error(e.code)
-          console.log(e)
+          const result = await e.text()
+          console.error(result)
           break
       }
       return {
