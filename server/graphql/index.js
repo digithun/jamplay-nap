@@ -17,7 +17,7 @@ module.exports.getFile = (fileInput, context) => {
   })
   // return fileInput;
 }
-module.exports.extendModel = require('./models').extendModel
+module.exports.getModel = require('./models').getModel
 module.exports.setBuildGraphqlSchema = builder => (buildGraphqlSchema = builder)
 module.exports.buildSchema = () => {
   let authenChannel

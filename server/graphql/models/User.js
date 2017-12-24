@@ -16,6 +16,7 @@ module.exports = extendedSchema => {
   )
   const UserSchemaObject = {
     name: String,
+    phoneNumber: String,
     last_name: String,
     first_name: String,
     email: { type: String, unique: true, lowercase: true, trim: true },

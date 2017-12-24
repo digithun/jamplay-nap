@@ -51,7 +51,7 @@ const init = (config, app) => {
 
   // Custom GraphQL
   NAP.expose = {
-    extendModel: require('./graphql').extendModel,
+    getModel: require('./graphql').getModel,
     setBuildGraphQLContext: require('./graphql').setBuildGraphQLContext,
     setBuildGraphqlSchema: require('./graphql').setBuildGraphqlSchema,
     FileType: require('./graphql/types/File'),
