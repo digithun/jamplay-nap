@@ -1,2 +1,9 @@
-docker tag digithun/jamplay-nap gcr.io/$(gcloud config get-value project)/jamplay-nap:$(node -p \"require('./package.json').version\")
-gcloud docker -- push gcr.io/$(gcloud config get-value project)/jamplay-nap:$(node -p \"require('./package.json').version\")
+export $(cat .env | grep -v ^# | xargs)
+PACKAGE_VERSION=$(cat package.json \
+  | grep version \
+  | head -1 \
+  | awk -F: '{ print $2 }' \
+  | sed 's/[",]//g' \
+  | tr -d '[[:space:]]')
+echo 'Start push image with project id: ' $(gcloud config get-value project), tag: $PACKAGE_VERSION
+gcloud docker -- push gcr.io/$(gcloud config get-value project)/jamplay-nap:$PACKAGE_VERSION

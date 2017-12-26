@@ -28,7 +28,7 @@
     "serve": "npm run exec -- npm run _serve",
     "prod": "npm run exec -- npm run _prod",
     "local": "npm run stop && REDIS_URI=redis://localhost MONGODB_URI=mongodb://localhost/graphql npm run _serve",
-    "build:image": "docker build -t digithun/jamplay-nap -f jamplay.Dockerfile .",
+    "build:image": "sh ./scripts/build-image.bash",
     "image-dev": "NODE_ENV=development docker build --no-cache -t digithun/jamplay-nap . || true",
     "history": "docker history digithun/jamplay-nap > history.log && cat history.log || true",
     "size": "echo $(docker image inspect digithun/jamplay-nap -f {{.Size}})",
@@ -52,13 +52,7 @@
     "release": "standard-version --release",
     "release-patch": "standard-version --release-as patch",
     "release-rc": "standard-version --prerelease rc",
-    "migrate": "node -r dotenv/config ./graphql/content/scripts/migrate",
-    "seed": "node ./graphql/content/seed.js",
-    "gen-seed": "node ./scripts/seeds/gen-seed.js",
-    "import-seed": "node ./scripts/seeds/import.js",
-    "remove-seed": "node ./scripts/seeds/remove.js",
-    "re-gen-seed": "npm run gen-seed && npm run remove-seed && npm run import-seed",
-    "seed-episode-binary": "node ./scripts/seeds/seed-episode-binary.js"
+    "migrate": "node -r dotenv/config ./graphql/content/scripts/migrate"
   },
   "dependencies": {
     "@types/draft-js": "^0.10.18",
