@@ -121,8 +121,8 @@ const createConnector = (config, { token }) => {
         const result = await callGetApi('config/findConfig')
         return result
       },
-      createWithdraw: async ({ balance, amount, fee, tax }) => {
-        const result = await callApi('withdraw/addWithdraw', { token, balance, amount, fee, tax })
+      createWithdraw: async ({ due, fee, tax }) => {
+        const result = await callApi('withdraw/addWithdraw', { token, due, fee, tax })
         return result
       },
       findWithdrawByToken: async () => {
