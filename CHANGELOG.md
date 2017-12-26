@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.25.2"></a>
+## [1.25.2](https://github.com/digithun/jamplay-nap/compare/v1.25.1...v1.25.2) (2017-12-26)
+
+
+### Bug Fixes
+
+* **share:** fix share image url to match web's path ([d20fcf3](https://github.com/digithun/jamplay-nap/commit/d20fcf3))
+* **User:** not more extend schema ([3972bf9](https://github.com/digithun/jamplay-nap/commit/3972bf9))
+* **user-event-hook:** forgot remove debug ([95daa8a](https://github.com/digithun/jamplay-nap/commit/95daa8a))
+
+
+
 <a name="1.25.1"></a>
 ## [1.25.1](https://github.com/digithun/jamplay-nap/compare/v1.25.0...v1.25.1) (2017-12-22)
 
