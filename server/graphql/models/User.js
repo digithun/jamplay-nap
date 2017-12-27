@@ -19,6 +19,7 @@ module.exports = extendedSchema => {
     phoneNumber: String,
     last_name: String,
     first_name: String,
+    profilePicture: {},
     email: { type: String, unique: true, lowercase: true, trim: true },
     unverifiedEmail: { type: String },
     usedEmails: [{ type: String }],
