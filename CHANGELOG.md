@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.25.3"></a>
+## [1.25.3](https://github.com/digithun/jamplay-nap/compare/v1.25.2...v1.25.3) (2017-12-28)
+
+
+### Bug Fixes
+
+* **authen:** expose loginWithFacebook for content can extend authen with facebook ([f496caf](https://github.com/digithun/jamplay-nap/commit/f496caf))
+* **email-template:** fix template layout ([11ad344](https://github.com/digithun/jamplay-nap/commit/11ad344))
+* **User:** add profilePicture ([fee28b2](https://github.com/digithun/jamplay-nap/commit/fee28b2))
+
+
+
 <a name="1.25.2"></a>
 ## [1.25.2](https://github.com/digithun/jamplay-nap/compare/v1.25.1...v1.25.2) (2017-12-26)
 
