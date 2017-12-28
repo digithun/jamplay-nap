@@ -18,7 +18,6 @@ module.exports.getFile = (fileInput, context) => {
   // return fileInput;
 }
 module.exports.getModel = require('./models').getModel
-module.exports.setBuildGraphqlSchema = builder => (buildGraphqlSchema = builder)
 module.exports.buildSchema = () => {
   let authenChannel
   async function loginMiddleware ({ rp }, next) {
@@ -104,15 +103,15 @@ module.exports.buildSchema = () => {
   return defaultBuildSchema({ GQC })
 }
 
-module.exports.setBuildGraphQLContext = function (contextBuilder) {
-  console.log('set context builder')
-  buildContext = contextBuilder
-}
-
 module.exports.getGraphQLExtendedContext = (req) => {
   if (typeof buildContext === 'function') {
     return buildContext(req)
   } else {
     return {}
   }
+}
+
+module.exports.config = (config) => {
+  buildGraphqlSchema = config.schemaBuilder
+  buildContext = config.contextBuilder
 }

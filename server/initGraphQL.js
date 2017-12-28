@@ -52,8 +52,7 @@ const init = (config, app) => {
   // Custom GraphQL
   NAP.expose = {
     getModel: require('./graphql').getModel,
-    setBuildGraphQLContext: require('./graphql').setBuildGraphQLContext,
-    setBuildGraphqlSchema: require('./graphql').setBuildGraphqlSchema,
+    config: require('./graphql').config,
     FileType: require('./graphql/types/File'),
     GenderType: require('./graphql/types/Gender'),
     getFile: require('./graphql').getFile
@@ -134,20 +133,21 @@ const init = (config, app) => {
       uploadDir
     }),
     authenticate,
-    graphqlExpress(req => {
+    graphqlExpress(async req => {
       const { referer } = req.headers
       const extendContext = require('./graphql').getGraphQLExtendedContext(req)
       const opticsContext = optics_api_key && require('optics-agent').context(req)
+      const context = {
+        ...req,
+        ...extendContext,
+        opticsContext,
+        ...connectors({ req, config })
+      }
       // }
       return {
         schema,
         tracing: tracing_enabled,
-        context: {
-          ...req,
-          ...extendContext,
-          opticsContext,
-          ...connectors({ req, config })
-        },
+        context,
         formatError: ({ originalError, message, stack }) => {
           if (originalError && !(originalError instanceof GenericError)) {
             console.error('GraphQL track:', originalError)

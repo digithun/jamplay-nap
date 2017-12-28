@@ -2,7 +2,7 @@ const { willLoginWithFacebook, willGetFacebookProfile } = require('./authen-face
 const { willLinkWithFacebook, willUnlinkFromFacebook } = require('./authen-link')
 const { willSignUp, willLogin, willLogout, willResetPasswordViaEmail, willSendVerificationForUpdateEmail } = require('./authen-local')
 const { willUpdatePassword, willUpdatePasswordByToken, willUpdateEmail, willVerifyEmailByToken } = require('./authen-local-passport')
-const { willInstallAndAuthen } = require('./graphql/resolvers')
+const { willInstallAndAuthen, loginWithFacebook } = require('./graphql/resolvers')
 const { willCreateUser, willDeleteUser } = require('./authen-sessions')
 const { decodeToken } = require('./jwt-token')
 const config = require('./config')
@@ -15,6 +15,8 @@ class nap {
     this.willLinkWithFacebook = willLinkWithFacebook
     this.willUnlinkFromFacebook = willUnlinkFromFacebook
 
+    // export for content can login with facebook by himself
+    this.loginWithFacebook = loginWithFacebook
     this.willLoginWithFacebook = willLoginWithFacebook
     this.willGetFacebookProfile = willGetFacebookProfile
     this.willSignUp = willSignUp
