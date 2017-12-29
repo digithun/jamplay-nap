@@ -1,7 +1,12 @@
 require('isomorphic-fetch')
 const chalk = require('chalk')
+const jwtToken = require('./jwt-token')
 module.exports = function ({ achievement_service_url, achievement_service_access_token }, notificationService) {
   return async ({ type, sessionToken, payload, user }) => {
+    if (!sessionToken && user) {
+      // gen sessionToken
+      sessionToken = jwtToken.createSessionToken({ userId: user._id.toString() })
+    }
     if (process.env.NODE_ENV === 'development' && process.env.USER_EVENT_HOOK_MOCK) {
       console.log(chalk.bgRed('user-event-hook: development mode in active, will mock response from acheivement service'))
       return {
