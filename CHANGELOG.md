@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.25.4"></a>
+## [1.25.4](https://github.com/digithun/jamplay-nap/compare/v1.25.3...v1.25.4) (2017-12-29)
+
+
+### Bug Fixes
+
+* **user-event-hook:** auto gen sessionToken if no token but got user ([f734fb0](https://github.com/digithun/jamplay-nap/commit/f734fb0))
+
+
+
 <a name="1.25.3"></a>
 ## [1.25.3](https://github.com/digithun/jamplay-nap/compare/v1.25.2...v1.25.3) (2017-12-28)
 
