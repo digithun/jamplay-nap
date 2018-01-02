@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.25.7"></a>
+## [1.25.7](https://github.com/digithun/jamplay-nap/compare/v1.25.6...v1.25.7) (2018-01-02)
+
+
+
 <a name="1.25.6"></a>
 ## [1.25.6](https://github.com/digithun/jamplay-nap/compare/v1.25.4...v1.25.6) (2017-12-30)
 
