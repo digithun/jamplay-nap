@@ -5,6 +5,7 @@ Object {
   "nap": nap {
     "decodeToken": [Function],
     "errors": Array [],
+    "loginWithFacebook": [Function],
     "notificationService": Object {
       "createNotification": [Function],
       "getNotification": [Function],
