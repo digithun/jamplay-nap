@@ -60,23 +60,27 @@ const createConnector = (config, { token }) => {
       return result.body.data
     }
     const hasReceipt = new DataLoader(keys => {
-      return callApi('spend/hasReceipts', { receipts: keys }).catch(error => keys.map(() => error))
+      return callApi('spend/hasReceipts', { receipts: keys })
     }, {
       cacheKeyFn: ({ refId, spendType }) => `${spendType}/${refId}`
     })
     return {
       hasReceipt: async ({ refId, spendType }) => {
+        if (!token) return false
         return hasReceipt.load({ refId, spendType })
       },
       hasCard: async ({ token }) => {
+        if (!token) return false
         const result = await callApi('creditcard/hasCard', { token })
         return result
       },
       deleteCard: async ({ token }) => {
+        if (!token) return false
         const result = await callApi('creditcard/deleteCard', { token })
         return result
       },
       getJelly: async () => {
+        if (!token) return { gold: 0, silver: 0 }
         try {
           const result = await callApi('user/getJelly', { token })
           if (result.gold >= 0) { return result }
@@ -87,6 +91,7 @@ const createConnector = (config, { token }) => {
         }
       },
       getMerchantEwallet: async () => {
+        if (!token) return { gold: 0, silver: 0 }
         console.log('getMerchantEwallet')
         const result = await callApi('user/getMerchantEwallet', { token })
         try {
@@ -96,11 +101,13 @@ const createConnector = (config, { token }) => {
         }
       },
       spendJelly: async ({ refId, spendType, merchantId, merchantAliasId, amount, currencyType, commissionRate, payload }) => {
+        if (!token) throw new Error('authentication')
         const result = await callApi('spend/spendJelly', { refId, spendType, merchantId, merchantAliasId, amount, currencyType, commissionRate, payload })
         return result
       },
       // TO DO: change schema
       addExchange: async ({ amountIn, amountOut, conversionType }) => {
+        if (!token) throw new Error('authentication')
         const result = await callApi('exchange/addExchange', { amountIn, amountOut, conversionType })
         return result
       },
@@ -110,10 +117,12 @@ const createConnector = (config, { token }) => {
         return result
       },
       findExchangeByToken: async () => {
+        if (!token) return []
         const result = await callApi('exchange/findByToken', { token })
         return result.exchanges
       },
       findSpendByToken: async () => {
+        if (!token) return []
         const result = await callApi('spend/findByToken', { token })
         return result.spends
       },
@@ -122,22 +131,27 @@ const createConnector = (config, { token }) => {
         return result
       },
       createWithdraw: async ({ due, fee, tax }) => {
+        if (!token) throw new Error('authentication')
         const result = await callApi('withdraw/addWithdraw', { token, due, fee, tax })
         return result
       },
       findWithdrawByToken: async () => {
+        if (!token) return []
         const result = await callApi('withdraw/findWithdrawByToken', { token })
         return result.withdraws || []
       },
       findIncomeByToken: async () => {
+        if (!token) return []
         const result = await callApi('spend/findIncomeByToken', { token })
         return result.income || []
       },
       findIncomeByBook: async ({ bookId }) => {
+        if (!token) return []
         const result = await callApi('spend/findIncomeByBook', { bookId })
         return result.income || []
       },
       addExchangeByTruemoney: async ({ cashcardNO }) => {
+        if (!token) return []
         const result = await callApi('exchange/addExchangeByTruemoney', { cashcardNO })
         return result || []
       }
