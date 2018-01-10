@@ -1,5 +1,10 @@
 const { onError } = require('../../errors')
 
+const signUpWithFacebookAndEmail = async ({ context, args }) => {
+  const user = await context.nap.willSignUpWithFacebookAndEmail(context, args.accessToken, args.email).catch(onError(context))
+  return user && context.nap.willChallengeEmail(user, args.email).catch(onError(context))
+}
+
 const loginWithFacebook = async ({ context, args }) => {
   const userData = await context.nap.willLoginWithFacebook(context, args.accessToken).catch(onError(context))
   const user = userData && (await context.nap.willCreateUser(userData).catch(onError(context)))
@@ -62,6 +67,7 @@ const authen = async ({ context }) => {
 }
 
 module.exports = {
+  signUpWithFacebookAndEmail,
   loginWithFacebook,
   signup,
   signUpWithEmailAndPassword,

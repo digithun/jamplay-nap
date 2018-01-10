@@ -4,6 +4,7 @@ import LoginWithFacebook from '../components/auth/LoginWithFacebook'
 import LinkWithFacebook from '../components/auth/LinkWithFacebook'
 import UnlinkFromFacebook from '../components/auth/UnlinkFromFacebook'
 import SignUp from '../components/auth/SignUp'
+import SignUpWithFacebookAndEmail from '../components/auth/SignUpWithFacebookAndEmail'
 import Login from '../components/auth/Login'
 import Logout from '../components/auth/Logout'
 import Forget from '../components/auth/Forget'
@@ -44,6 +45,7 @@ const UserProfile = ({ loading, user, error, authen }) => {
   return (
     <div>
       <p className='error'>{info}</p>
+      <SignUpWithFacebookAndEmail /><hr />
       <LoginWithFacebook /><hr />
       <SignUp /><hr />
       <Login /><hr />

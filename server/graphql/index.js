@@ -82,6 +82,7 @@ module.exports.buildSchema = () => {
     login: models.AuthenTC.getResolver('login'),
     logout: models.AuthenTC.getResolver('logout'),
     loginWithFacebook: models.AuthenTC.getResolver('loginWithFacebook'),
+    signUpWithFacebookAndEmail: models.AuthenTC.getResolver('signUpWithFacebookAndEmail'),
     signUpWithEmailAndPassword: models.AuthenTC.getResolver('signUpWithEmailAndPassword'),
     forget: models.UserTC.getResolver('forget'),
     changeEmail: models.UserTC.getResolver('changeEmail'),

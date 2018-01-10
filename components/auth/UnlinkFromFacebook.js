@@ -18,7 +18,7 @@ class UnlinkFromFacebook extends React.Component {
   render () {
     return (
       <form onSubmit={this.handleSubmit.bind(this)}>
-        <h1>Unlink (GraphQL) with Facebook</h1>
+        <h1>Unlink with Facebook</h1>
         <p>You're linked with Facebook</p>
         <button type='submit'>Unlink</button>
         <style jsx>{`

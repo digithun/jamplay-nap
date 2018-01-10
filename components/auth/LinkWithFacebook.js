@@ -47,7 +47,7 @@ class LinkWithFacebook extends React.Component {
   render () {
     return (
       <form onSubmit={this.handleSubmit.bind(this)}>
-        <h1>Link (GraphQL) with Facebook accessToken</h1>
+        <h1>Link with Facebook accessToken</h1>
         <input placeholder='accessToken' name='accessToken' value={this.state.accessToken} onChange={this.handleChange.bind(this)} />
         <button type='submit'>Link</button>
         <style jsx>{`

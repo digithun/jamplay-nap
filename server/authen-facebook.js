@@ -1,5 +1,22 @@
 const { guard } = require('./errors')
 
+const willSignUpWithFacebookAndEmail = async (req, accessToken, email) => {
+  const { FACEBOOK_APP_ID, FACEBOOK_APP_SECRET } = process.env
+
+  // Guard
+  guard({ FACEBOOK_APP_ID })
+  guard({ FACEBOOK_APP_SECRET })
+  guard({ accessToken })
+
+  // To let passport-facebook-token consume
+  req.body.access_token = accessToken
+  req.body.custom_email = email
+
+  // Validate facebook token
+  const { willAuthenWithPassport } = require('./passport-authen')
+  return willAuthenWithPassport('facebook-token', req)
+}
+
 // Valid accessToken?
 const willLoginWithFacebook = async (req, accessToken) => {
   const { FACEBOOK_APP_ID, FACEBOOK_APP_SECRET } = process.env
@@ -35,6 +52,7 @@ const willGetFacebookProfile = async (req, accessToken) => {
 }
 
 module.exports = {
+  willSignUpWithFacebookAndEmail,
   willLoginWithFacebook,
   willGetFacebookProfile
 }

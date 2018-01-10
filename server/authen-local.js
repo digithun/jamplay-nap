@@ -13,7 +13,7 @@ const willSendVerificationForUpdateEmail = async (user, email, token) => {
     throw require('./errors/codes').AUTH_USER_NOT_FOUND
   }
 
-  const msg = await _sendChageEmailVerification(user.first_name + ' ' + user.last_name, user.email, email, token)
+  const msg = await _sendChangeEmailVerification(user.first_name + ' ' + user.last_name, user.email, email, token)
 
   // Got msg?
   if (!msg) throw _emailError(` (${email})`)
@@ -21,7 +21,7 @@ const willSendVerificationForUpdateEmail = async (user, email, token) => {
   return user
 }
 
-const _sendChageEmailVerification = async (fullName, oldEmail, email, token) => {
+const _sendChangeEmailVerification = async (fullName, oldEmail, email, token) => {
   // Will send email verification
   const { auth_change_email_uri, base_url } = require('./config')
   const { createVerificationForChangeEmailURL } = require('./authen-local-passport')
@@ -147,6 +147,34 @@ const willSignUp = async (req, email, password, extraFields) => {
   return user
 }
 
+// Register with email and password
+const willChallengeEmail = async (user, unverifiedEmail) => {
+  // Guard
+  const { willValidateEmail } = require('./validator')
+  const isValidEmail = await willValidateEmail(unverifiedEmail)
+  if (!isValidEmail) {
+    throw require('./errors/codes').AUTH_INVALID_EMAIL
+  }
+
+  // Clean up
+  unverifiedEmail = unverifiedEmail.toLowerCase().trim()
+
+  // Mark
+  const token = require('uuid/v4')()
+  user.unverifiedEmail = unverifiedEmail
+  user.token = token
+  user.emailVerified = false
+  user.status = 'WAIT_FOR_EMAIL_VERIFICATION'
+
+  // Send
+  const msg = await _sendEmailVerification(unverifiedEmail, token, user.first_name + ' ' + user.last_name)
+
+  // Got msg?
+  if (!msg) throw _emailError(` (${unverifiedEmail})`)
+
+  return user.save()
+}
+
 // Login with email
 const willLogin = async (req, email, password) => {
   // Guard
@@ -185,5 +213,6 @@ module.exports = {
   willLogin,
   willLogout,
   willResetPasswordViaEmail,
-  willSendVerificationForUpdateEmail
+  willSendVerificationForUpdateEmail,
+  willChallengeEmail
 }

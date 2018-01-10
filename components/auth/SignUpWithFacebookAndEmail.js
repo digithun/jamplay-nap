@@ -5,18 +5,23 @@ import device from '../../lib/device'
 import userProfile from '../userProfile.gql'
 import PropTypes from 'prop-types'
 
-class LoginWithFacebook extends React.Component {
+class SignUpWithFacebookAndEmail extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
       accessToken: '',
-      deviceInfo: ''
+      deviceInfo: '',
+      email: 'katopz+1@gmail.com'
     }
-    this.loginWithFacebook = props.loginWithFacebook
+    this.signUpWithFacebookAndEmail = props.signUpWithFacebookAndEmail
   }
 
   handleChange (event) {
     this.setState({ accessToken: event.target.value })
+  }
+
+  handleEmailChange (event) {
+    this.setState({ email: event.target.value })
   }
 
   handleSubmit (e) {
@@ -24,17 +29,14 @@ class LoginWithFacebook extends React.Component {
 
     const deviceInfo = e.target.elements.deviceInfo.value
     const accessToken = e.target.elements.accessToken.value
+    const email = e.target.elements.email.value
 
-    if (deviceInfo === '' || accessToken === '') {
+    if (deviceInfo === '' || accessToken === '' || email === '') {
       window.alert('All fields are required.')
       return false
     }
 
-    this.loginWithFacebook(deviceInfo, accessToken)
-
-    // reset form
-    e.target.elements.deviceInfo.value = ''
-    e.target.elements.accessToken.value = ''
+    this.signUpWithFacebookAndEmail(deviceInfo, accessToken, email)
   }
 
   componentDidMount () {
@@ -52,9 +54,10 @@ class LoginWithFacebook extends React.Component {
   render () {
     return (
       <form onSubmit={this.handleSubmit.bind(this)}>
-        <h1>Login with Facebook accessToken</h1>
+        <h1>Signup with Facebook accessToken and email</h1>
         <input placeholder='deviceInfo' name='deviceInfo' value={this.state.deviceInfo} />
         <input placeholder='accessToken' name='accessToken' value={this.state.accessToken} onChange={this.handleChange.bind(this)} />
+        <input placeholder='email' name='email' value={this.state.email} onChange={this.handleEmailChange.bind(this)} />
         <button type='submit'>Login</button>
         <style jsx>{`
         form {
@@ -75,9 +78,9 @@ class LoginWithFacebook extends React.Component {
   }
 }
 
-const loginWithFacebook = gql`
-mutation loginWithFacebook($deviceInfo: String!, $accessToken: String!) {
-  loginWithFacebook(deviceInfo: $deviceInfo, accessToken: $accessToken) {
+const signUpWithFacebookAndEmail = gql`
+mutation signUpWithFacebookAndEmail($deviceInfo: String!, $accessToken: String!, $email: String!) {
+  signUpWithFacebookAndEmail(deviceInfo: $deviceInfo, accessToken: $accessToken, email: $email) {
     isLoggedIn
     sessionToken
     user {
@@ -90,29 +93,29 @@ mutation loginWithFacebook($deviceInfo: String!, $accessToken: String!) {
 }
 `
 
-LoginWithFacebook.propTypes = () => ({
-  loginWithFacebook: PropTypes.func.isRequired
+SignUpWithFacebookAndEmail.propTypes = () => ({
+  signUpWithFacebookAndEmail: PropTypes.func.isRequired
 })
 
-const withGraphQL = graphql(loginWithFacebook, {
+const withGraphQL = graphql(signUpWithFacebookAndEmail, {
   props: ({ mutate }) => ({
-    loginWithFacebook: (deviceInfo, accessToken) =>
+    signUpWithFacebookAndEmail: (deviceInfo, accessToken, email) =>
       mutate({
-        variables: { deviceInfo, accessToken },
+        variables: { deviceInfo, accessToken, email },
         update: (proxy, { data }) => {
           // Keep session
-          persist.willSetSessionToken(data.loginWithFacebook.sessionToken)
+          persist.willSetSessionToken(data.signUpWithFacebookAndEmail.sessionToken)
 
           // Read the data from our cache for this query.
           let cached = proxy.readQuery({ query: userProfile })
 
           // User
-          cached.user = data.loginWithFacebook.user
+          cached.user = data.signUpWithFacebookAndEmail.user
 
           // Authen
           cached.authen = {
-            isLoggedIn: data.loginWithFacebook.isLoggedIn,
-            sessionToken: data.loginWithFacebook.sessionToken,
+            isLoggedIn: data.signUpWithFacebookAndEmail.isLoggedIn,
+            sessionToken: data.signUpWithFacebookAndEmail.sessionToken,
             __typename: 'Authen'
           }
 
@@ -125,4 +128,4 @@ const withGraphQL = graphql(loginWithFacebook, {
   })
 })
 
-export default compose(withGraphQL)(LoginWithFacebook)
+export default compose(withGraphQL)(SignUpWithFacebookAndEmail)

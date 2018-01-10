@@ -40,11 +40,29 @@ module.exports = models => {
     resolve: AuthenResolver.loginWithFacebook
   })
 
+  models.AuthenTC.addResolver({
+    name: 'signUpWithFacebookAndEmail',
+    kind: 'mutation',
+    args: {
+      deviceInfo: 'String',
+      locale: 'String',
+      country: 'String',
+      timezone: 'String',
+      deviceName: 'String',
+      deviceToken: 'String',
+      accessToken: 'String',
+      email: 'String'
+    },
+    type: models.AuthenTC,
+    resolve: AuthenResolver.signUpWithFacebookAndEmail
+  })
+
   models.AuthenTC.addFields({
     isFirst: {
       type: 'Boolean!',
       resolve: (source, args) => {
-        return models.Authen.findOne({ userId: source.userId })
+        return models.Authen
+          .findOne({ userId: source.userId })
           .sort({ loggedInAt: 1 })
           .select('_id')
           .then(doc => doc && doc._id.toString() === source._id.toString())

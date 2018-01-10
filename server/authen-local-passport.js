@@ -49,6 +49,7 @@ const _createNewUserData = (email, password, extraFields, token) =>
     Object.assign(
       {
         email,
+        unverifiedEmail: email,
         name: email.split('@')[0],
         token,
         role: 'user',
@@ -150,7 +151,18 @@ const _willMarkUserAsVerifiedByToken = async token => {
     throw ERRORS.AUTH_INVALID_USER_TOKEN
   }
 
-  return user
+  // Backup previous email
+  user.usedEmails = user.usedEmails || []
+  user.email && user.usedEmails.push(user.email)
+
+  // Move unverified to verified email
+  user.email = user.unverifiedEmail || user.email
+
+  // Remove unverified email
+  user.unverifiedEmail = null
+  delete user.unverifiedEmail
+
+  return user.save()
 }
 
 const _getUserByEmailAndPassword = async (email, password) => {

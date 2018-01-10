@@ -1,4 +1,4 @@
-const { AUTH_PASSPORT_FAILED, AUTH_CREDENTIAL_ALREADY_IN_USE } = require('./errors/codes')
+const { AUTH_PASSPORT_FAILED } = require('./errors/codes')
 
 const _willCreateUserWithPayload = async (provider, payload, req) => {
   const { profile, token } = payload[provider]
@@ -27,6 +27,36 @@ const _willCreateUserWithPayload = async (provider, payload, req) => {
   return willCreateUser(payload)
 }
 
+const _willCreateUnverifiedUserWithPayload = async (provider, payload) => {
+  const { unverifiedEmail } = payload
+
+  // Email already use and verified
+  const emailUser = await NAP.User.findOne({ email: unverifiedEmail, emailVerified: true })
+  if (emailUser) {
+    const { AUTH_EMAIL_ALREADY_IN_USE } = require('./errors/codes')
+    throw AUTH_EMAIL_ALREADY_IN_USE
+  }
+
+  const { profile } = payload[provider]
+
+  // Already use Facebook id, will use existing user
+  const user = await NAP.User.findOne({ [`${provider}.id`]: profile.id })
+  if (user) {
+    if (user.emailVerified) {
+      // Already verify, will throw error
+      const { AUTH_EMAIL_ALREADY_IN_USE } = require('./errors/codes')
+      throw AUTH_EMAIL_ALREADY_IN_USE
+    } else {
+      // Not verify yet, will return user and continue
+      return user
+    }
+  }
+
+  // Create new unverified user
+  const { willCreateUser } = require('./authen-sessions')
+  return willCreateUser(payload)
+}
+
 const willAuthenWithPassport = (strategy, req) =>
   new Promise((resolve, reject) => {
     const passport = require('passport')
@@ -39,6 +69,15 @@ const willAuthenWithPassport = (strategy, req) =>
         case 'local':
           return payload ? resolve(payload) : reject(AUTH_PASSPORT_FAILED)
         case 'facebook-token':
+          // Login with facebook and email
+          if (req.body.custom_email) {
+            payload.email = null
+            delete payload.email
+            payload.unverifiedEmail = req.body.custom_email.toLowerCase().trim()
+            console.log(payload)
+            return _willCreateUnverifiedUserWithPayload('facebook', payload).then(resolve).catch(reject)
+          }
+
           return _willCreateUserWithPayload('facebook', payload, req).then(resolve).catch(reject)
         default:
           return reject(AUTH_PASSPORT_FAILED)
