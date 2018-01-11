@@ -44,7 +44,7 @@ module.exports = extendedSchema => {
 
   const role = require('mongoose-role')
   UserSchema.plugin(role, {
-    roles: ['public', 'user', 'admin'],
+    roles: ['public', 'user', 'admin', 'writer', 'super_reader'],
     accessLevels: {
       public: ['public', 'user', 'admin'],
       anon: ['public'],
