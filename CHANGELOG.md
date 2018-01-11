@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.26.0"></a>
+# [1.26.0](https://github.com/digithun/jamplay-nap/compare/v1.25.7...v1.26.0) (2018-01-11)
+
+
+### Bug Fixes
+
+* **ewallet:** check token first before call ([c2a1c4e](https://github.com/digithun/jamplay-nap/commit/c2a1c4e))
+* **User:** add writer, super reader role ([8082bc9](https://github.com/digithun/jamplay-nap/commit/8082bc9))
+
+
+### Features
+
+* **auth:** Add signup with facebook and email ([c15bee4](https://github.com/digithun/jamplay-nap/commit/c15bee4))
+
+
+
 <a name="1.25.7"></a>
 ## [1.25.7](https://github.com/digithun/jamplay-nap/compare/v1.25.6...v1.25.7) (2018-01-02)
 

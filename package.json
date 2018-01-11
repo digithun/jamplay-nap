@@ -1,6 +1,6 @@
 {
   "name": "nap",
-  "version": "1.25.7",
+  "version": "1.26.0",
   "main": "index.js",
   "standard": {
     "globals": [
