@@ -1,1 +1,0 @@
-gcloud docker -- push gcr.io/$(gcloud config get-value project)/jamplay-nap:latest

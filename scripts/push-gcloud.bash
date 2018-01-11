@@ -7,3 +7,4 @@ PACKAGE_VERSION=$(cat package.json \
   | tr -d '[[:space:]]')
 echo 'Start push image with project id: ' $(gcloud config get-value project), tag: $PACKAGE_VERSION
 gcloud docker -- push gcr.io/$(gcloud config get-value project)/jamplay-nap:$PACKAGE_VERSION
+gcloud docker -- push gcr.io/$(gcloud config get-value project)/jamplay-nap:latest
