@@ -74,7 +74,7 @@ const willAuthenWithPassport = (strategy, req) =>
             payload.email = null
             delete payload.email
             payload.unverifiedEmail = req.body.custom_email.toLowerCase().trim()
-            console.log(payload)
+
             return _willCreateUnverifiedUserWithPayload('facebook', payload).then(resolve).catch(reject)
           }
 
