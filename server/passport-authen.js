@@ -22,7 +22,7 @@ const _willCreateUserWithPayload = async (provider, payload, req) => {
     })
 
     // Found unverified email, will throw error
-    if (unverifiedFacebookCustomEmailUser) throw errorBy(AUTH_FB_EMAIL_NOT_VERIFIED, unverifiedFacebookCustomEmailUser.unverifiedEmail)
+    if (unverifiedFacebookCustomEmailUser) throw errorBy('AUTH_FB_EMAIL_NOT_VERIFIED', unverifiedFacebookCustomEmailUser.unverifiedEmail)
 
     // Not found unverified email, will throw error
     throw AUTH_MISSING_EMAIL

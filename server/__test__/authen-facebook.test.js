@@ -129,7 +129,7 @@ describe('authen-facebook', () => {
       .catch(err => {
         expect(() => {
           throw err
-        }).toThrow(errorBy(AUTH_FB_EMAIL_NOT_VERIFIED, EMAIL))
+        }).toThrow(errorBy('AUTH_FB_EMAIL_NOT_VERIFIED', EMAIL))
       })
   })
 
