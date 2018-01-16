@@ -95,6 +95,29 @@ describe('authen-local', () => {
     await mongoose.connection.collection('users').drop()
   })
 
+  it('should throw `AUTH_EMAIL_NOT_VERIFIED` error for exist unverified email', async () => {
+    // mock
+    const req = {
+      nap: { errors: [] },
+      body: { isMockServer: true }
+    }
+    const email = 'foo@bar.com'
+    const password = 'foobar'
+
+    // Seed
+    await seedUserWithEmailAndPassword(email, password, false)
+
+    const { willLogin } = require('../authen-local')
+    await willLogin(req, email, password).catch(err => {
+      expect(() => {
+        throw err
+      }).toThrow(require('../errors/codes').AUTH_EMAIL_NOT_VERIFIED)
+    })
+
+    // Dispose
+    await mongoose.connection.collection('users').drop()
+  })
+
   it('should throw `auth/invalid-login` error for wrong password', async () => {
     // mock
     const req = {
