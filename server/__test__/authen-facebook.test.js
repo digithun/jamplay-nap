@@ -7,7 +7,7 @@ require('../debug')
 const mongoose = require('mongoose')
 
 // Seeder
-const { setup, teardown } = require('./mongoose-helper')
+const { setup, teardown, seedFacebookNoEmailWithUnverifiedEmailUser, EMAIL } = require('./mongoose-helper')
 
 describe('authen-facebook', () => {
   beforeAll(setup)
@@ -104,6 +104,33 @@ describe('authen-facebook', () => {
         unverifiedEmail: 'foo@bar.com'
       })
     )
+  })
+
+  it('should sign up with Facebook and email then throw error for existing verified email', async () => {
+    process.env.FACEBOOK_APP_ID = 'FOO_FACEBOOK_APP_ID'
+    process.env.FACEBOOK_APP_SECRET = 'BAR_FACEBOOK_APP_SECRET'
+
+    // Seed unverified email user
+    seedFacebookNoEmailWithUnverifiedEmailUser()
+
+    const authen = require('../authen-facebook')
+    const accessToken = 'EMAIL_NOT_ALLOW_ACCESS_TOKEN'
+
+    const { errorBy, AUTH_FB_EMAIL_NOT_VERIFIED } = require('../errors')
+
+    await authen
+      .willLoginWithFacebook(
+      {
+        body: {},
+        nap: { errors: [] }
+      },
+        accessToken
+      )
+      .catch(err => {
+        expect(() => {
+          throw err
+        }).toThrow(errorBy(AUTH_FB_EMAIL_NOT_VERIFIED, EMAIL))
+      })
   })
 
   it('should attach current user from session token after authenticate', async () => {

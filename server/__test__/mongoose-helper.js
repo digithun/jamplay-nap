@@ -62,6 +62,14 @@ const seedFacebookUser = async () =>
     facebook: __mocked__facebookUser
   })
 
+const seedFacebookNoEmailWithUnverifiedEmailUser = async () =>
+  seedUserWithData({
+    name: __mocked__facebookUser.profile.displayName,
+    emailVerified: false,
+    unverifiedEmail: EMAIL,
+    facebook: __mocked__facebookUser
+  })
+
 const seedAuthenByUserWithManyDevices = async (userId, authens) => {
   // Me with many devices
   const installs = authens.map(authen => authen.installationId)
@@ -145,5 +153,6 @@ module.exports = {
   __expected__seedVerifiedLocalUser,
   getMockedFacebookUser,
   seedFacebookUser,
-  EMAIL
+  EMAIL,
+  seedFacebookNoEmailWithUnverifiedEmailUser
 }
