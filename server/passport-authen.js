@@ -7,6 +7,18 @@ const _willCreateUserWithPayload = async (provider, payload, req) => {
   // User sign up with facebook but not provided email
   const { email } = payload
   if (!email || email.trim() === '') {
+    // User already verified email
+    const verifiedFacebookCustomEmailUser = await NAP.User.findOne({
+      // Matched facebook id
+      [`${provider}.id`]: payload[provider].id,
+      // Can't get user email
+      email: { $ne: undefined },
+      // Not verify yet
+      emailVerified: true
+    })
+
+    if (verifiedFacebookCustomEmailUser) return verifiedFacebookCustomEmailUser
+
     // User has no email or email is invalid, will try check for unverified email
     const unverifiedFacebookCustomEmailUser = await NAP.User.findOne({
       // Matched facebook id
