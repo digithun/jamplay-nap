@@ -12,6 +12,7 @@ Object {
       "readNotification": [Function],
     },
     "session": null,
+    "signUpWithFacebookAndEmail": [Function],
     "userEventHookService": [Function],
     "willChallengeEmail": [Function],
     "willCreateUser": [Function],
