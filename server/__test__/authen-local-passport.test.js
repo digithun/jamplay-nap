@@ -64,13 +64,13 @@ describe('authen-local-passport', () => {
       await willValidateEmail().catch(err => {
         expect(() => {
           throw err
-        }).toThrow(require('../errors/codes').AUTH_INVALID_EMAIL)
+        }).toThrow(require('../errors/codes').AUTH_MISSING_EMAIL)
       })
 
       await willValidateEmail('').catch(err => {
         expect(() => {
           throw err
-        }).toThrow(require('../errors/codes').AUTH_INVALID_EMAIL)
+        }).toThrow(require('../errors/codes').AUTH_MISSING_EMAIL)
       })
     })
 

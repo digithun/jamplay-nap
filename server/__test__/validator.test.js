@@ -6,7 +6,7 @@ describe('validator', () => {
       await willValidateEmail().catch(err => {
         expect(() => {
           throw err
-        }).toThrow(require('../errors/codes').AUTH_INVALID_EMAIL)
+        }).toThrow(require('../errors/codes').AUTH_MISSING_EMAIL)
       })
     })
 
@@ -15,7 +15,7 @@ describe('validator', () => {
       await willValidateEmail('').catch(err => {
         expect(() => {
           throw err
-        }).toThrow(require('../errors/codes').AUTH_INVALID_EMAIL)
+        }).toThrow(require('../errors/codes').AUTH_MISSING_EMAIL)
       })
     })
 

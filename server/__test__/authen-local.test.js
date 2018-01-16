@@ -36,7 +36,7 @@ describe('authen-local', () => {
     await willLogin(req, email, password).catch(err => {
       expect(() => {
         throw err
-      }).toThrowError(require('../errors/codes').AUTH_INVALID_EMAIL)
+      }).toThrowError(require('../errors/codes').AUTH_MISSING_EMAIL)
     })
   })
 
@@ -54,7 +54,7 @@ describe('authen-local', () => {
     await willLogin(req, email, password).catch(err => {
       expect(() => {
         throw err
-      }).toThrowError(require('../errors/codes').AUTH_INVALID_EMAIL)
+      }).toThrowError(require('../errors/codes').AUTH_MISSING_EMAIL)
     })
   })
 

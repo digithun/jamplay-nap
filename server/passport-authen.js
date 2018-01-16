@@ -58,24 +58,23 @@ const _willCreateUserWithPayload = async (provider, payload, req) => {
 const _willCreateUnverifiedUserWithPayload = async (provider, payload) => {
   const { unverifiedEmail } = payload
 
+  // Require email
+  if (!unverifiedEmail || unverifiedEmail === '') throw require('./errors/codes').AUTH_MISSING_EMAIL
+
   // Email already use and verified
   const emailUser = await NAP.User.findOne({ email: unverifiedEmail, emailVerified: true })
-  if (emailUser) {
-    const { AUTH_EMAIL_ALREADY_IN_USE } = require('./errors/codes')
-    throw AUTH_EMAIL_ALREADY_IN_USE
-  }
+  if (emailUser) throw require('./errors/codes').AUTH_EMAIL_ALREADY_IN_USE
 
   const { profile } = payload[provider]
 
-  // Already use Facebook id, will use existing user
+  // Facebook already use
   const user = await NAP.User.findOne({ [`${provider}.id`]: profile.id })
   if (user) {
-    if (user.emailVerified) {
-      // Already verify, will throw error
-      const { AUTH_EMAIL_ALREADY_IN_USE } = require('./errors/codes')
-      throw AUTH_EMAIL_ALREADY_IN_USE
+    if (user.email === unverifiedEmail) {
+      // Email already fullfil
+      throw require('./errors/codes').AUTH_EMAIL_ALREADY_IN_USE
     } else {
-      // Not verify yet, will return user and continue
+      // Not verify yet, will return existing user and continue
       return user
     }
   }

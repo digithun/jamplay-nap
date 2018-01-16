@@ -20,7 +20,7 @@ const willValidateEmail = async email => {
   const is = require('is_js')
 
   if (!email || email.trim() === '') {
-    throw ERRORS.AUTH_INVALID_EMAIL
+    throw ERRORS.AUTH_MISSING_EMAIL
   }
 
   if (is.not.email(email)) {

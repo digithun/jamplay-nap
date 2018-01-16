@@ -21,6 +21,9 @@ module.exports = {
   get AUTH_INVALID_EMAIL () {
     return new GenericError('auth/invalid-email', 'The provided value for the email user property is invalid. It must be a string email address.')
   },
+  get AUTH_MISSING_EMAIL () {
+    return new GenericError('auth/missing-email', 'An email is required for the current operation.')
+  },
   get AUTH_INVALID_PASSWORD () {
     return new GenericError(
       'auth/invalid-password',
