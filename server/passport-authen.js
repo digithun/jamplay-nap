@@ -1,4 +1,4 @@
-const { AUTH_PASSPORT_FAILED, AUTH_EMAIL_NOT_VERIFIED, AUTH_INVALID_EMAIL } = require('./errors/codes')
+const { AUTH_PASSPORT_FAILED, AUTH_EMAIL_NOT_VERIFIED, AUTH_MISSING_EMAIL } = require('./errors/codes')
 
 const _willCreateUserWithPayload = async (provider, payload, req) => {
   const { profile, token } = payload[provider]
@@ -24,7 +24,7 @@ const _willCreateUserWithPayload = async (provider, payload, req) => {
     if (unverifiedFacebookCustomEmailUser) throw AUTH_EMAIL_NOT_VERIFIED
 
     // Not found unverified email, will throw error
-    throw AUTH_INVALID_EMAIL
+    throw AUTH_MISSING_EMAIL
   }
 
   // Guard has email but invalid
