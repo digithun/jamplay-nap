@@ -64,13 +64,19 @@ describe('authen-local-passport', () => {
       await willValidateEmail().catch(err => {
         expect(() => {
           throw err
-        }).toThrow('Required : email')
+        }).toThrow(require('../errors/codes').AUTH_INVALID_EMAIL)
+      })
+
+      await willValidateEmail('').catch(err => {
+        expect(() => {
+          throw err
+        }).toThrow(require('../errors/codes').AUTH_INVALID_EMAIL)
       })
     })
 
     it('should throw error for invalid email', async () => {
       const { willValidateEmail } = require('../validator')
-      await willValidateEmail('').catch(err => {
+      await willValidateEmail('foo').catch(err => {
         expect(() => {
           throw err
         }).toThrow(require('../errors/codes').AUTH_INVALID_EMAIL)

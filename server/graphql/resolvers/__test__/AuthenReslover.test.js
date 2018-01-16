@@ -1,5 +1,13 @@
 /* eslint-env jest */
+const mongoose = require('mongoose')
+
+// Seeder
+const { setup, teardown } = require('../../../__test__/mongoose-helper')
+
 describe('AuthenResolver', () => {
+  beforeAll(setup)
+  afterAll(teardown)
+
   it('should authen and return user', async () => {
     // stub
     global.NAP = {}
@@ -119,6 +127,35 @@ describe('AuthenResolver', () => {
 
     const { logout } = require('../AuthenResolver')
     const user = await logout({ context })
+    expect(user).toMatchSnapshot()
+  })
+
+  it.skip('should able to signup with Facebook and email', async () => {
+    process.env.FACEBOOK_APP_ID = 'FOO_FACEBOOK_APP_ID'
+    process.env.FACEBOOK_APP_SECRET = 'BAR_FACEBOOK_APP_SECRET'
+
+    const userData = {
+      _id: '58d0e20e7ff032b39c2a9a18',
+      role: 'user'
+    }
+
+    // TODO : inject mock function
+    // const { _sendEmailVerification } = require('../../../authen-local').__
+    // _sendEmailVerification = jest.fn().mockImplementationOnce(async (email, token, fullName) => 'ok')
+
+    const context = {
+      headers: { host: 'localhost:3000' },
+      nap: {
+        willSignUpWithFacebookAndEmail: require('../../../graphql/resolvers').willSignUpWithFacebookAndEmail,
+        willChallengeEmail: async () => userData
+      }
+    }
+
+    const accessToken = 'FACEBOOK_ACCESS_TOKEN'
+    const args = { accessToken }
+
+    const { signUpWithFacebookAndEmail } = require('../AuthenResolver')
+    const user = await signUpWithFacebookAndEmail({ context, args })
     expect(user).toMatchSnapshot()
   })
 })

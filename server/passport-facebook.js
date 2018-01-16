@@ -5,8 +5,6 @@ const init = (app, passport) => {
   }
 
   const FacebookTokenStrategy = require('passport-facebook-token')
-  const { guard } = require('./errors')
-  const is = require('is_js')
 
   passport.use(
     // @ts-ignore
@@ -23,12 +21,7 @@ const init = (app, passport) => {
         delete profile._json
 
         // Guard email
-        const email = profile.emails[0].value
-        guard({ email })
-        if (is.not.email(email)) {
-          throw require('./errors/codes').AUTH_INVALID_EMAIL
-        }
-
+        const email = profile.emails && profile.emails[0].value
         const gender = profile.gender === 'male' ? 'M' : profile.gender === 'female' ? 'F' : null
 
         // Upsert data

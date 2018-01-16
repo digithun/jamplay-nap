@@ -23,6 +23,10 @@ const init = (app, passport) => {
           // Normalize the provider specific profile into a User object
           const _profile = getUserFromProfile(profile)
 
+          if (!_profile.email) {
+            return done(require('./errors/codes').AUTH_INVALID_EMAIL)
+          }
+
           // See if we have this oAuth account in the database associated with a user
           NAP.User.findOne(
             {

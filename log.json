@@ -1,0 +1,36 @@
+{
+  "__v": 0,
+  "_id": "58d0e20e7ff032b39c2a9a18",
+  "createdAt": 2018-01-15T11: 32: 26.742Z,
+  "emailVerified": false,
+  "facebook": {
+    "id": "10154646415997479",
+    "profile": {
+      "displayName": "Katopz Todsaporn",
+      "emails": [
+        {
+          "value": "foo@bar.com"
+        }
+      ],
+      "gender": "",
+      "id": "10154646415997479",
+      "name": {
+        "familyName": "Todsaporn",
+        "givenName": "Katopz",
+        "middleName": ""
+      },
+      "photos": [
+        {
+          "value": "https://graph.facebook.com/v2.6/10154646415997479/picture?type=large"
+        }
+      ],
+      "provider": "facebook"
+    },
+    "token": "SOME_ACCESS_TOKEN"
+  },
+  "name": "bar",
+  "role": "user",
+  "unverifiedEmail": "foo@bar.com",
+  "updatedAt": 2018-01-15T11: 32: 26.742Z,
+  "usedEmails": []
+}

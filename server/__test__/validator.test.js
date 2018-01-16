@@ -6,7 +6,7 @@ describe('validator', () => {
       await willValidateEmail().catch(err => {
         expect(() => {
           throw err
-        }).toThrow('Required : email')
+        }).toThrow(require('../errors/codes').AUTH_INVALID_EMAIL)
       })
     })
 

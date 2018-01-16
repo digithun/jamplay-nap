@@ -5,8 +5,9 @@ import persist from '../../lib/persist'
 import PropTypes from 'prop-types'
 
 class welcome extends React.Component {
-  static async getInitialProps (context) {
+  async getInitialProps (context) {
     const { req } = context
+    console.log('Why this not call')
 
     // Guard
     if (!req) {
@@ -19,6 +20,7 @@ class welcome extends React.Component {
 
     // Get access token if has
     const user = await NAP.User.findOne({ _id: req.user.id })
+    console.log(user)
 
     // Guard
     if (!user) {

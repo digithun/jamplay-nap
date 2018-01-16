@@ -19,7 +19,9 @@ const isPasswordMatch = async (password, hashed_password) => {
 const willValidateEmail = async email => {
   const is = require('is_js')
 
-  guard({ email })
+  if (!email || email.trim() === '') {
+    throw ERRORS.AUTH_INVALID_EMAIL
+  }
 
   if (is.not.email(email)) {
     throw ERRORS.AUTH_INVALID_EMAIL

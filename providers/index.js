@@ -13,7 +13,7 @@ const init = providers => {
       getUserFromProfile: profile => ({
         id: profile.id,
         name: profile.displayName,
-        email: profile.emails[0].value
+        email: profile.emails && profile.emails[0].value
       })
     })
   }
@@ -49,7 +49,7 @@ const init = providers => {
       getUserFromProfile: profile => ({
         id: profile.id,
         name: profile.displayName,
-        email: profile.emails[0].value
+        email: profile.emails && profile.emails[0].value
       })
     })
   }
@@ -67,7 +67,7 @@ const init = providers => {
       getUserFromProfile: profile => ({
         id: profile.id,
         name: profile.displayName,
-        email: profile.emails[0].value
+        email: profile.emails && profile.emails[0].value
       })
     })
   }

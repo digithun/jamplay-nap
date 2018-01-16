@@ -64,7 +64,7 @@ const willResetPasswordViaEmail = async (req, email, token) => {
   const password_reset_url = createPasswordResetURL(auth_validate_reset_uri, base_url, token)
   const new_password_reset_url = createNewPasswordResetURL(auth_new_reset_uri, base_url)
   const fullName = user.first_name + ' ' + user.last_name
-  console.log('user', user, fullName)
+
   // New user, will need verification by email
   const { mailgun_api_key, mailgun_domain } = require('./config')
   guard({ mailgun_api_key })

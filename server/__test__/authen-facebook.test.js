@@ -5,7 +5,6 @@ process.env.MAILGUN_DOMAIN = 'BAR_MAILGUN_DOMAIN'
 require('../debug')
 
 const mongoose = require('mongoose')
-const { ObjectId } = mongoose.Types
 
 // Seeder
 const { setup, teardown } = require('./mongoose-helper')
@@ -68,6 +67,43 @@ describe('authen-facebook', () => {
         throw err
       }).toThrow(require('../errors/codes').AUTH_FACEBOOK_INVALID_TOKEN)
     })
+  })
+
+  it('should not login with Facebook and return error for no email user', async () => {
+    process.env.FACEBOOK_APP_ID = 'FOO_FACEBOOK_APP_ID'
+    process.env.FACEBOOK_APP_SECRET = 'BAR_FACEBOOK_APP_SECRET'
+
+    const authen = require('../authen-facebook')
+    const accessToken = 'EMAIL_NOT_ALLOW_ACCESS_TOKEN'
+    const user = await authen.willLoginWithFacebook({ body: {}, nap: { errors: [] } }, accessToken).catch(err => {
+      expect(() => {
+        throw err
+      }).toThrow(require('../errors/codes').AUTH_INVALID_EMAIL)
+    })
+  })
+
+  it('should sign up with Facebook and email then return unverified email', async () => {
+    process.env.FACEBOOK_APP_ID = 'FOO_FACEBOOK_APP_ID'
+    process.env.FACEBOOK_APP_SECRET = 'BAR_FACEBOOK_APP_SECRET'
+
+    const authen = require('../authen-facebook')
+    const accessToken = 'EMAIL_NOT_ALLOW_ACCESS_TOKEN'
+    const email = 'foo@bar.com'
+    const user = await authen.willSignUpWithFacebookAndEmail(
+      {
+        body: {},
+        nap: { errors: [] }
+      },
+      accessToken,
+      email
+    )
+
+    expect(user).toEqual(
+      expect.objectContaining({
+        emailVerified: false,
+        unverifiedEmail: 'foo@bar.com'
+      })
+    )
   })
 
   it('should attach current user from session token after authenticate', async () => {

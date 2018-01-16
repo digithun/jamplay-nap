@@ -28,6 +28,13 @@ Object {
 }
 `;
 
+exports[`AuthenResolver should able to signup with Facebook and email 1`] = `
+Object {
+  "_id": "58d0e20e7ff032b39c2a9a18",
+  "role": "user",
+}
+`;
+
 exports[`AuthenResolver should authen and return user 1`] = `
 Object {
   "_id": "58d0e20e7ff032b39c2a9a18",

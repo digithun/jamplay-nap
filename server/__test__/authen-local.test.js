@@ -33,7 +33,11 @@ describe('authen-local', () => {
     const password = null
 
     const { willLogin } = require('../authen-local')
-    expect(willLogin(req, email, password)).rejects.toEqual(errorBy('NAP_INVALID_ARGUMENT', 'Required : email'))
+    await willLogin(req, email, password).catch(err => {
+      expect(() => {
+        throw err
+      }).toThrowError(require('../errors/codes').AUTH_INVALID_EMAIL)
+    })
   })
 
   it('should throw error if has no email', async () => {
@@ -46,7 +50,12 @@ describe('authen-local', () => {
     const password = 'foobar'
 
     const { willLogin } = require('../authen-local')
-    expect(willLogin(req, email, password)).rejects.toEqual(errorBy('NAP_INVALID_ARGUMENT', 'Required : email'))
+
+    await willLogin(req, email, password).catch(err => {
+      expect(() => {
+        throw err
+      }).toThrowError(require('../errors/codes').AUTH_INVALID_EMAIL)
+    })
   })
 
   it('should throw error if has no password', async () => {
@@ -76,7 +85,11 @@ describe('authen-local', () => {
     await seedUserWithEmailAndPassword(email, password, true)
 
     const { willLogin } = require('../authen-local')
-    expect(willLogin(req, not_exiting_email, password)).rejects.toEqual(require('../errors/codes').AUTH_INVALID_LOGIN)
+    await willLogin(req, not_exiting_email, password).catch(err => {
+      expect(() => {
+        throw err
+      }).toThrow(require('../errors/codes').AUTH_INVALID_LOGIN)
+    })
 
     // Dispose
     await mongoose.connection.collection('users').drop()
@@ -96,7 +109,11 @@ describe('authen-local', () => {
     await seedUserWithEmailAndPassword(email, password, true)
 
     const { willLogin } = require('../authen-local')
-    expect(willLogin(req, email, wrong_password)).rejects.toEqual(require('../errors/codes').AUTH_INVALID_LOGIN)
+    await willLogin(req, email, password).catch(err => {
+      expect(() => {
+        throw err
+      }).toThrow(require('../errors/codes').AUTH_INVALID_LOGIN)
+    })
 
     // Dispose
     await mongoose.connection.collection('users').drop()
@@ -116,7 +133,11 @@ describe('authen-local', () => {
     await seedUserWithEmailAndPassword(email, password, true)
 
     const { willLogin } = require('../authen-local')
-    expect(willLogin(req, email, short_password)).rejects.toEqual(require('../errors/codes').AUTH_INVALID_LOGIN)
+    await willLogin(req, email, short_password).catch(err => {
+      expect(() => {
+        throw err
+      }).toThrow(require('../errors/codes').AUTH_INVALID_LOGIN)
+    })
 
     // Dispose
     await mongoose.connection.collection('users').drop()

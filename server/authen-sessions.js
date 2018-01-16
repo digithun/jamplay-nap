@@ -2,7 +2,6 @@ const validateSession = async ({ expireAt }) => {
   const { sessions_ttl } = require('./config')
 
   // No expire
-  console.log(sessions_ttl)
   if (sessions_ttl === -1) return true
 
   // Guard
@@ -14,8 +13,8 @@ const validateSession = async ({ expireAt }) => {
   const now = new Date().valueOf()
 
   if (now > expires) {
-     throw require('./errors/codes').AUTH_USER_TOKEN_EXPIRED
-   }
+    throw require('./errors/codes').AUTH_USER_TOKEN_EXPIRED
+  }
 
   // No errors
   return true
