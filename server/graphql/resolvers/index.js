@@ -21,9 +21,11 @@ const willInstallAndLimitAuthen = async (args, user, provider) => {
 }
 
 const loginWithFacebook = require('./AuthenResolver').loginWithFacebook
+const signUpWithFacebookAndEmail = require('./AuthenResolver').signUpWithFacebookAndEmail
 
 module.exports = {
   willInstallAndAuthen,
   willInstallAndLimitAuthen,
-  loginWithFacebook
+  loginWithFacebook,
+  signUpWithFacebookAndEmail
 }

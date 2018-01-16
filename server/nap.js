@@ -2,7 +2,7 @@ const { willSignUpWithFacebookAndEmail, willLoginWithFacebook, willGetFacebookPr
 const { willLinkWithFacebook, willUnlinkFromFacebook } = require('./authen-link')
 const { willSignUp, willLogin, willLogout, willResetPasswordViaEmail, willSendVerificationForUpdateEmail, willChallengeEmail } = require('./authen-local')
 const { willUpdatePassword, willUpdatePasswordByToken, willUpdateEmail, willVerifyEmailByToken } = require('./authen-local-passport')
-const { willInstallAndAuthen, loginWithFacebook } = require('./graphql/resolvers')
+const { willInstallAndAuthen, loginWithFacebook, signUpWithFacebookAndEmail } = require('./graphql/resolvers')
 const { willCreateUser, willDeleteUser } = require('./authen-sessions')
 const { decodeToken } = require('./jwt-token')
 const config = require('./config')
@@ -17,6 +17,8 @@ class nap {
 
     // export for content can login with facebook by himself
     this.loginWithFacebook = loginWithFacebook
+    this.signUpWithFacebookAndEmail = signUpWithFacebookAndEmail
+
     this.willLoginWithFacebook = willLoginWithFacebook
     this.willSignUpWithFacebookAndEmail = willSignUpWithFacebookAndEmail
     this.willChallengeEmail = willChallengeEmail
