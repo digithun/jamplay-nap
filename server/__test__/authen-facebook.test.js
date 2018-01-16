@@ -78,7 +78,7 @@ describe('authen-facebook', () => {
     const user = await authen.willLoginWithFacebook({ body: {}, nap: { errors: [] } }, accessToken).catch(err => {
       expect(() => {
         throw err
-      }).toThrow(require('../errors/codes').AUTH_INVALID_EMAIL)
+      }).toThrow(require('../errors/codes').AUTH_MISSING_EMAIL)
     })
   })
 
