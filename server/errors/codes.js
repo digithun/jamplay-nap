@@ -164,7 +164,9 @@ module.exports = {
   get AUTH_EMAIL_NOT_VERIFIED () {
     return new GenericError('auth/email-not-verified', 'Authentication with Passport has been fail, emailVerified user property is set to false.')
   },
-
+  get AUTH_FB_EMAIL_NOT_VERIFIED () {
+    return new GenericError('auth/facebook-email-not-verified', '')
+  },
   // Provider
   // Ref : https://firebase.google.com/docs/reference/js/firebase.User
   get AUTH_CREDENTIAL_ALREADY_IN_USE () {
