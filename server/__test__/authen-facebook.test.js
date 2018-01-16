@@ -116,7 +116,7 @@ describe('authen-facebook', () => {
     const authen = require('../authen-facebook')
     const accessToken = 'EMAIL_NOT_ALLOW_ACCESS_TOKEN'
 
-    const { errorBy, AUTH_FB_EMAIL_NOT_VERIFIED } = require('../errors')
+    const { errorBy } = require('../errors')
 
     await authen
       .willLoginWithFacebook(
@@ -129,7 +129,7 @@ describe('authen-facebook', () => {
       .catch(err => {
         expect(() => {
           throw err
-        }).toThrow(errorBy(AUTH_FB_EMAIL_NOT_VERIFIED, EMAIL))
+        }).toThrow(errorBy('AUTH_FB_EMAIL_NOT_VERIFIED', EMAIL))
       })
   })
 
