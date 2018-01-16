@@ -1,4 +1,5 @@
-const { AUTH_PASSPORT_FAILED, AUTH_EMAIL_NOT_VERIFIED, AUTH_MISSING_EMAIL } = require('./errors/codes')
+const { errorBy } = require('./errors')
+const { AUTH_PASSPORT_FAILED, AUTH_FB_EMAIL_NOT_VERIFIED, AUTH_MISSING_EMAIL } = require('./errors/codes')
 
 const _willCreateUserWithPayload = async (provider, payload, req) => {
   const { profile, token } = payload[provider]
@@ -21,7 +22,7 @@ const _willCreateUserWithPayload = async (provider, payload, req) => {
     })
 
     // Found unverified email, will throw error
-    if (unverifiedFacebookCustomEmailUser) throw AUTH_EMAIL_NOT_VERIFIED
+    if (unverifiedFacebookCustomEmailUser) throw errorBy(AUTH_FB_EMAIL_NOT_VERIFIED, unverifiedFacebookCustomEmailUser.unverifiedEmail)
 
     // Not found unverified email, will throw error
     throw AUTH_MISSING_EMAIL
