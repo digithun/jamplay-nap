@@ -9,7 +9,7 @@ const MAX_NOTIFICATION_PER_USER = 5
 
 const getNotification = exports.getNotification = async function getNotification (userId) {
   console.log('Notification get for user: ' + userId)
-  const result = await Notification.find({userId: objectId(userId)}).sort({createdAt: -1})
+  const result = await Notification.find({ userId: objectId(userId) }).sort({ createdAt: -1 })
   if (!result) {
     return []
   }
@@ -24,18 +24,24 @@ const createNotification = exports.createNotification = async function createNot
   })
   await notification.save()
 
-  const userNotifications = await Notification.find({ userId: objectId(userId) }).sort({createdAt: -1})
+  const userNotifications = await Notification.find({ userId: objectId(userId) }).sort({ createdAt: -1 })
   // check if user have limit of notification
   if (userNotifications.length > MAX_NOTIFICATION_PER_USER - 1) {
     const willRemoveNoti = userNotifications.filter((notification, index) => index > MAX_NOTIFICATION_PER_USER - 1).map(notification => notification._id)
-    await Notification.remove({_id: {$in: willRemoveNoti}})
+    await Notification.remove({ _id: { $in: willRemoveNoti } })
   }
   return notification
 }
 
 const markNotification = exports.markNotification = async function markNotification (notificationIds) {
   console.log('Notification mark: ' + notificationIds.join(','))
-  await Notification.update({_id: {$in: notificationIds}}, { $set: {isRead: true} }, { multi: true })
+  /**
+   * Delay is read to give notification time frame
+   * across device
+   */
+  setTimeout(() => {
+    Notification.update({ _id: { $in: notificationIds } }, { $set: { isRead: true } }, { multi: true })
+  }, 1500)
 }
 const readNotification = async function (userId) {
   console.log('Notification read from user: ' + userId)
