@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.28.0"></a>
+# [1.28.0](https://github.com/digithun/jamplay-nap/compare/v1.25.7...v1.28.0) (2018-01-17)
+
+
+### Bug Fixes
+
+* **auth:** Fixed user already verified fb/email can't login ([bc2af9a](https://github.com/digithun/jamplay-nap/commit/bc2af9a))
+* **auth:** Fixed wrong error code ([4aeb24d](https://github.com/digithun/jamplay-nap/commit/4aeb24d))
+* **auth:** Use AUTH_MISSING_EMAIL ([83aa095](https://github.com/digithun/jamplay-nap/commit/83aa095))
+* **ewallet:** check token first before call ([c2a1c4e](https://github.com/digithun/jamplay-nap/commit/c2a1c4e))
+* **scripts:** merge scripts ([81775b9](https://github.com/digithun/jamplay-nap/commit/81775b9))
+* **User:** add writer, super reader role ([8082bc9](https://github.com/digithun/jamplay-nap/commit/8082bc9))
+
+
+### Features
+
+* **auth:** Add AUTH_FB_EMAIL_NOT_VERIFIED ([025b513](https://github.com/digithun/jamplay-nap/commit/025b513))
+* **auth:** Add signup with facebook and email ([c15bee4](https://github.com/digithun/jamplay-nap/commit/c15bee4))
+* **auth:** Will throw AUTH_EMAIL_NOT_VERIFIED ([148ff6d](https://github.com/digithun/jamplay-nap/commit/148ff6d))
+* **auth:** Will throw AUTH_FB_EMAIL_NOT_VERIFIED ([f885136](https://github.com/digithun/jamplay-nap/commit/f885136))
+* **auth:** Will throw AUTH_INVALID_EMAIL for empty email ([b1b28cd](https://github.com/digithun/jamplay-nap/commit/b1b28cd))
+
+
+
 <a name="1.27.0"></a>
 # [1.27.0](https://github.com/digithun/jamplay-nap/compare/v1.26.0...v1.27.0) (2018-01-16)
 
