@@ -49,6 +49,7 @@ const createConnector = (config, { token }) => {
       } catch (e) {
         console.log('init ewallet: error on call api')
         console.error(e)
+        throw e
       }
     }
     const callGetApi = async (path, data = {}) => {
@@ -93,8 +94,8 @@ const createConnector = (config, { token }) => {
       getMerchantEwallet: async () => {
         if (!token) return { gold: 0, silver: 0 }
         console.log('getMerchantEwallet')
-        const result = await callApi('user/getMerchantEwallet', { token })
         try {
+          const result = await callApi('user/getMerchantEwallet', { token })
           return result
         } catch (e) {
           return { gold: 0, silver: 0 }
