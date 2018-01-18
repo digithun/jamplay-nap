@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.28.1"></a>
+## [1.28.1](https://github.com/digithun/jamplay-nap/compare/v1.27.0...v1.28.1) (2018-01-18)
+
+
+### Bug Fixes
+
+* **notification:** fix notification not show multiple window ([b2b0294](https://github.com/digithun/jamplay-nap/commit/b2b0294))
+
+
+
 <a name="1.28.0"></a>
 # [1.28.0](https://github.com/digithun/jamplay-nap/compare/v1.25.7...v1.28.0) (2018-01-17)
 
