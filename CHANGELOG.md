@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.28.2"></a>
+## [1.28.2](https://github.com/digithun/jamplay-nap/compare/v1.28.1...v1.28.2) (2018-01-18)
+
+
+### Bug Fixes
+
+* **ewallet:** throw error if callApi got error ([797b577](https://github.com/digithun/jamplay-nap/commit/797b577))
+
+
+
 <a name="1.28.1"></a>
 ## [1.28.1](https://github.com/digithun/jamplay-nap/compare/v1.27.0...v1.28.1) (2018-01-18)
 
