@@ -40,8 +40,8 @@ const markNotification = exports.markNotification = async function markNotificat
    * across device
    */
   setTimeout(() => {
-    Notification.update({ _id: { $in: notificationIds } }, { $set: { isRead: true } }, { multi: true })
-  }, 1500)
+    Notification.update({ _id: { $in: notificationIds } }, { $set: { isRead: true } }, { multi: true }).exec()
+  }, 3000)
 }
 const readNotification = async function (userId) {
   console.log('Notification read from user: ' + userId)
