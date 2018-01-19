@@ -1,5 +1,5 @@
 const { errorBy } = require('./errors')
-const { AUTH_PASSPORT_FAILED, AUTH_FB_EMAIL_NOT_VERIFIED, AUTH_MISSING_EMAIL } = require('./errors/codes')
+const { AUTH_PASSPORT_FAILED, AUTH_FB_EMAIL_NOT_VERIFIED, AUTH_MISSING_EMAIL, AUTH_EMAIL_ALREADY_EXISTS } = require('./errors/codes')
 
 const _willCreateUserWithPayload = async (provider, payload, req) => {
   const { profile, token } = payload[provider]
@@ -108,7 +108,9 @@ const willValidatePayloadByStrategy = async (req, strategy, payload) => {
         payload.email = null
         delete payload.email
         payload.unverifiedEmail = req.body.custom_email.toLowerCase().trim()
-
+        if (await NAP.User.findOne({ email: payload.unverifiedEmail })) {
+          throw AUTH_EMAIL_ALREADY_EXISTS
+        }
         return _willCreateUnverifiedUserWithPayload('facebook', payload)
       }
 
