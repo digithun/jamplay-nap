@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.28.4"></a>
+## [1.28.4](https://github.com/digithun/jamplay-nap/compare/v1.28.3...v1.28.4) (2018-01-19)
+
+
+### Bug Fixes
+
+* **passport-authen:** check email on login with fb with email ([822b600](https://github.com/digithun/jamplay-nap/commit/822b600))
+
+
+
 <a name="1.28.3"></a>
 ## [1.28.3](https://github.com/digithun/jamplay-nap/compare/v1.28.2...v1.28.3) (2018-01-19)
 
