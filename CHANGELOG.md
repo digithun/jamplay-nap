@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.28.3"></a>
+## [1.28.3](https://github.com/digithun/jamplay-nap/compare/v1.28.2...v1.28.3) (2018-01-19)
+
+
+### Bug Fixes
+
+* **notification:** mark as read after 3s ([01f185b](https://github.com/digithun/jamplay-nap/commit/01f185b))
+
+
+
 <a name="1.28.2"></a>
 ## [1.28.2](https://github.com/digithun/jamplay-nap/compare/v1.28.1...v1.28.2) (2018-01-18)
 
