@@ -44,13 +44,13 @@ const _verifiedByEmailPayload = () => ({
   status: 'VERIFIED_BY_EMAIL'
 })
 
-const _createNewUserData = (email, password, extraFields, token) =>
+const _createNewUserData = (unverifiedEmail, password, extraFields, token) =>
   _withHashedPassword(
     Object.assign(
       {
-        email,
-        unverifiedEmail: email,
-        name: email.split('@')[0],
+        email: unverifiedEmail.split('@').join(`+lc.${+new Date()}@`),
+        unverifiedEmail,
+        name: unverifiedEmail.split('@')[0],
         token,
         role: 'user',
         emailVerified: false,
@@ -147,9 +147,11 @@ const _willMarkUserAsVerifiedByToken = async token => {
 
   // Look up user by token
   const user = await NAP.User.findOneAndUpdate({ token }, _verifiedByEmailPayload())
-  if (!user) {
-    throw ERRORS.AUTH_INVALID_USER_TOKEN
-  }
+  if (!user) throw ERRORS.AUTH_INVALID_USER_TOKEN
+
+  // Guard existing verified user
+  const verifiedUser = await NAP.User.findOne({ email: user.unverifiedEmail, emailVerifiedAt: { $ne: undefined } })
+  if (verifiedUser) throw ERRORS.AUTH_EMAIL_ALREADY_EXISTS
 
   // Backup previous email
   user.usedEmails = user.usedEmails || []

@@ -219,7 +219,9 @@ describe('authen-local', () => {
     const { email, password } = __mocked__verifiedLocalUserPayload
     const { willSignUp } = require('../authen-local')
     const signUpUser = await willSignUp(req, 'FoO@bar.com', password)
+    signUpUser.email = email
     signUpUser.emailVerified = true
+    signUpUser.emailVerifiedAt = new Date()
     await signUpUser.save()
 
     const { willLogin } = require('../authen-local')
@@ -294,15 +296,15 @@ describe('authen-local', () => {
       body: { isMockServer: true }
     }
 
-    const email = 'foo@bar.com'
+    const unverifiedEmail = 'foo@bar.com'
     const password = 'password'
 
     const { willSignUp } = require('../authen-local')
 
-    expect(await willSignUp(req, email, password)).toEqual(
+    expect(await willSignUp(req, unverifiedEmail, password)).toEqual(
       expect.objectContaining({
         _id: expect.any(ObjectId),
-        email,
+        unverifiedEmail,
         status: 'WAIT_FOR_EMAIL_VERIFICATION',
         emailVerified: false,
         hashed_password: expect.any(String),
