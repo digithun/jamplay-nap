@@ -30,6 +30,9 @@ module.exports = async (config, nextjs) => {
 
   global.NAP.userEventHook = require('./user-event-hook')(config)
 
+  // event handler
+  require('./event-handlers')(config, app)
+
   // Store
   require('./initStore')(mongoose)
 
