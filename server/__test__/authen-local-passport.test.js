@@ -3,6 +3,9 @@
 const { setup, teardown } = require('./mongoose-helper')
 const mongoose = require('mongoose')
 
+// Seeder
+const { __mocked__verifiedLocalUserPayload } = require('./mongoose-helper')
+
 describe('authen-local-passport', () => {
   describe('mock', () => {
     const base_url = 'http://localhost:3000'
@@ -304,7 +307,7 @@ describe('authen-local-passport', () => {
       const { toHashedPassword } = require('../authen-local-passport')
       const hashed_password = toHashedPassword(password)
       const { willCreateUser } = require('../authen-sessions')
-      const userData = { email, emailVerified: true, hashed_password }
+      const userData = Object.assign(__mocked__verifiedLocalUserPayload, { hashed_password })
       const _user = await willCreateUser(userData)
 
       const { validateLocalStrategy } = require('../authen-local-passport')
@@ -324,7 +327,7 @@ describe('authen-local-passport', () => {
       const { toHashedPassword } = require('../authen-local-passport')
       const hashed_password = toHashedPassword(password)
       const { willCreateUser } = require('../authen-sessions')
-      const userData = { email, emailVerified: true, hashed_password }
+      const userData = Object.assign(__mocked__verifiedLocalUserPayload, { hashed_password })
       const user = await willCreateUser(userData)
 
       const { willUpdatePassword } = require('../authen-local-passport')

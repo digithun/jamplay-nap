@@ -1,4 +1,4 @@
-const { guard } = require('./errors')
+const { guard, errorBy } = require('./errors')
 const ERRORS = require('./errors/codes')
 
 const { URL } = require('url')
@@ -174,18 +174,26 @@ const _getUserByEmailAndPassword = async (email, password) => {
   // Clean up
   email = email.toLowerCase().trim()
 
-  // Guard unverified or not existing user
-  const user = await NAP.User.findOne({ email })
+  // Find existing user that has been verified
+  const user = await NAP.User.findOne({ email, emailVerifiedAt: { $exists: true } })
 
-  // No user for that email, will throw invalid login
+  // No verified user for that email, will throw not-found then invalid-login later
   if (!user) {
-    throw ERRORS.AUTH_USER_NOT_FOUND
+    // User exist but not verify yet
+    const unverifiedUser = await NAP.User.findOne({
+      $or: [{ email }, { unverifiedEmail: email }],
+      emailVerifiedAt: { $exists: false }
+    })
+
+    if (unverifiedUser) {
+      throw errorBy('AUTH_FB_EMAIL_NOT_VERIFIED', unverifiedUser.email || unverifiedUser.unverifiedEmail)
+    } else {
+      throw ERRORS.AUTH_USER_NOT_FOUND
+    }
   }
 
-  // User for that email exist but not verify
-  if (!user.emailVerified) {
-    throw ERRORS.AUTH_EMAIL_NOT_VERIFIED
-  }
+  // User verified but via facebook
+  if (!user.hashed_password) throw ERRORS.AUTH_INVALID_LOGIN
 
   const isMatched = await isPasswordMatch(password, user.hashed_password)
   if (!isMatched) {

@@ -286,7 +286,8 @@ describe('authen-sessions', async () => {
         _id: userId,
         email,
         hashed_password: '$2a$10$r9yAY4TYm88cpIOzyaaIJOjEz0S8DBZs8NS/3C1sUlyXWez82r.ki',
-        emailVerified: true
+        emailVerified: true,
+        emailVerifiedAt: '2017-08-02T12:45:04.928Z'
       })
 
       // Gimme users

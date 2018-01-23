@@ -5,6 +5,7 @@ Object {
   "_id": "597c695ae60d9000711f4131",
   "email": "foo@bar.com",
   "emailVerified": true,
+  "emailVerifiedAt": 2017-08-02T12:45:04.928Z,
   "hashed_password": "$2a$10$r9yAY4TYm88cpIOzyaaIJOjEz0S8DBZs8NS/3C1sUlyXWez82r.ki",
   "usedEmails": Array [],
 }

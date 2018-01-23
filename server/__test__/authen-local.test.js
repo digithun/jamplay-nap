@@ -82,7 +82,7 @@ describe('authen-local', () => {
     const password = 'foobar'
 
     // Seed
-    await seedUserWithEmailAndPassword(email, password, true)
+    await seedUserWithEmailAndPassword(email, password)
 
     const { willLogin } = require('../authen-local')
     await willLogin(req, not_exiting_email, password).catch(err => {
@@ -95,7 +95,7 @@ describe('authen-local', () => {
     await mongoose.connection.collection('users').drop()
   })
 
-  it('should throw `AUTH_EMAIL_NOT_VERIFIED` error for exist unverified email', async () => {
+  it('should throw unverified `email` with error for exist unverified email', async () => {
     // mock
     const req = {
       nap: { errors: [] },
@@ -105,13 +105,13 @@ describe('authen-local', () => {
     const password = 'foobar'
 
     // Seed
-    await seedUserWithEmailAndPassword(email, password, false)
+    await seedUserWithEmailAndPassword(email, password, email)
 
     const { willLogin } = require('../authen-local')
     await willLogin(req, email, password).catch(err => {
       expect(() => {
         throw err
-      }).toThrow(require('../errors/codes').AUTH_EMAIL_NOT_VERIFIED)
+      }).toThrow(email)
     })
 
     // Dispose
@@ -129,7 +129,7 @@ describe('authen-local', () => {
     const wrong_password = 'notfoobar'
 
     // Seed
-    await seedUserWithEmailAndPassword(email, password, true)
+    await seedUserWithEmailAndPassword(email, password)
 
     const { willLogin } = require('../authen-local')
     await willLogin(req, email, password).catch(err => {
@@ -153,7 +153,7 @@ describe('authen-local', () => {
     const short_password = 'short'
 
     // Seed
-    await seedUserWithEmailAndPassword(email, password, true)
+    await seedUserWithEmailAndPassword(email, password)
 
     const { willLogin } = require('../authen-local')
     await willLogin(req, email, short_password).catch(err => {
@@ -221,7 +221,7 @@ describe('authen-local', () => {
     const signUpUser = await willSignUp(req, 'FoO@bar.com', password)
     signUpUser.email = email
     signUpUser.emailVerified = true
-    signUpUser.emailVerifiedAt = new Date()
+    signUpUser.emailVerifiedAt = new Date().toISOString()
     await signUpUser.save()
 
     const { willLogin } = require('../authen-local')
@@ -273,7 +273,9 @@ describe('authen-local', () => {
       email,
       password,
       token,
-      emailVerified: true
+      emailVerified: true,
+      unverifiedEmail: undefined,
+      emailVerifiedAt: new Date().toISOString()
     })
 
     const { willResetPasswordViaEmail } = require('../authen-local')
@@ -332,7 +334,9 @@ describe('authen-local', () => {
     await seedUserWithData({
       email,
       password,
-      emailVerified: true
+      emailVerified: true,
+      unverifiedEmail: undefined,
+      emailVerifiedAt: new Date().toISOString()
     })
 
     const { willLogin, willSendVerificationForUpdateEmail } = require('../authen-local')
