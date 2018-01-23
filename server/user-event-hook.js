@@ -24,13 +24,13 @@ module.exports = function ({ achievement_service_url, achievement_service_access
       }
     }
     try {
-      const bodyPayload = {
-        sessionToken,
-        event: type,
-        timestamp: Date.now(),
-        payload
-      }
-      if (process.env.EVENT_SERVICE_URL) {
+      if (process.env.EVENT_SERVICE_URL && false) {
+        const bodyPayload = {
+          type,
+          timestamp: Date.now(),
+          sender: 'nap',
+          payload
+        }
         try {
           console.log(chalk.yellow('dispatch event to', process.env.EVENT_SERVICE_URL))
           await global.fetch(process.env.EVENT_SERVICE_URL, {
@@ -45,6 +45,12 @@ module.exports = function ({ achievement_service_url, achievement_service_access
         } catch (error) {
           console.error('EVENT_SERVICE: ', error)
         }
+      }
+      const bodyPayload = {
+        sessionToken,
+        event: type,
+        timestamp: Date.now(),
+        payload
       }
       console.log(chalk.yellow('Send user event: ') + type)
       console.log(chalk.yellow('User event send to ') + achievement_service_url)
