@@ -12,7 +12,7 @@ const _willCreateUserWithPayload = async (provider, payload, req) => {
       // Matched facebook id
       [`${provider}.id`]: payload[provider].id,
       // Can't get user email
-      email: { $ne: undefined },
+      email: { $exists: true },
       // Not verify yet
       emailVerified: true
     })
@@ -24,7 +24,7 @@ const _willCreateUserWithPayload = async (provider, payload, req) => {
       // Matched facebook id
       [`${provider}.id`]: payload[provider].id,
       // Has pending email
-      unverifiedEmail: { $ne: undefined },
+      unverifiedEmail: { $exists: true },
       // Can't get user email
       email: undefined,
       // Never been verify email before

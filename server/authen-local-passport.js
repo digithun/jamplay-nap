@@ -150,7 +150,7 @@ const _willMarkUserAsVerifiedByToken = async token => {
   if (!user) throw ERRORS.AUTH_INVALID_USER_TOKEN
 
   // Guard existing verified user
-  const verifiedUser = await NAP.User.findOne({ email: user.unverifiedEmail, emailVerifiedAt: { $ne: undefined } })
+  const verifiedUser = await NAP.User.findOne({ email: user.unverifiedEmail, emailVerifiedAt: { $exists: true } })
   if (verifiedUser) throw ERRORS.AUTH_EMAIL_ALREADY_EXISTS
 
   // Backup previous email
