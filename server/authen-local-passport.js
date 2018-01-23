@@ -186,7 +186,7 @@ const _getUserByEmailAndPassword = async (email, password) => {
     })
 
     if (unverifiedUser) {
-      throw errorBy('AUTH_FB_EMAIL_NOT_VERIFIED', unverifiedUser.email || unverifiedUser.unverifiedEmail)
+      throw errorBy('AUTH_EMAIL_NOT_VERIFIED', unverifiedUser.email || unverifiedUser.unverifiedEmail)
     } else {
       throw ERRORS.AUTH_USER_NOT_FOUND
     }
