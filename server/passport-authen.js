@@ -12,7 +12,7 @@ const _willCreateUserWithPayload = async (provider, payload, req) => {
       // Matched facebook id
       [`${provider}.id`]: payload[provider].id,
       // Can't get user email
-      email: { $ne: undefined },
+      email: { $exists: true },
       // Not verify yet
       emailVerified: true
     })
@@ -24,7 +24,7 @@ const _willCreateUserWithPayload = async (provider, payload, req) => {
       // Matched facebook id
       [`${provider}.id`]: payload[provider].id,
       // Has pending email
-      unverifiedEmail: { $ne: undefined },
+      unverifiedEmail: { $exists: true },
       // Can't get user email
       email: undefined,
       // Never been verify email before
@@ -105,12 +105,20 @@ const willValidatePayloadByStrategy = async (req, strategy, payload) => {
     case 'facebook-token':
       // SignUp with facebook and email
       if (req.body.custom_email) {
-        payload.email = null
-        delete payload.email
-        payload.unverifiedEmail = req.body.custom_email.toLowerCase().trim()
-        if (await NAP.User.findOne({ email: payload.unverifiedEmail })) {
-          throw AUTH_EMAIL_ALREADY_EXISTS
-        }
+        const custom_email = req.body.custom_email.toLowerCase().trim()
+
+        // Guard has email but invalid
+        const { willValidateEmail } = require('./validator')
+        const isValidEmail = await willValidateEmail(custom_email)
+        if (!isValidEmail) throw require('./errors/codes').AUTH_INVALID_EMAIL
+
+        // Will use custom email
+        payload.unverifiedEmail = custom_email
+
+        // Will unverified email as key
+        const FB_ID = payload.facebook.profile.id
+        payload.email = payload.unverifiedEmail.split('@').join(`+fb.${FB_ID}@`)
+
         return _willCreateUnverifiedUserWithPayload('facebook', payload)
       }
 

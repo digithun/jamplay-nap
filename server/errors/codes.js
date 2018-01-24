@@ -162,7 +162,7 @@ module.exports = {
     return new GenericError('auth/passport-failed', "Authentication with Passport has been fail, can't resolve user data")
   },
   get AUTH_EMAIL_NOT_VERIFIED () {
-    return new GenericError('auth/email-not-verified', 'Authentication with Passport has been fail, emailVerified user property is set to false.')
+    return new GenericError('auth/email-not-verified', '')
   },
   get AUTH_FB_EMAIL_NOT_VERIFIED () {
     return new GenericError('auth/facebook-email-not-verified', '')

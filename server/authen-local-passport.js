@@ -1,4 +1,4 @@
-const { guard } = require('./errors')
+const { guard, errorBy } = require('./errors')
 const ERRORS = require('./errors/codes')
 
 const { URL } = require('url')
@@ -37,20 +37,13 @@ const _withHashedPassword = (user, password) => {
   return user
 }
 
-const _verifiedByEmailPayload = () => ({
-  token: null,
-  emailVerified: true,
-  emailVerifiedAt: new Date().toISOString(),
-  status: 'VERIFIED_BY_EMAIL'
-})
-
-const _createNewUserData = (email, password, extraFields, token) =>
+const _createNewUserData = (unverifiedEmail, password, extraFields, token) =>
   _withHashedPassword(
     Object.assign(
       {
-        email,
-        unverifiedEmail: email,
-        name: email.split('@')[0],
+        email: unverifiedEmail.split('@').join(`+lc.${+new Date()}@`),
+        unverifiedEmail,
+        name: unverifiedEmail.split('@')[0],
         token,
         role: 'user',
         emailVerified: false,
@@ -141,16 +134,7 @@ const _willValidateToken = async token => {
   return user
 }
 
-const _willMarkUserAsVerifiedByToken = async token => {
-  // Guard
-  guard(token)
-
-  // Look up user by token
-  const user = await NAP.User.findOneAndUpdate({ token }, _verifiedByEmailPayload())
-  if (!user) {
-    throw ERRORS.AUTH_INVALID_USER_TOKEN
-  }
-
+const _markUserAsVerified = user => {
   // Backup previous email
   user.usedEmails = user.usedEmails || []
   user.email && user.usedEmails.push(user.email)
@@ -162,6 +146,33 @@ const _willMarkUserAsVerifiedByToken = async token => {
   user.unverifiedEmail = null
   delete user.unverifiedEmail
 
+  // Remove token
+  user.token = null
+  delete user.token
+
+  // Mark as verified
+  user.emailVerified = true
+  user.emailVerifiedAt = new Date().toISOString()
+  user.status = 'VERIFIED_BY_EMAIL'
+
+  return user
+}
+
+const _willMarkUserAsVerifiedByToken = async token => {
+  // Guard
+  guard(token)
+
+  // Look up user by token
+  const user = await NAP.User.findOne({ token })
+  if (!user) throw ERRORS.AUTH_INVALID_USER_TOKEN
+
+  // Guard existing verified user
+  const verifiedUser = await NAP.User.findOne({ email: user.unverifiedEmail, emailVerifiedAt: { $exists: true } })
+  if (verifiedUser) throw ERRORS.AUTH_EMAIL_ALREADY_EXISTS
+
+  // Mark user as verified
+  _markUserAsVerified(user)
+
   return user.save()
 }
 
@@ -172,18 +183,26 @@ const _getUserByEmailAndPassword = async (email, password) => {
   // Clean up
   email = email.toLowerCase().trim()
 
-  // Guard unverified or not existing user
-  const user = await NAP.User.findOne({ email })
+  // Find existing user that has been verified
+  const user = await NAP.User.findOne({ email, emailVerifiedAt: { $exists: true } })
 
-  // No user for that email, will throw invalid login
+  // No verified user for that email, will throw not-found then invalid-login later
   if (!user) {
-    throw ERRORS.AUTH_USER_NOT_FOUND
+    // User exist but not verify yet
+    const unverifiedUser = await NAP.User.findOne({
+      $or: [{ email }, { unverifiedEmail: email }],
+      emailVerifiedAt: { $exists: false }
+    })
+
+    if (unverifiedUser) {
+      throw errorBy('AUTH_EMAIL_NOT_VERIFIED', unverifiedUser.email || unverifiedUser.unverifiedEmail)
+    } else {
+      throw ERRORS.AUTH_USER_NOT_FOUND
+    }
   }
 
-  // User for that email exist but not verify
-  if (!user.emailVerified) {
-    throw ERRORS.AUTH_EMAIL_NOT_VERIFIED
-  }
+  // User verified but via facebook
+  if (!user.hashed_password) throw ERRORS.AUTH_INVALID_LOGIN
 
   const isMatched = await isPasswordMatch(password, user.hashed_password)
   if (!isMatched) {
@@ -271,7 +290,9 @@ const willUpdatePasswordByToken = async (token, password) => {
   if (!isValid) throw ERRORS.AUTH_WRONG_PASSWORD
 
   user = _withHashedPassword(user, password)
-  user = Object.assign(user, _verifiedByEmailPayload())
+
+  // Mark user as verified
+  _markUserAsVerified(user)
 
   return user.save()
 }
@@ -307,14 +328,7 @@ const willVerifyEmailByToken = async (token, password) => {
   const isMatched = await isPasswordMatch(password, user.hashed_password)
   if (!isMatched) throw ERRORS.AUTH_INVALID_PASSWORD
 
-  const email = user.unverifiedEmail
-  await willUpdateEmail(user, email)
-
-  // Clean up
-  user = Object.assign(user, _verifiedByEmailPayload())
-  user.unverifiedEmail = null
-
-  return user.save()
+  return _willMarkUserAsVerifiedByToken(token)
 }
 
 const willUpdateEmail = async (user, email) => {

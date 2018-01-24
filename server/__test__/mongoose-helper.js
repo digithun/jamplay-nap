@@ -10,10 +10,18 @@ let mongoServer
 
 // Mock data
 const EMAIL = 'foo@bar.com'
+const __mocked__unverifiedLocalUserPayload = {
+  email: EMAIL,
+  unverifiedEmail: EMAIL,
+  emailVerified: false,
+  role: 'user'
+}
+
 const __mocked__verifiedLocalUserPayload = {
   email: EMAIL,
   password: 'foobar',
   emailVerified: true,
+  emailVerifiedAt: new Date().toISOString(),
   role: 'user'
 }
 
@@ -86,11 +94,13 @@ const seedAuthenByUserWithManyDevices = async (userId, authens) => {
   return userId
 }
 
-const seedUserWithEmailAndPassword = async (email, password, emailVerified = false) =>
+const seedUserWithEmailAndPassword = async (email, password, unverifiedEmail = undefined) =>
   seedUserWithData({
     email,
     password,
-    emailVerified
+    unverifiedEmail,
+    emailVerified: unverifiedEmail === undefined,
+    emailVerifiedAt: unverifiedEmail === undefined ? new Date() : undefined
   })
 
 const seedUserWithData = async data =>
@@ -149,6 +159,7 @@ module.exports = {
   seedUserWithEmailAndPassword,
   seedInstalledAndVerifiedUser,
   seedVerifiedLocalUser,
+  __mocked__unverifiedLocalUserPayload,
   __mocked__verifiedLocalUserPayload,
   __expected__seedVerifiedLocalUser,
   getMockedFacebookUser,
