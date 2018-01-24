@@ -1,8 +1,8 @@
 const request = require('superagent')
 const DataLoader = require('dataloader')
 const wallet = {
-  silver: 0,
-  gold: 0,
+  silver: 1000,
+  gold: 1000,
   receipts: []
 }
 

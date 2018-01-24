@@ -24,9 +24,10 @@ module.exports = function ({ achievement_service_url, achievement_service_access
       }
     }
     try {
-      if (process.env.EVENT_SERVICE_URL && false) {
+      if (process.env.EVENT_SERVICE_URL) {
         const bodyPayload = {
           type,
+          userId: user._id,
           timestamp: Date.now(),
           sender: 'nap',
           payload
@@ -46,45 +47,45 @@ module.exports = function ({ achievement_service_url, achievement_service_access
           console.error('EVENT_SERVICE: ', error)
         }
       }
-      const bodyPayload = {
-        sessionToken,
-        event: type,
-        timestamp: Date.now(),
-        payload
-      }
-      console.log(chalk.yellow('Send user event: ') + type)
-      console.log(chalk.yellow('User event send to ') + achievement_service_url)
-      console.log('====== payload ======')
-      console.dir(bodyPayload)
-      console.log('====== end payload =====')
-      const response = await global.fetch(achievement_service_url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-access-token': achievement_service_access_token
-        },
-        body: JSON.stringify(bodyPayload),
-        timeout: 5000
-      })
-      if (response.status !== 200) {
-        throw response
-      }
-      const result = await response.json()
-      console.log(result)
-      const reward = {
-        notifications: result.rewardList || []
-      }
-      if (reward.notifications.length > 0) {
-        const promises = reward.notifications.map(async (notification) => {
-          console.log(notification)
-          return notificationService.createNotification(user._id, {
-            text: notification.msg_enum,
-            textAttr: notification.reward
-          })
-        })
-        const result = await Promise.all(promises)
-        return result
-      }
+      // const bodyPayload = {
+      //   sessionToken,
+      //   event: type,
+      //   timestamp: Date.now(),
+      //   payload
+      // }
+      // console.log(chalk.yellow('Send user event: ') + type)
+      // console.log(chalk.yellow('User event send to ') + achievement_service_url)
+      // console.log('====== payload ======')
+      // console.dir(bodyPayload)
+      // console.log('====== end payload =====')
+      // const response = await global.fetch(achievement_service_url, {
+      //   method: 'POST',
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //     'x-access-token': achievement_service_access_token
+      //   },
+      //   body: JSON.stringify(bodyPayload),
+      //   timeout: 5000
+      // })
+      // if (response.status !== 200) {
+      //   throw response
+      // }
+      // const result = await response.json()
+      // console.log(result)
+      // const reward = {
+      //   notifications: result.rewardList || []
+      // }
+      // if (reward.notifications.length > 0) {
+      //   const promises = reward.notifications.map(async (notification) => {
+      //     console.log(notification)
+      //     return notificationService.createNotification(user._id, {
+      //       text: notification.msg_enum,
+      //       textAttr: notification.reward
+      //     })
+      //   })
+      //   const result = await Promise.all(promises)
+      //   return result
+      // }
     } catch (e) {
       console.log('user-event-hook: error')
       switch (e.name) {
