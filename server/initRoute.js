@@ -73,6 +73,9 @@ const init = ({ base_url }, app, nextjs) => {
 
   // Next Route
   initNextRoute(app, nextjs)
+
+  // init
+  require('../notification/index').initPollingHandler(app)
 }
 
 module.exports = init

@@ -51,9 +51,15 @@ const readNotification = async function (userId) {
   return result
 }
 
+const countUnreadNotification = async function (userId) {
+  const result = await Notification.find({ userId: objectId(userId), isRead: false }).count()
+  return result
+}
+
 // Expose service
 exports.services = {
   createNotification,
   readNotification,
-  getNotification
+  getNotification,
+  countUnreadNotification
 }

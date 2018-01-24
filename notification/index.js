@@ -1,5 +1,8 @@
 const express = require('express')
 const handler = require('./handler')
+const {decodeToken} = require('../server/jwt-token')
+const { services } = require('./controller')
+const joi = require('joi')
 
 const notificationRouter = express.Router()
 
@@ -10,9 +13,10 @@ notificationRouter.delete('/:notificationId', handler('delete'))
 
 exports.handler = notificationRouter
 
-if (process.env.STANDALONE) {
-  const app = express()
-  const mongoose = require('mongoose')
+const mongoose = require('mongoose')
+if (process.env.ENABLED_NOTIFICATION_SERVICE) {
+  console.log('Start notification service.....')
+  const notificationServicePrivate = express()
   global.debug = {
     error: () => {},
     info: () => {}
@@ -24,9 +28,61 @@ if (process.env.STANDALONE) {
   mongoose.Promise = global.Promise
   // setup express
   const bodyParser = require('body-parser')
-  app.use(bodyParser.json({ extend: true }))
-  app.use('/', notificationRouter)
-  app.listen(3406, () => {
+  notificationServicePrivate.use(bodyParser.json({ extend: true }))
+  notificationServicePrivate.use('/', notificationRouter)
+  notificationServicePrivate.listen(3406, () => {
     console.log('Notification service start at port: 3406')
+  })
+}
+
+/**
+ * Wed, 24 Jan 2018
+ * Notification public API use to
+ * keep client update about notification change
+ * by streaming long polling status
+ * Maintainer
+ * - rungsikorn.r@digithun.co.th
+ */
+exports.initPollingHandler = function (notificationPublic) {
+  const bearerToken = require('express-bearer-token')
+  console.log('[notification] init Polling handler')
+  notificationPublic.use('/polling', bearerToken(), async function (req, res, next) {
+    console.log(req.user)
+    try {
+      const result = await decodeToken(req.token)
+      req.user = result
+      next()
+    } catch (e) {
+      res.status(401).json({'message': e.message})
+    }
+  })
+
+  const pollingQuerySchema = joi.object().keys({
+    interval: joi.number().default(1000).min(500).max(5000),
+    duration: joi.number().default(10000).max(30000).min(5000)
+  })
+  notificationPublic.get('/polling', (req, res) => {
+    const { value, error } = pollingQuerySchema.validate(req.query)
+    const { interval, duration } = value
+    const { userId } = req.user
+    console.log(`[notification] ${userId} ${interval} ${duration}`)
+    if (error) {
+      res.status(400).json({message: error})
+      return
+    }
+    // start streaming response
+    res.setHeader('X-Content-Type-Options', 'nosniff')
+    res.setHeader('Content-Type', 'text/plain')
+    res.setHeader('Transfer-Encoding', 'chunked')
+    res.status(200)
+    const streamingTick = setInterval(async () => {
+      const isUpdated = await services.countUnreadNotification(userId)
+      res.write(`?;?${JSON.stringify({ isUpdated })}`)
+    }, interval)
+
+    setTimeout(() => {
+      clearInterval(streamingTick)
+      res.end()
+    }, duration)
   })
 }
