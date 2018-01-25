@@ -6,6 +6,8 @@ PACKAGE_VERSION=$(cat package.json \
   | sed 's/[",]//g' \
   | tr -d '[[:space:]]')
 
+BRANCH=$(git rev-parse --abbrev-ref HEAD)
+echo 'Branch' $BRANCH
 echo 'Start push image with project id: ' $(gcloud config get-value project), tag: latest
 gcloud docker -- push gcr.io/$(gcloud config get-value project)/jamplay-nap:latest
 if [ "$BRANCH" == "master" ]; then

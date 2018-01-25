@@ -6,6 +6,7 @@ PACKAGE_VERSION=$(cat package.json \
   | sed 's/[",]//g' \
   | tr -d '[[:space:]]')
 
+BRANCH=$(git rev-parse --abbrev-ref HEAD)
 echo 'Branch' $BRANCH
 if [ "$BRANCH" == "master" ]; then
 echo 'Start build image with project id: ' $(gcloud config get-value project), tag: $PACKAGE_VERSION
