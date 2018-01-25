@@ -46,7 +46,9 @@ describe('authen-facebook', () => {
         __v: 0,
         name: 'bar',
         email: 'foo@bar.com',
-        emailVerified: false,
+        emailVerified: true,
+        emailVerifiedAt: expect.any(Date),
+        status: 'VERIFIED_BY_FB_EMAIL',
         createdAt: expect.any(Date),
         updatedAt: expect.any(Date)
       })

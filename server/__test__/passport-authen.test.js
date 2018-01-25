@@ -124,7 +124,9 @@ describe('passport-authen', async () => {
     expect(user).toEqual(
       expect.objectContaining({
         email: EMAIL,
-        emailVerified: false,
+        emailVerified: true,
+        emailVerifiedAt: expect.any(Date),
+        status: 'VERIFIED_BY_FB_EMAIL',
         facebook: expect.objectContaining({
           id: payload.facebook.id
         })

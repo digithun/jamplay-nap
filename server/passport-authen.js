@@ -45,6 +45,11 @@ const _willCreateUserWithPayload = async (provider, payload, req) => {
   const isValidEmail = await willValidateEmail(payload.email)
   if (!isValidEmail) throw require('./errors/codes').AUTH_INVALID_EMAIL
 
+  // Has email from facebook, will mark email as verified
+  payload.emailVerified = true
+  payload.emailVerifiedAt = new Date().toISOString()
+  payload.status = 'VERIFIED_BY_FB_EMAIL'
+
   // Already linked or any Facebook user, will save token let user login
   const user = await NAP.User.findOneAndUpdate(
     { [`${provider}.id`]: profile.id },
