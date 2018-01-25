@@ -74,17 +74,30 @@ exports.initPollingHandler = function (notificationPublic) {
     res.setHeader('Content-Type', 'text/plain')
     res.setHeader('Transfer-Encoding', 'chunked')
     res.status(200)
-    const streamingTick = setInterval(async () => {
+
+    let streamingTick
+    let isEnd
+    const writeResult = async () => {
       try {
         const isUpdated = await services.countUnreadNotification(userId)
-        res.write(`?;?${JSON.stringify({ isUpdated })}`)
+        if (!isEnd) {
+          res.write(`?;?${JSON.stringify({ isUpdated })}`)
+        }
+        setTimeout(writeResult, interval)
       } catch (e) {
         console.error(e, req.user)
+        clearInterval(streamingTick)
       }
-    }, interval)
+    }
+
+    streamingTick = setTimeout(writeResult, interval)
 
     setTimeout(() => {
-      clearInterval(streamingTick)
+      if (streamingTick) {
+        clearInterval(streamingTick)
+        isEnd = true
+      }
+      res.write(`?;?${JSON.stringify({done: true})}`)
       res.end()
     }, duration)
   })
