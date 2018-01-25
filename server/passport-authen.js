@@ -45,8 +45,18 @@ const _willCreateUserWithPayload = async (provider, payload, req) => {
   const isValidEmail = await willValidateEmail(payload.email)
   if (!isValidEmail) throw require('./errors/codes').AUTH_INVALID_EMAIL
 
-  // Already linked or any Facebook user, will let user login
-  const user = await NAP.User.findOne({ [`${provider}.id`]: profile.id })
+  // Already linked or any Facebook user, will save token let user login
+  const user = await NAP.User.findOneAndUpdate(
+    { [`${provider}.id`]: profile.id },
+    {
+      [provider]: {
+        id: profile.id,
+        token,
+        profile
+      }
+    },
+    { new: true, upsert: false }
+  )
   if (user) return user
 
   // Guard used email -> auto link

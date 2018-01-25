@@ -35,7 +35,7 @@ const __expected__seedVerifiedLocalUser = {
 
 const __mocked__facebookUser = {
   id: '10154646415997479',
-  token: 'SOME_ACCESS_TOKEN',
+  token: 'VALID_ACCESS_TOKEN',
   profile: {
     photos: [
       {
@@ -59,7 +59,7 @@ const __mocked__facebookUser = {
   }
 }
 
-const getMockedFacebookUser = () => __mocked__facebookUser
+const getMockedFacebookUser = token => Object.assign(__mocked__facebookUser, { token })
 
 // Seeder
 const seedFacebookUser = async () =>

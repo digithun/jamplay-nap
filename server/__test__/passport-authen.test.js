@@ -17,14 +17,15 @@ describe('passport-authen', async () => {
 
     // Mock
     const provider = 'facebook'
+    const token = 'VALID_ACCESS_TOKEN'
     const payload = {
       name: 'foo',
       email: 'not-foo@bar.com',
-      facebook: getMockedFacebookUser()
+      facebook: getMockedFacebookUser(token)
     }
     const req = {
       body: {
-        access_token: 'VALID_ACCESS_TOKEN'
+        access_token: token
       }
     }
     const { _willCreateUserWithPayload } = require('../passport-authen').__private
@@ -35,7 +36,34 @@ describe('passport-authen', async () => {
         email: EMAIL,
         emailVerified: false,
         facebook: expect.objectContaining({
-          id: payload.facebook.id
+          id: payload.facebook.id,
+          token
+        })
+      })
+    )
+
+    // Second attempt
+    const token2 = 'VALID_ACCESS_TOKEN2'
+    const req2 = {
+      body: {
+        access_token: token2
+      }
+    }
+    const payload2 = {
+      name: 'foo',
+      email: 'foo@bar.com',
+      facebook: getMockedFacebookUser(token2)
+    }
+
+    const user2 = await _willCreateUserWithPayload(provider, payload2, req2)
+
+    expect(user2).toEqual(
+      expect.objectContaining({
+        email: EMAIL,
+        emailVerified: false,
+        facebook: expect.objectContaining({
+          id: payload.facebook.id,
+          token: token2
         })
       })
     )
@@ -53,7 +81,7 @@ describe('passport-authen', async () => {
     const payload = {
       name: 'foo',
       email: EMAIL,
-      facebook: getMockedFacebookUser()
+      facebook: getMockedFacebookUser('VALID_ACCESS_TOKEN')
     }
     const req = {
       body: {
@@ -77,13 +105,13 @@ describe('passport-authen', async () => {
     await mongoose.connection.collection('users').drop()
   })
 
-  it('should create user if no mathed facebook id or no linked found', async () => {
+  it('should create user if no matched facebook id or no linked found', async () => {
     // Mock
     const provider = 'facebook'
     const payload = {
       name: 'foo',
       email: EMAIL,
-      facebook: getMockedFacebookUser()
+      facebook: getMockedFacebookUser('VALID_ACCESS_TOKEN')
     }
     const req = {
       body: {
