@@ -54,27 +54,6 @@ const _createNewUserData = (unverifiedEmail, password, extraFields, token) =>
     password
   )
 
-const _guardUnverifiedUserForSignUp = user => {
-  // No user, which is great
-  if (!user) {
-    return
-  }
-
-  // User, but...
-  switch (user.status) {
-    case 'WAIT_FOR_EMAIL_VERIFICATION':
-      throw ERRORS.AUTH_EMAIL_ALREADY_SENT
-    case 'VERIFIED_BY_EMAIL':
-      throw ERRORS.AUTH_EMAIL_ALREADY_IN_USE
-  }
-}
-
-const _guardDuplicatedUserByEmail = user => {
-  if (user) {
-    throw ERRORS.AUTH_EMAIL_ALREADY_IN_USE
-  }
-}
-
 const willSignUpNewUser = async (email, password, extraFields, token) => {
   // Guard
   guard({ email })
@@ -83,10 +62,19 @@ const willSignUpNewUser = async (email, password, extraFields, token) => {
   // Clean up
   email = email.toLowerCase().trim()
 
+  // TODO : Guard sent email user
+  /*
+  const user = await NAP.User.findOne({
+    unverifiedEmail: email,
+    emailVerifiedAt: { $exists: false },
+    status: 'WAIT_FOR_EMAIL_VERIFICATION'
+  })
+  if (user) throw ERRORS.AUTH_EMAIL_ALREADY_SENT
+  */
+
   // Guard existing user
-  const user = await NAP.User.findOne({ email })
-  _guardDuplicatedUserByEmail(user)
-  _guardUnverifiedUserForSignUp(user)
+  const existingUser = await NAP.User.findOne({ email })
+  if (existingUser) throw ERRORS.AUTH_EMAIL_ALREADY_IN_USE
 
   // Create user with email and token, password if any
   const userData = _createNewUserData(email, password, extraFields, token)
@@ -308,7 +296,7 @@ const willAddUnverifiedEmail = async (user, unverifiedEmail, token) => {
 
   // Guard existing user that's not owner
   const otherUser = await NAP.User.findOne({ _id: { $ne: user._id }, email: unverifiedEmail })
-  _guardDuplicatedUserByEmail(otherUser)
+  if (otherUser) throw ERRORS.AUTH_EMAIL_ALREADY_IN_USE
 
   // Update user status
   user.token = token
@@ -344,7 +332,7 @@ const willUpdateEmail = async (user, email) => {
 
   // Guard : unique
   const existingUser = await NAP.User.findOne({ email, _id: { $nin: user._id } })
-  _guardDuplicatedUserByEmail(existingUser)
+  if (existingUser) throw ERRORS.AUTH_EMAIL_ALREADY_IN_USE
 
   // Backup previous email
   user.usedEmails = user.usedEmails || []
