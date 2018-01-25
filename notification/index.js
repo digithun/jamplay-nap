@@ -47,7 +47,6 @@ exports.initPollingHandler = function (notificationPublic) {
   const bearerToken = require('express-bearer-token')
   console.log('[notification] init Polling handler')
   notificationPublic.use('/polling', bearerToken(), async function (req, res, next) {
-    console.log(req.user)
     try {
       const result = await decodeToken(req.token)
       req.user = result
@@ -76,8 +75,12 @@ exports.initPollingHandler = function (notificationPublic) {
     res.setHeader('Transfer-Encoding', 'chunked')
     res.status(200)
     const streamingTick = setInterval(async () => {
-      const isUpdated = await services.countUnreadNotification(userId)
-      res.write(`?;?${JSON.stringify({ isUpdated })}`)
+      try {
+        const isUpdated = await services.countUnreadNotification(userId)
+        res.write(`?;?${JSON.stringify({ isUpdated })}`)
+      } catch (e) {
+        console.error(e, req.user)
+      }
     }, interval)
 
     setTimeout(() => {
