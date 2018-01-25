@@ -86,7 +86,7 @@ exports.initPollingHandler = function (notificationPublic) {
         setTimeout(writeResult, interval)
       } catch (e) {
         console.error(e, req.user)
-        clearInterval(streamingTick)
+        clearTimeout(streamingTick)
       }
     }
 
@@ -94,7 +94,7 @@ exports.initPollingHandler = function (notificationPublic) {
 
     setTimeout(() => {
       if (streamingTick) {
-        clearInterval(streamingTick)
+        clearTimeout(streamingTick)
         isEnd = true
       }
       res.write(`?;?${JSON.stringify({done: true})}`)
