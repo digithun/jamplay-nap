@@ -60,45 +60,47 @@ exports.initPollingHandler = function (notificationPublic) {
     interval: joi.number().default(1000).min(500).max(5000),
     duration: joi.number().default(10000).max(30000).min(5000)
   })
-  notificationPublic.get('/polling', (req, res) => {
-    const { value, error } = pollingQuerySchema.validate(req.query)
-    const { interval, duration } = value
-    const { userId } = req.user
-    console.log(`[notification] ${userId} ${interval} ${duration}`)
-    if (error) {
-      res.status(400).json({message: error})
-      return
-    }
-    // start streaming response
-    res.setHeader('X-Content-Type-Options', 'nosniff')
-    res.setHeader('Content-Type', 'text/plain')
-    res.setHeader('Transfer-Encoding', 'chunked')
-    res.status(200)
+  if (process.env.ENABLED_POLLING_SERVICE) {
+    notificationPublic.get('/polling', (req, res) => {
+      const { value, error } = pollingQuerySchema.validate(req.query)
+      const { interval, duration } = value
+      const { userId } = req.user
+      console.log(`[notification] ${userId} ${interval} ${duration}`)
+      if (error) {
+        res.status(400).json({message: error})
+        return
+      }
+      // start streaming response
+      res.setHeader('X-Content-Type-Options', 'nosniff')
+      res.setHeader('Content-Type', 'text/plain')
+      res.setHeader('Transfer-Encoding', 'chunked')
+      res.status(200)
 
-    let streamingTick
-    let isEnd
-    const writeResult = async () => {
-      try {
-        const isUpdated = await services.countUnreadNotification(userId)
-        if (!isEnd) {
-          res.write(`?;?${JSON.stringify({ isUpdated })}`)
+      let streamingTick
+      let isEnd
+      const writeResult = async () => {
+        try {
+          const isUpdated = await services.countUnreadNotification(userId)
+          if (!isEnd) {
+            res.write(`?;?${JSON.stringify({ isUpdated })}`)
+            streamingTick = setTimeout(writeResult, interval)
+          }
+        } catch (e) {
+          console.error(e, req.user)
+          clearTimeout(streamingTick)
         }
-        setTimeout(writeResult, interval)
-      } catch (e) {
-        console.error(e, req.user)
-        clearTimeout(streamingTick)
       }
-    }
 
-    streamingTick = setTimeout(writeResult, interval)
+      streamingTick = setTimeout(writeResult, interval)
 
-    setTimeout(() => {
-      if (streamingTick) {
-        clearTimeout(streamingTick)
-        isEnd = true
-      }
-      res.write(`?;?${JSON.stringify({done: true})}`)
-      res.end()
-    }, duration)
-  })
+      setTimeout(() => {
+        if (streamingTick) {
+          clearTimeout(streamingTick)
+          isEnd = true
+        }
+        res.write(`?;?${JSON.stringify({done: true})}`)
+        res.end()
+      }, duration)
+    })
+  }
 }
