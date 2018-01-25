@@ -25,16 +25,17 @@ passport.authenticate = (strategy, callback) => {
           callback(null, {
             _id: '58d0e20e7ff032b39c2a9a18',
             name: 'bar',
-            facebook: getMockedFacebookUser()
+            facebook: getMockedFacebookUser(req.body.access_token)
           })
         } else {
           const { getMockedFacebookUser } = require('../__test__/mongoose-helper')
+          const facebook = getMockedFacebookUser(req.body.access_token)
 
           callback(null, {
             _id: '58d0e20e7ff032b39c2a9a18',
             name: 'bar',
             email: 'foo@bar.com',
-            facebook: getMockedFacebookUser()
+            facebook
           })
         }
       }
