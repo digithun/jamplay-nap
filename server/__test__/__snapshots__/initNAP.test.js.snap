@@ -7,6 +7,7 @@ Object {
     "errors": Array [],
     "loginWithFacebook": [Function],
     "notificationService": Object {
+      "countUnreadNotification": [Function],
       "createNotification": [Function],
       "getNotification": [Function],
       "readNotification": [Function],
