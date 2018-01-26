@@ -63,10 +63,20 @@ exports.initPollingHandler = function (notificationPublic) {
     interval: joi.number().default(1000).min(500).max(5000),
     duration: joi.number().default(10000).max(30000).min(5000)
   })
+
+  let TERMINATE_ALL_POLLING = false
+  process.on('SIGINT', function () {
+    TERMINATE_ALL_POLLING = true
+  })
   notificationPublic.get('/polling', async (req, res) => {
+    if (TERMINATE_ALL_POLLING) {
+      res.status(503).end()
+      return
+    }
+    const { value, error } = pollingQuerySchema.validate(req.query)
     const { interval, duration } = value
     const { userId } = req.user
-    console.log(`[notification] ${userId} ${interval} ${duration}`)
+    console.log(`[notification] open polling:  ${userId} ${interval} ${duration}`)
     if (error) {
       res.status(400).json({message: error})
       return
@@ -76,7 +86,6 @@ exports.initPollingHandler = function (notificationPublic) {
     res.setHeader('Content-Type', 'text/plain')
     res.setHeader('Transfer-Encoding', 'chunked')
     res.status(200)
-
     const initTime = Date.now()
     let isEnd = false
     const life = setTimeout(() => {
@@ -84,13 +93,13 @@ exports.initPollingHandler = function (notificationPublic) {
     }, duration)
 
     req.connection.on('close', () => {
-      console.log(`[notification] ${userId} disconnected`)
+      console.log(`[notification] polling disconnected: ${userId} `)
       clearTimeout(life)
       isEnd = true
     })
 
     while (Date.now() - initTime <= duration) {
-      if (isEnd) {
+      if (isEnd || TERMINATE_ALL_POLLING) {
         break
       } else {
         const isUpdated = await services.countUnreadNotification(userId)
@@ -103,6 +112,7 @@ exports.initPollingHandler = function (notificationPublic) {
     }
 
     res.write(`?;?${JSON.stringify({done: true})}`)
+    console.log(`[notification] polling end: ${userId} `)
     res.end()
   })
 }
