@@ -43,6 +43,9 @@ if (process.env.ENABLED_NOTIFICATION_SERVICE) {
  * Maintainer
  * - rungsikorn.r@digithun.co.th
  */
+function sleep (ms) {
+  return new Promise(resolve => setTimeout(resolve, ms))
+}
 exports.initPollingHandler = function (notificationPublic) {
   const bearerToken = require('express-bearer-token')
   console.log('[notification] init Polling handler')
@@ -60,47 +63,46 @@ exports.initPollingHandler = function (notificationPublic) {
     interval: joi.number().default(1000).min(500).max(5000),
     duration: joi.number().default(10000).max(30000).min(5000)
   })
-  if (process.env.ENABLED_POLLING_SERVICE) {
-    notificationPublic.get('/polling', (req, res) => {
-      const { value, error } = pollingQuerySchema.validate(req.query)
-      const { interval, duration } = value
-      const { userId } = req.user
-      console.log(`[notification] ${userId} ${interval} ${duration}`)
-      if (error) {
-        res.status(400).json({message: error})
-        return
-      }
+  notificationPublic.get('/polling', async (req, res) => {
+    const { interval, duration } = value
+    const { userId } = req.user
+    console.log(`[notification] ${userId} ${interval} ${duration}`)
+    if (error) {
+      res.status(400).json({message: error})
+      return
+    }
       // start streaming response
-      res.setHeader('X-Content-Type-Options', 'nosniff')
-      res.setHeader('Content-Type', 'text/plain')
-      res.setHeader('Transfer-Encoding', 'chunked')
-      res.status(200)
+    res.setHeader('X-Content-Type-Options', 'nosniff')
+    res.setHeader('Content-Type', 'text/plain')
+    res.setHeader('Transfer-Encoding', 'chunked')
+    res.status(200)
 
-      let streamingTick
-      let isEnd
-      const writeResult = async () => {
-        try {
-          const isUpdated = await services.countUnreadNotification(userId)
-          if (!isEnd) {
-            res.write(`?;?${JSON.stringify({ isUpdated })}`)
-            streamingTick = setTimeout(writeResult, interval)
-          }
-        } catch (e) {
-          console.error(e, req.user)
-          clearTimeout(streamingTick)
-        }
-      }
+    const initTime = Date.now()
+    let isEnd = false
+    const life = setTimeout(() => {
+      isEnd = true
+    }, duration)
 
-      streamingTick = setTimeout(writeResult, interval)
-
-      setTimeout(() => {
-        if (streamingTick) {
-          clearTimeout(streamingTick)
-          isEnd = true
-        }
-        res.write(`?;?${JSON.stringify({done: true})}`)
-        res.end()
-      }, duration)
+    req.connection.on('close', () => {
+      console.log(`[notification] ${userId} disconnected`)
+      clearTimeout(life)
+      isEnd = true
     })
-  }
+
+    while (Date.now() - initTime <= duration) {
+      if (isEnd) {
+        break
+      } else {
+        const isUpdated = await services.countUnreadNotification(userId)
+        console.log('[notification] write data to polling stream', userId)
+        if (!isEnd) {
+          res.write(`?;?${JSON.stringify({ isUpdated })}`)
+        }
+        await sleep(interval)
+      }
+    }
+
+    res.write(`?;?${JSON.stringify({done: true})}`)
+    res.end()
+  })
 }
