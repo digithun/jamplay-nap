@@ -6,9 +6,9 @@ const MessageSchema = new mongoose.Schema({
 })
 
 const Notification = mongoose.model('Notification', mongoose.Schema({
-  userId: mongoose.Schema.Types.ObjectId,
+  userId: { type: mongoose.Schema.Types.ObjectId, index: true },
   message: { type: MessageSchema },
-  isRead: { type: Boolean, default: false }
+  isRead: { type: Boolean, default: false, index: true }
 }, { timestamps: true }))
 
 module.exports = Notification
