@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.29.0"></a>
+# [1.29.0](https://github.com/digithun/jamplay-nap/compare/v1.28.4...v1.29.0) (2018-01-29)
+
+
+### Bug Fixes
+
+* **auth:** Fixed 11000 null by use fb.id+custom_email as key ([b6aafb4](https://github.com/digithun/jamplay-nap/commit/b6aafb4))
+* **auth:** Fixed wrong user state after double verified ([fca616c](https://github.com/digithun/jamplay-nap/commit/fca616c))
+* **auth:** Update user facebok profile when re-login ([dae9c1f](https://github.com/digithun/jamplay-nap/commit/dae9c1f))
+* **auth:** Use AUTH_EMAIL_NOT_VERIFIED ([7526d99](https://github.com/digithun/jamplay-nap/commit/7526d99))
+* **auth:** Won't upsert, and will return updated user ([fc778b6](https://github.com/digithun/jamplay-nap/commit/fc778b6))
+* **event-handlers:** re schema ([7924e00](https://github.com/digithun/jamplay-nap/commit/7924e00))
+* **ewallet:** add promotionType ([9665b64](https://github.com/digithun/jamplay-nap/commit/9665b64))
+* **payment:** add promotionType ([82303fb](https://github.com/digithun/jamplay-nap/commit/82303fb))
+* **user-handlers, user-event-hook:** send to event instead of archivement ([4b87ae3](https://github.com/digithun/jamplay-nap/commit/4b87ae3))
+
+
+### Features
+
+* **event:** add event service ([8525044](https://github.com/digithun/jamplay-nap/commit/8525044))
+* **notification:** add long polling endpoint for notification update status ([d99982c](https://github.com/digithun/jamplay-nap/commit/d99982c))
+
+
+
 <a name="1.28.4"></a>
 ## [1.28.4](https://github.com/digithun/jamplay-nap/compare/v1.28.3...v1.28.4) (2018-01-19)
 
