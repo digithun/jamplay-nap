@@ -64,7 +64,10 @@ exports.initPollingHandler = function (notificationPublic) {
     duration: joi.number().default(10000).max(30000).min(5000)
   })
 
-  let TERMINATE_ALL_POLLING = false
+  /**
+   * DISABLED_ALL_POLLING @ 1.13.1
+   */
+  let TERMINATE_ALL_POLLING = true
   process.on('SIGINT', function () {
     TERMINATE_ALL_POLLING = true
   })
