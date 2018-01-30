@@ -2,7 +2,7 @@ FROM node:8.9.1-alpine as builder
 MAINTAINER Todsaporn Banjerdkit <katopz@gmail.com>
 
 # Ref : http://sharp.dimens.io/en/}stable/install/#alpine-linux
-RUN apk add vips-dev fftw-dev --update-cache --repository https://dl-3.alpinelinux.org/alpine/edge/testing/
+RUN apk add vips-dev=8.6.1-r0 fftw-dev --update-cache --repository https://dl-3.alpinelinux.org/alpine/edge/testing/
 # Ref : https://github.com/imagemin/n/issues/72
 # Ref : https://github.com/imagemin/pngquant-bin/issues/36
 RUN apk add --update-cache bash build-base nasm autoconf
@@ -23,7 +23,7 @@ RUN npm config set registry https://registry.npmjs.org/ && \
 
 FROM node:8.9-alpine
 ENV NODE_ENV production
-RUN apk add vips-dev fftw-dev --update-cache --repository https://dl-3.alpinelinux.org/alpine/edge/testing/
+RUN apk add vips-dev=8.6.1-r0 fftw-dev --update-cache --repository https://dl-3.alpinelinux.org/alpine/edge/testing/
 WORKDIR /usr/app
 COPY --from=builder /usr/app .
 ENV NODE_ENV production
