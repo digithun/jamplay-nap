@@ -67,12 +67,12 @@ exports.initPollingHandler = function (notificationPublic) {
   /**
    * DISABLED_ALL_POLLING @ 1.13.1
    */
-  let TERMINATE_ALL_POLLING = true
+  let TERMINATE_ALL_POLLING = process.env.ENABLED_POLLING
   process.on('SIGINT', function () {
     TERMINATE_ALL_POLLING = true
   })
   notificationPublic.get('/polling', async (req, res) => {
-    if (TERMINATE_ALL_POLLING) {
+    if (!TERMINATE_ALL_POLLING) {
       res.status(503).end()
       return
     }
