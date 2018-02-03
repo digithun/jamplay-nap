@@ -1,8 +1,4 @@
-FROM node:8.9.1-alpine as builder
-MAINTAINER Todsaporn Banjerdkit <katopz@gmail.com>
-
-# Ref : http://sharp.dimens.io/en/}stable/install/#alpine-linux
-RUN apk add vips-dev=8.6.1-r0 fftw-dev --update-cache --repository https://dl-3.alpinelinux.org/alpine/edge/testing/
+FROM gcr.io/jamplay-prod/node-sharp:latest as builder
 # Ref : https://github.com/imagemin/n/issues/72
 # Ref : https://github.com/imagemin/pngquant-bin/issues/36
 RUN apk add --update-cache bash build-base nasm autoconf
@@ -21,9 +17,8 @@ RUN npm config set registry https://registry.npmjs.org/ && \
   modclean -r -D ./graphql/content/lib/validator/node_modules && \
   npm r -g --quiet modclean && du -ms .
 
-FROM node:8.9-alpine
+FROM gcr.io/jamplay-prod/node-sharp:latest
 ENV NODE_ENV production
-RUN apk add vips-dev=8.6.1-r0 fftw-dev --update-cache --repository https://dl-3.alpinelinux.org/alpine/edge/testing/
 WORKDIR /usr/app
 COPY --from=builder /usr/app .
 ENV NODE_ENV production
