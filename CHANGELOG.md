@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.29.2"></a>
+## [1.29.2](https://github.com/digithun/jamplay-nap/compare/v1.29.1...v1.29.2) (2018-02-05)
+
+
+### Bug Fixes
+
+* **notification:** terminate polling ([823efa4](https://github.com/digithun/jamplay-nap/commit/823efa4))
+* **package:** change package name ([af22916](https://github.com/digithun/jamplay-nap/commit/af22916))
+* **package:** update build scripts ([25f86e8](https://github.com/digithun/jamplay-nap/commit/25f86e8))
+
+
+
 <a name="1.29.1"></a>
 ## [1.29.1](https://github.com/digithun/jamplay-nap/compare/v1.29.0...v1.29.1) (2018-01-30)
 
