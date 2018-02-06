@@ -10,7 +10,7 @@
     ]
   },
   "scripts": {
-    "postinstall": "cd graphql/content && npm install || true",
+    "postinstall": "cd graphql/content && npm install",
     "setup": "echo \"# See .env.example for more\" > .env",
     "lint": "eslint . || true",
     "_dev": "next",
@@ -22,8 +22,8 @@
     "_build-front": "next build && next start",
     "_build-back": "next build && npm run _serve",
     "_build-back-dev": "next build && npm run _serve-dev",
-    "docker:build": "docker-build jamplay.Dockerfile",
-    "docker:push": "docker-push",
+    "docker:build": "echo 'not work now'",
+    "docker:push": "echo 'not work now'",
     "dev": "npm run exec -- npm run _dev",
     "build": "npm run exec -- npm run _build",
     "start": "npm run exec -- npm run _start",
