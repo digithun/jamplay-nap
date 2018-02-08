@@ -5,8 +5,8 @@ const ewalletPayloadSchema = Joi.object().keys({
   amountIn: Joi.number().greater(0),
   amountOut: Joi.number().greater(0),
   conversion: Joi.string(),
-  promotionType: Joi.string(),
-  promotion: Joi.any(),
+  promotionType: Joi.string().allow(''),
+  promotion: Joi.any().allow(''),
   exchangeType: Joi.string(),
   provider: Joi.string()
 })
