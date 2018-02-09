@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.29.3"></a>
+## [1.29.3](https://github.com/digithun/jamplay-nap/compare/v1.29.2...v1.29.3) (2018-02-09)
+
+
+### Bug Fixes
+
+* **event-handlers:** allow '' for promotionType, promotion from ewallet ([e9f8b19](https://github.com/digithun/jamplay-nap/commit/e9f8b19))
+* **package:** build docker by jamplay-utils suspend ([d12644d](https://github.com/digithun/jamplay-nap/commit/d12644d))
+
+
+
 <a name="1.29.2"></a>
 ## [1.29.2](https://github.com/digithun/jamplay-nap/compare/v1.29.1...v1.29.2) (2018-02-05)
 

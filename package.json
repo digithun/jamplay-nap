@@ -1,6 +1,6 @@
 {
   "name": "jamplay-nap",
-  "version": "1.29.2",
+  "version": "1.29.3",
   "main": "index.js",
   "standard": {
     "globals": [
