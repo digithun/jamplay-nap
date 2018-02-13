@@ -16,6 +16,7 @@ const finalizer = ({ base_url }, app) =>
       if (err) return reject(err)
 
       debug.info(`Express : ${base_url}`)
+      console.log(`[NAP]: Application running at ${port} `)
       resolve(app)
     })
 
