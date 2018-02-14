@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.29.6"></a>
+## [1.29.6](https://github.com/digithun/jamplay-nap/compare/v1.29.5...v1.29.6) (2018-02-14)
+
+
+### Bug Fixes
+
+* **event-handlers:** allow null on validate ewallet event ([062f6dd](https://github.com/digithun/jamplay-nap/commit/062f6dd))
+
+
+
 <a name="1.29.5"></a>
 ## [1.29.5](https://github.com/digithun/jamplay-nap/compare/v1.29.4...v1.29.5) (2018-02-13)
 
