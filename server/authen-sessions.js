@@ -51,7 +51,7 @@ const willLimitAuthen = async (installationId, user, provider) => {
   return willAuthen(installationId, user, provider)
 }
 
-const willAuthen = async (installationId, { _id: userId, emailVerified }, provider) => {
+const willAuthen = async (installationId, { _id: userId, email, emailVerifiedAt }, provider) => {
   // Base data
   let authenData = {
     isLoggedIn: false,
@@ -67,7 +67,13 @@ const willAuthen = async (installationId, { _id: userId, emailVerified }, provid
   switch (provider) {
     case 'local':
       // User use local strategy, but not verify by email yet.
-      if (!emailVerified) {
+      if (!emailVerifiedAt) {
+        throw require('./errors/codes').AUTH_EMAIL_NOT_VERIFIED
+      }
+      break
+    case 'facebook':
+      // User verified email
+      if (!email) {
         throw require('./errors/codes').AUTH_EMAIL_NOT_VERIFIED
       }
       break

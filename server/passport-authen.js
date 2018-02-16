@@ -80,7 +80,12 @@ const _willCreateUserWithPayload = async (provider, payload, req) => {
 
   // Create new user
   const { willCreateUser } = require('./authen-sessions')
-  return willCreateUser(payload)
+  const newUser = await willCreateUser(payload)
+
+  // Emit
+  req.nap && req.nap.emitter && req.nap.emitter.emit(require('./events').USER_HAS_BEEN_VERIFIED_BY_FACEBOOK, { req, user: newUser })
+
+  return newUser
 }
 
 const _willCreateUnverifiedUserWithPayload = async (provider, payload) => {

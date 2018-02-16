@@ -164,6 +164,21 @@ const _willMarkUserAsVerifiedByToken = async token => {
   return user.save()
 }
 
+const _dispatchUserStatus = (req, user) => {
+  // Clarify user status
+  let USER_STATUS
+
+  if (user.email && user.hashed_password) {
+    // local
+    USER_STATUS = require('./events').USER_HAS_BEEN_VERIFIED_BY_EMAIL
+  } else if (user.facebook) {
+    // facebook
+    USER_STATUS = require('./events').USER_HAS_BEEN_VERIFIED_BY_FACEBOOK_EMAIL
+  }
+
+  if (USER_STATUS) req.nap && req.nap.emitter && req.nap.emitter.emit(USER_STATUS, { req, user })
+}
+
 const _getUserByEmailAndPassword = async (email, password) => {
   // Guard
   await willValidateEmailAndPassword(email, password)
@@ -260,10 +275,14 @@ const auth_local_token = (req, res) => {
 
   // Verify
   _willMarkUserAsVerifiedByToken(token)
-    .then(() => {
+    .then(user => {
+      // Emit
+      _dispatchUserStatus(req, user)
+
+      // Redirect
       res.redirect(require('./config').auth_verified_uri)
     })
-    .catch(() => {
+    .catch(err => {
       res.redirect(`${require('./config').auth_error_action_token_not_exist}`)
     })
 }
@@ -386,7 +405,6 @@ const change_email_by_token = (req, res) => {
     }
 
     result = Object.assign(result, { data: { succeed: !result.errors } })
-    console.log(result)
     return res.json(result)
   })()
 }

@@ -70,13 +70,18 @@ const seedFacebookUser = async () =>
     facebook: __mocked__facebookUser
   })
 
-const seedFacebookNoEmailWithUnverifiedEmailUser = async () =>
-  seedUserWithData({
-    name: __mocked__facebookUser.profile.displayName,
-    emailVerified: false,
-    unverifiedEmail: EMAIL,
-    facebook: __mocked__facebookUser
-  })
+const seedFacebookNoEmailWithUnverifiedEmailUser = async extra =>
+  seedUserWithData(
+    Object.assign(
+      {
+        name: __mocked__facebookUser.profile.displayName,
+        emailVerified: false,
+        unverifiedEmail: EMAIL,
+        facebook: __mocked__facebookUser
+      },
+      extra
+    )
+  )
 
 const seedAuthenByUserWithManyDevices = async (userId, authens) => {
   // Me with many devices
@@ -118,7 +123,7 @@ const seedVerifiedLocalUser = async () => seedUserWithData(__mocked__verifiedLoc
 
 const seedInstalledAndVerifiedUser = async (email, password, deviceInfo) => {
   const userId = await seedUserWithEmailAndPassword(email, password)
-  const user = { _id: userId, emailVerified: true }
+  const user = { _id: userId, emailVerified: true, emailVerifiedAt: new Date().toISOString() }
   const { willInstallAndLimitAuthen } = require('../authen-sessions')
 
   return willInstallAndLimitAuthen({ deviceInfo }, user, 'local')

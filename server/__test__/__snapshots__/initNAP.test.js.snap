@@ -4,6 +4,11 @@ exports[`NAP Server initNAP 1`] = `
 Object {
   "nap": nap {
     "decodeToken": [Function],
+    "emitter": Object {
+      "emit": [Function],
+      "off": [Function],
+      "on": [Function],
+    },
     "errors": Array [],
     "loginWithFacebook": [Function],
     "notificationService": Object {
