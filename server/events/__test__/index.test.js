@@ -19,7 +19,7 @@ describe('events', () => {
   beforeAll(setup)
   afterAll(teardown)
 
-  it('should emit USER_HAS_BEEN_VERIFIED_BY_EMAIL', async done => {
+  it('should emit USER_VERIFIED_BY_EMAIL', async done => {
     const { auth_local_token } = require('../../authen-local-passport').handler
     const Mitt = require('mitt')
 
@@ -45,9 +45,9 @@ describe('events', () => {
       unverifiedEmail
     })
 
-    // Watch for USER_HAS_BEEN_VERIFIED_BY_EMAIL
-    const { USER_HAS_BEEN_VERIFIED_BY_EMAIL } = require('../')
-    req.nap.emitter.on(USER_HAS_BEEN_VERIFIED_BY_EMAIL, async payload => {
+    // Watch for USER_VERIFIED_BY_EMAIL
+    const { USER_VERIFIED_BY_EMAIL } = require('../')
+    req.nap.emitter.on(USER_VERIFIED_BY_EMAIL, async payload => {
       expect(payload.req).toBeDefined()
       expect(payload.user).toEqual(
         expect.objectContaining({
@@ -65,7 +65,7 @@ describe('events', () => {
     auth_local_token(req, { redirect: () => {} })
   })
 
-  it('should emit USER_HAS_BEEN_VERIFIED_BY_FACEBOOK_EMAIL', async done => {
+  it('should emit USER_VERIFIED_BY_FACEBOOK_AND_EMAIL', async done => {
     const { auth_local_token } = require('../../authen-local-passport').handler
     const Mitt = require('mitt')
 
@@ -89,9 +89,9 @@ describe('events', () => {
       email
     })
 
-    // Watch for USER_HAS_BEEN_VERIFIED_BY_EMAIL
-    const { USER_HAS_BEEN_VERIFIED_BY_FACEBOOK_EMAIL } = require('../')
-    req.nap.emitter.on(USER_HAS_BEEN_VERIFIED_BY_FACEBOOK_EMAIL, async payload => {
+    // Watch for USER_VERIFIED_BY_EMAIL
+    const { USER_VERIFIED_BY_FACEBOOK_AND_EMAIL } = require('../')
+    req.nap.emitter.on(USER_VERIFIED_BY_FACEBOOK_AND_EMAIL, async payload => {
       expect(payload.req).toBeDefined()
       expect(payload.user).toEqual(
         expect.objectContaining({
@@ -109,7 +109,7 @@ describe('events', () => {
     auth_local_token(req, { redirect: () => {} })
   })
 
-  it('should emit USER_HAS_BEEN_VERIFIED_BY_FACEBOOK', async done => {
+  it('should emit USER_VERIFIED_BY_FACEBOOK', async done => {
     const Mitt = require('mitt')
 
     // Mock
@@ -131,9 +131,9 @@ describe('events', () => {
       body: { isMockServer: true, access_token: 'VALID_ACCESS_TOKEN' }
     }
 
-    // Watch for USER_HAS_BEEN_VERIFIED_BY_EMAIL
-    const { USER_HAS_BEEN_VERIFIED_BY_FACEBOOK } = require('../')
-    req.nap.emitter.on(USER_HAS_BEEN_VERIFIED_BY_FACEBOOK, async payload => {
+    // Watch for USER_VERIFIED_BY_EMAIL
+    const { USER_VERIFIED_BY_FACEBOOK } = require('../')
+    req.nap.emitter.on(USER_VERIFIED_BY_FACEBOOK, async payload => {
       expect(payload.req).toBeDefined()
       expect(payload.user).toEqual(
         expect.objectContaining({

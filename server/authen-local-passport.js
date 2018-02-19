@@ -170,10 +170,10 @@ const _dispatchUserStatus = (req, user) => {
 
   if (user.email && user.hashed_password) {
     // local
-    USER_STATUS = require('./events').USER_HAS_BEEN_VERIFIED_BY_EMAIL
+    USER_STATUS = require('./events').USER_VERIFIED_BY_EMAIL
   } else if (user.facebook) {
     // facebook
-    USER_STATUS = require('./events').USER_HAS_BEEN_VERIFIED_BY_FACEBOOK_EMAIL
+    USER_STATUS = require('./events').USER_VERIFIED_BY_FACEBOOK_AND_EMAIL
   }
 
   if (USER_STATUS) req.nap && req.nap.emitter && req.nap.emitter.emit(USER_STATUS, { req, user })
