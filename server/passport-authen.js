@@ -140,7 +140,7 @@ const willValidatePayloadByStrategy = async (req, strategy, payload) => {
         payload.email = payload.unverifiedEmail.split('@').join(`+fb.${FB_ID}@`)
 
         // Signup with facebook
-        const user = _willCreateUnverifiedUserWithPayload('facebook', payload)
+        const user = await _willCreateUnverifiedUserWithPayload('facebook', payload)
 
         // User has been authen with facebook and provide email
         req.nap && req.nap.emitter && req.nap.emitter.emit(require('./events').USER_SIGNUP_WITH_FACEBOOK_AND_EMAIL, { req, user })
@@ -149,7 +149,7 @@ const willValidatePayloadByStrategy = async (req, strategy, payload) => {
       }
 
       // Login with facebook
-      const user = _willCreateUserWithPayload('facebook', payload, req)
+      const user = await _willCreateUserWithPayload('facebook', payload, req)
 
       // User has been authen with facebook and provide email
       req.nap && req.nap.emitter && req.nap.emitter.emit(require('./events').USER_SIGNUP_WITH_FACEBOOK, { req, user })
