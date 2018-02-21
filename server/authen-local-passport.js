@@ -176,7 +176,7 @@ const _dispatchUserStatus = (req, user) => {
     USER_STATUS = require('./events').USER_VERIFIED_BY_FACEBOOK_AND_EMAIL
   }
 
-  if (USER_STATUS) req.nap && req.nap.emitter && req.nap.emitter.emit(USER_STATUS, { req, user })
+  if (USER_STATUS) NAP.emitter.emit(USER_STATUS, { req, user })
 }
 
 const _getUserByEmailAndPassword = async (email, password) => {

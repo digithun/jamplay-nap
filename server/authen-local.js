@@ -145,9 +145,7 @@ const willSignUp = async (req, email, password, extraFields) => {
   if (!msg) throw _emailError(` (${email})`)
 
   // User has been signup and wait for email verification
-  req.nap &&
-    req.nap.emitter &&
-    req.nap.emitter.emit(require('./events').USER_SIGNUP_WITH_EMAIL, {
+  NAP.emitter.emit(require('./events').USER_SIGNUP_WITH_EMAIL, {
       req,
       user
     })

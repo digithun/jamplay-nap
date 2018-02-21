@@ -134,7 +134,11 @@ const setup = async () => {
   const mongoUri = await mongoServer.getConnectionString()
   await mongoose.connect(mongoUri, { useMongoClient: true }).catch(err => err && console.error(err))
 
-  global.NAP = {}
+  const Mitt = require('mitt')
+  global.NAP = {
+    emitter: new Mitt()
+  }
+
   NAP.Authen = require('../graphql/models/Authen')().Authen
   NAP.Installation = require('../graphql/models/Installation')().Installation
   NAP.User = require('../graphql/models/User')().User

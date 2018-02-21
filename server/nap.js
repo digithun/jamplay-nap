@@ -6,13 +6,9 @@ const { willInstallAndAuthen, loginWithFacebook, signUpWithFacebookAndEmail } = 
 const { willCreateUser, willDeleteUser } = require('./authen-sessions')
 const { decodeToken } = require('./jwt-token')
 const config = require('./config')
-const Mitt = require('mitt')
 
 class nap {
   constructor () {
-    // Events
-    this.emitter = new Mitt()
-
     // Core
     this.session = null
     this.errors = []

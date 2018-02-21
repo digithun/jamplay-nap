@@ -15,8 +15,6 @@ const {
   EMAIL
 } = require('../../__test__/mongoose-helper')
 
-const Mitt = require('mitt')
-
 describe('events', () => {
   beforeAll(setup)
   afterAll(teardown)
@@ -29,7 +27,6 @@ describe('events', () => {
     }
     const req = {
       nap: {
-        emitter: new Mitt(),
         errors: [],
         willChallengeEmail: async () => userData
       },
@@ -38,7 +35,7 @@ describe('events', () => {
 
     // Watch
     const { USER_SIGNUP_WITH_EMAIL } = require('../')
-    req.nap.emitter.on(USER_SIGNUP_WITH_EMAIL, async payload => {
+    NAP.emitter.on(USER_SIGNUP_WITH_EMAIL, async payload => {
       expect(payload.req).toBeDefined()
       expect(payload.user).toEqual(
         expect.objectContaining({
@@ -69,7 +66,6 @@ describe('events', () => {
     const req = {
       params: { token },
       nap: {
-        emitter: new Mitt(),
         errors: []
       },
       body: { isMockServer: true }
@@ -85,7 +81,7 @@ describe('events', () => {
 
     // Watch
     const { USER_VERIFIED_BY_EMAIL } = require('../')
-    req.nap.emitter.on(USER_VERIFIED_BY_EMAIL, async payload => {
+    NAP.emitter.on(USER_VERIFIED_BY_EMAIL, async payload => {
       expect(payload.req).toBeDefined()
       expect(payload.user).toEqual(
         expect.objectContaining({
@@ -111,14 +107,13 @@ describe('events', () => {
       params: { token },
       body: { isMockServer: true },
       nap: {
-        emitter: new Mitt(),
         errors: []
       }
     }
 
     // Watch
     const { USER_SIGNUP_WITH_FACEBOOK_AND_EMAIL } = require('../')
-    req.nap.emitter.on(USER_SIGNUP_WITH_FACEBOOK_AND_EMAIL, async payload => {
+    NAP.emitter.on(USER_SIGNUP_WITH_FACEBOOK_AND_EMAIL, async payload => {
       expect(payload.req).toBeDefined()
       expect(payload.user).toEqual(
         expect.objectContaining({
@@ -151,7 +146,6 @@ describe('events', () => {
     const req = {
       params: { token },
       nap: {
-        emitter: new Mitt(),
         errors: []
       },
       body: { isMockServer: true }
@@ -166,7 +160,7 @@ describe('events', () => {
 
     // Watch
     const { USER_VERIFIED_BY_FACEBOOK_AND_EMAIL } = require('../')
-    req.nap.emitter.on(USER_VERIFIED_BY_FACEBOOK_AND_EMAIL, async payload => {
+    NAP.emitter.on(USER_VERIFIED_BY_FACEBOOK_AND_EMAIL, async payload => {
       expect(payload.req).toBeDefined()
       expect(payload.user).toEqual(
         expect.objectContaining({
@@ -192,14 +186,13 @@ describe('events', () => {
       params: { token },
       body: { isMockServer: true },
       nap: {
-        emitter: new Mitt(),
         errors: []
       }
     }
 
     // Watch
     const { USER_SIGNUP_WITH_FACEBOOK } = require('../')
-    req.nap.emitter.on(USER_SIGNUP_WITH_FACEBOOK, async payload => {
+    NAP.emitter.on(USER_SIGNUP_WITH_FACEBOOK, async payload => {
       expect(payload.req).toBeDefined()
       expect(payload.user).toEqual(
         expect.objectContaining({
@@ -236,7 +229,6 @@ describe('events', () => {
     const req = {
       params: { token },
       nap: {
-        emitter: new Mitt(),
         errors: []
       },
       body: { isMockServer: true, access_token: 'VALID_ACCESS_TOKEN' }
@@ -244,7 +236,7 @@ describe('events', () => {
 
     // Watch
     const { USER_VERIFIED_BY_FACEBOOK } = require('../')
-    req.nap.emitter.on(USER_VERIFIED_BY_FACEBOOK, async payload => {
+    NAP.emitter.on(USER_VERIFIED_BY_FACEBOOK, async payload => {
       expect(payload.req).toBeDefined()
       expect(payload.user).toEqual(
         expect.objectContaining({

@@ -83,7 +83,7 @@ const _willCreateUserWithPayload = async (provider, payload, req) => {
   const newUser = await willCreateUser(payload)
 
   // Emit
-  req.nap && req.nap.emitter && req.nap.emitter.emit(require('./events').USER_VERIFIED_BY_FACEBOOK, { req, user: newUser })
+  NAP.emitter.emit(require('./events').USER_VERIFIED_BY_FACEBOOK, { req, user: newUser })
 
   return newUser
 }
@@ -143,7 +143,7 @@ const willValidatePayloadByStrategy = async (req, strategy, payload) => {
         const user = await _willCreateUnverifiedUserWithPayload('facebook', payload)
 
         // User has been authen with facebook and provide email
-        req.nap && req.nap.emitter && req.nap.emitter.emit(require('./events').USER_SIGNUP_WITH_FACEBOOK_AND_EMAIL, { req, user })
+        NAP.emitter.emit(require('./events').USER_SIGNUP_WITH_FACEBOOK_AND_EMAIL, { req, user })
 
         return user
       }
@@ -152,7 +152,7 @@ const willValidatePayloadByStrategy = async (req, strategy, payload) => {
       const user = await _willCreateUserWithPayload('facebook', payload, req)
 
       // User has been authen with facebook and provide email
-      req.nap && req.nap.emitter && req.nap.emitter.emit(require('./events').USER_SIGNUP_WITH_FACEBOOK, { req, user })
+      NAP.emitter.emit(require('./events').USER_SIGNUP_WITH_FACEBOOK, { req, user })
 
       return user
     default:
