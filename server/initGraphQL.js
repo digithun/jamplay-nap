@@ -128,6 +128,7 @@ const init = (config, app) => {
       }
     },
     bodyParser.json(),
+    require('./affiliate'),
     // upload.array('files'),
     apolloUploadExpress({
       uploadDir
