@@ -1,7 +1,40 @@
 require('isomorphic-fetch')
 const chalk = require('chalk')
 const jwtToken = require('./jwt-token')
+const events = require('./events')
+const fetch = require('isomorphic-fetch')
+const config = require('./config')
+
+function affiliateHandler ({ req, user }) {
+  const affiliate = req.cookies.affiliate
+  console.log('got affiliate', affiliate)
+  if (affiliate) {
+    fetch(config.affiliate_api + '/affiliate', {
+      method: 'put',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': config.affiliate_api_key
+      },
+      body: JSON.stringify({
+        affiliateId: affiliate,
+        referralId: user._id
+      })
+    })
+    .then(async (res) => {
+      if (res.status !== 200) {
+        throw new Error('status not eq 200 ' + res.status + await res.text())
+      }
+      console.log('added affiliate', affiliate, user._id)
+    })
+    .catch(error => console.error('add affiliate error', user._id, error))
+  }
+}
+
 module.exports = function ({ achievement_service_url, achievement_service_access_token }, notificationService) {
+  NAP.emitter.on(events.USER_SIGNUP_WITH_EMAIL, affiliateHandler)
+  NAP.emitter.on(events.USER_SIGNUP_WITH_FACEBOOK, affiliateHandler)
+  NAP.emitter.on(events.USER_SIGNUP_WITH_FACEBOOK_AND_EMAIL, affiliateHandler)
+
   return async ({ type, sessionToken, payload, user }) => {
     if (!sessionToken && user) {
       // gen sessionToken
@@ -47,45 +80,6 @@ module.exports = function ({ achievement_service_url, achievement_service_access
           console.error('EVENT_SERVICE: ', error)
         }
       }
-      // const bodyPayload = {
-      //   sessionToken,
-      //   event: type,
-      //   timestamp: Date.now(),
-      //   payload
-      // }
-      // console.log(chalk.yellow('Send user event: ') + type)
-      // console.log(chalk.yellow('User event send to ') + achievement_service_url)
-      // console.log('====== payload ======')
-      // console.dir(bodyPayload)
-      // console.log('====== end payload =====')
-      // const response = await global.fetch(achievement_service_url, {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //     'x-access-token': achievement_service_access_token
-      //   },
-      //   body: JSON.stringify(bodyPayload),
-      //   timeout: 5000
-      // })
-      // if (response.status !== 200) {
-      //   throw response
-      // }
-      // const result = await response.json()
-      // console.log(result)
-      // const reward = {
-      //   notifications: result.rewardList || []
-      // }
-      // if (reward.notifications.length > 0) {
-      //   const promises = reward.notifications.map(async (notification) => {
-      //     console.log(notification)
-      //     return notificationService.createNotification(user._id, {
-      //       text: notification.msg_enum,
-      //       textAttr: notification.reward
-      //     })
-      //   })
-      //   const result = await Promise.all(promises)
-      //   return result
-      // }
     } catch (e) {
       console.log('user-event-hook: error')
       switch (e.name) {
