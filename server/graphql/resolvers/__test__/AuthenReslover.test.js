@@ -17,7 +17,7 @@ describe('AuthenResolver', () => {
 
     const { willAuthen } = require('../../../authen-sessions')
     const installationId = 'FOO_INSTALLATION_ID'
-    const userObject = { id: 'FOO_USER_ID', email: 'foo@bar.com' }
+    const userObject = { id: 'FOO_USER_ID', email: 'foo@bar.com', emailVerifiedAt: new Date().toISOString() }
     const provider = 'facebook'
 
     const user = await willAuthen(installationId, userObject, provider)
