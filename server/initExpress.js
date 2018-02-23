@@ -1,5 +1,3 @@
-const config = require('./config')
-
 const init = ({ port }, nap) => {
   // Create a new Express application.
   const express = require('express')
@@ -10,11 +8,7 @@ const init = ({ port }, nap) => {
 
   // CORS
   const cors = require('cors')
-  const option = {
-    origin: config.cors_whitelist,
-    credentials: true
-  }
-  app.use(cors(option))
+  app.use(cors())
 
   // Helmet
   const helmet = require('helmet')

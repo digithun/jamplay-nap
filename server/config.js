@@ -92,14 +92,7 @@ const config = {
 
   // TWITTER
   twitter_consumer_key: process.env.TWITTER_CONSUMER_KEY,
-  twitter_consumer_secret: process.env.TWITTER_CONSUMER_SECRET,
-
-  // Affiliate
-  affiliate_api: process.env.AFFILIATE_API || test || throwError('affiliate api not defined'),
-  affiliate_api_key: process.env.AFFILIATE_API_KEY || test || throwError('affiliate api key not defined'),
-
-  // cors
-  cors_whitelist: (process.env.CORS_WHITELIST || test || throwError('CORS_WHITELIST not defined')).split(',')
+  twitter_consumer_secret: process.env.TWITTER_CONSUMER_SECRET
 }
 
 module.exports = config
