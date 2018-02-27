@@ -51,7 +51,7 @@ const willLimitAuthen = async (installationId, user, provider) => {
   return willAuthen(installationId, user, provider)
 }
 
-const willAuthen = async (installationId, { _id: userId, emailVerified }, provider) => {
+const willAuthen = async (installationId, { _id: userId, email, emailVerifiedAt }, provider) => {
   // Base data
   let authenData = {
     isLoggedIn: false,
@@ -63,17 +63,9 @@ const willAuthen = async (installationId, { _id: userId, emailVerified }, provid
   const { createSessionToken } = require('./jwt-token')
   const sessionToken = createSessionToken(installationId, userId)
 
-  // Guard by verifications
-  switch (provider) {
-    case 'local':
-      // User use local strategy, but not verify by email yet.
-      if (!emailVerified) {
-        throw require('./errors/codes').AUTH_EMAIL_NOT_VERIFIED
-      }
-      break
-    default:
-      // User use some other provider, will do nothing.
-      break
+  // User not verify by email yet.
+  if (!emailVerifiedAt) {
+    throw require('./errors/codes').AUTH_EMAIL_NOT_VERIFIED
   }
 
   // Define authen data

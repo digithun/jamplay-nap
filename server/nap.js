@@ -9,6 +9,7 @@ const config = require('./config')
 
 class nap {
   constructor () {
+    // Core
     this.session = null
     this.errors = []
 

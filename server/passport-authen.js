@@ -80,7 +80,12 @@ const _willCreateUserWithPayload = async (provider, payload, req) => {
 
   // Create new user
   const { willCreateUser } = require('./authen-sessions')
-  return willCreateUser(payload)
+  const newUser = await willCreateUser(payload)
+
+  // Emit
+  NAP.emitter.emit(require('./events').USER_VERIFIED_BY_FACEBOOK, { req, user: newUser })
+
+  return newUser
 }
 
 const _willCreateUnverifiedUserWithPayload = async (provider, payload) => {
@@ -134,11 +139,22 @@ const willValidatePayloadByStrategy = async (req, strategy, payload) => {
         const FB_ID = payload.facebook.profile.id
         payload.email = payload.unverifiedEmail.split('@').join(`+fb.${FB_ID}@`)
 
-        return _willCreateUnverifiedUserWithPayload('facebook', payload)
+        // Signup with facebook
+        const user = await _willCreateUnverifiedUserWithPayload('facebook', payload)
+
+        // User has been authen with facebook and provide email
+        NAP.emitter.emit(require('./events').USER_SIGNUP_WITH_FACEBOOK_AND_EMAIL, { req, user })
+
+        return user
       }
 
       // Login with facebook
-      return _willCreateUserWithPayload('facebook', payload, req)
+      const user = await _willCreateUserWithPayload('facebook', payload, req)
+
+      // User has been authen with facebook and provide email
+      NAP.emitter.emit(require('./events').USER_SIGNUP_WITH_FACEBOOK, { req, user })
+
+      return user
     default:
       throw AUTH_PASSPORT_FAILED
   }

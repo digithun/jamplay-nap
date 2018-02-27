@@ -6,8 +6,7 @@ const signUpWithFacebookAndEmail = async ({ context, args }) => {
 }
 
 const loginWithFacebook = async ({ context, args }) => {
-  const userData = await context.nap.willLoginWithFacebook(context, args.accessToken).catch(onError(context))
-  const user = userData && (await context.nap.willCreateUser(userData).catch(onError(context)))
+  const user = await context.nap.willLoginWithFacebook(context, args.accessToken).catch(onError(context))
   return user && context.nap.willInstallAndAuthen(args, user, 'facebook').catch(onError(context))
 }
 

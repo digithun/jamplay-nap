@@ -236,7 +236,7 @@ describe('authen-local', () => {
 
   it('should logout', async () => {
     const userId = await seedVerifiedLocalUser()
-    const user = { _id: userId, emailVerified: true }
+    const user = { _id: userId, emailVerified: true, emailVerifiedAt: new Date().toISOString() }
     const { willInstallAndLimitAuthen } = require('../authen-sessions')
     const authen = await willInstallAndLimitAuthen({ deviceInfo: 'foo' }, user, 'local')
 

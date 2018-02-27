@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.30.0"></a>
+# [1.30.0](https://github.com/digithun/jamplay-nap/compare/v1.29.5...v1.30.0) (2018-02-27)
+
+
+### Bug Fixes
+
+* **authen:** Use emailVerifiedAt for all case ([a0ca6ca](https://github.com/digithun/jamplay-nap/commit/a0ca6ca))
+* **creditcard:** check null to array ([8607ffe](https://github.com/digithun/jamplay-nap/commit/8607ffe))
+* **emitter:** Use global NAP instead of req.nap ([328a3a7](https://github.com/digithun/jamplay-nap/commit/328a3a7))
+* **event-handlers:** allow null on validate ewallet event ([062f6dd](https://github.com/digithun/jamplay-nap/commit/062f6dd))
+* **initMongoose:** inject connection instead of use mongoose ([50fb2b6](https://github.com/digithun/jamplay-nap/commit/50fb2b6))
+* **initMongoose:** setTimeout to exit if database not ready ([1ed9568](https://github.com/digithun/jamplay-nap/commit/1ed9568))
+
+
+### Features
+
+* **auth:** Will emit user status after register ([edc5f26](https://github.com/digithun/jamplay-nap/commit/edc5f26))
+* **referal:** Will emit when user signup ([b48323d](https://github.com/digithun/jamplay-nap/commit/b48323d))
+
+
+
 <a name="1.29.9"></a>
 ## [1.29.9](https://github.com/digithun/jamplay-nap/compare/v1.29.5...v1.29.9) (2018-02-19)
 

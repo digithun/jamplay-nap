@@ -1,10 +1,13 @@
 require('./debug')
 const config = require('./config')
 const { version } = require('../package.json')
+const Mitt = require('mitt')
 
 const start = async () => {
   // NAP
-  global.NAP = {}
+  global.NAP = {
+    emitter: new Mitt()
+  }
 
   // Next and else
   const nextjs = await require('./initNext')(config)
