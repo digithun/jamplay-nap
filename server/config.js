@@ -99,7 +99,7 @@ const config = {
   affiliate_api_key: process.env.AFFILIATE_API_KEY,
 
   // cors
-  cors_whitelist: (process.env.CORS_WHITELIST || test || throwError('CORS_WHITELIST not defined')).split(',')
+  cors_whitelist: process.env.CORS_WHITELIST ? process.env.CORS_WHITELIST.split(',') : null
 }
 
 module.exports = config

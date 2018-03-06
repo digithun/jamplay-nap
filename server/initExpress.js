@@ -10,12 +10,15 @@ const init = ({ port }, nap) => {
 
   // CORS
   const cors = require('cors')
-  const option = {
-    origin: config.cors_whitelist,
-    credentials: true
+  if (config.cors_whitelist) {
+    const option = {
+      origin: config.cors_whitelist,
+      credentials: true
+    }
+    app.use(cors(option))
+  } else {
+    app.use(cors())
   }
-  app.use(cors(option))
-
   // Helmet
   const helmet = require('helmet')
   app.use(helmet())
