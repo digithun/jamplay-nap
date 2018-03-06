@@ -7,7 +7,7 @@ const config = require('./config')
 
 function affiliateHandler ({ req, user }) {
   const affiliate = req.cookies.affiliate
-  console.log('got affiliate', affiliate)
+  console.log('got affiliate', affiliate, user._id)
   if (affiliate) {
     fetch(config.affiliate_api + '/affiliate', {
       method: 'put',
@@ -29,12 +29,11 @@ function affiliateHandler ({ req, user }) {
     .catch(error => console.error('add affiliate error', user._id, error))
   }
 }
+NAP.emitter.on(events.USER_SIGNUP_WITH_EMAIL, affiliateHandler)
+NAP.emitter.on(events.USER_SIGNUP_WITH_FACEBOOK, affiliateHandler)
+NAP.emitter.on(events.USER_SIGNUP_WITH_FACEBOOK_AND_EMAIL, affiliateHandler)
 
 module.exports = function ({ achievement_service_url, achievement_service_access_token }, notificationService) {
-  NAP.emitter.on(events.USER_SIGNUP_WITH_EMAIL, affiliateHandler)
-  NAP.emitter.on(events.USER_SIGNUP_WITH_FACEBOOK, affiliateHandler)
-  NAP.emitter.on(events.USER_SIGNUP_WITH_FACEBOOK_AND_EMAIL, affiliateHandler)
-
   return async ({ type, sessionToken, payload, user }) => {
     if (!sessionToken && user) {
       // gen sessionToken
