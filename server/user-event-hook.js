@@ -30,7 +30,7 @@ function affiliateHandler ({ req, user }) {
   }
 }
 NAP.emitter.on(events.USER_SIGNUP_WITH_EMAIL, affiliateHandler)
-NAP.emitter.on(events.USER_SIGNUP_WITH_FACEBOOK, affiliateHandler)
+NAP.emitter.on(events.USER_VERIFIED_BY_FACEBOOK, affiliateHandler)
 NAP.emitter.on(events.USER_SIGNUP_WITH_FACEBOOK_AND_EMAIL, affiliateHandler)
 
 module.exports = function ({ achievement_service_url, achievement_service_access_token }, notificationService) {
