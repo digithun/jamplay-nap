@@ -92,7 +92,14 @@ const config = {
 
   // TWITTER
   twitter_consumer_key: process.env.TWITTER_CONSUMER_KEY,
-  twitter_consumer_secret: process.env.TWITTER_CONSUMER_SECRET
+  twitter_consumer_secret: process.env.TWITTER_CONSUMER_SECRET,
+
+  // Affiliate
+  affiliate_api: process.env.AFFILIATE_API,
+  affiliate_api_key: process.env.AFFILIATE_API_KEY,
+
+  // cors
+  cors_whitelist: process.env.CORS_WHITELIST ? process.env.CORS_WHITELIST.split(',') : null
 }
 
 module.exports = config
