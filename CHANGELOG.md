@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.31.0"></a>
+# [1.31.0](https://github.com/digithun/jamplay-nap/compare/v1.29.5...v1.31.0) (2018-03-12)
+
+
+### Bug Fixes
+
+* **affiliate:** change event hook ([b9f3861](https://github.com/digithun/jamplay-nap/commit/b9f3861))
+* **affiliate:** move hook to user event hook ([f730d04](https://github.com/digithun/jamplay-nap/commit/f730d04))
+* **affiliate:** wrong hook event ([55fe6ed](https://github.com/digithun/jamplay-nap/commit/55fe6ed))
+* **authen:** Use emailVerifiedAt for all case ([a0ca6ca](https://github.com/digithun/jamplay-nap/commit/a0ca6ca))
+* **cors:** not force to define cors white-list ([257049d](https://github.com/digithun/jamplay-nap/commit/257049d))
+* **creditcard:** check null to array ([8607ffe](https://github.com/digithun/jamplay-nap/commit/8607ffe))
+* **emitter:** Use global NAP instead of req.nap ([328a3a7](https://github.com/digithun/jamplay-nap/commit/328a3a7))
+* **Episode:** can read with no login if free ([91c490a](https://github.com/digithun/jamplay-nap/commit/91c490a))
+* **event-handlers:** allow null on validate ewallet event ([062f6dd](https://github.com/digithun/jamplay-nap/commit/062f6dd))
+* **initMongoose:** inject connection instead of use mongoose ([50fb2b6](https://github.com/digithun/jamplay-nap/commit/50fb2b6))
+* **initMongoose:** setTimeout to exit if database not ready ([1ed9568](https://github.com/digithun/jamplay-nap/commit/1ed9568))
+
+
+### Features
+
+* **auth:** Will emit user status after register ([edc5f26](https://github.com/digithun/jamplay-nap/commit/edc5f26))
+* **referal:** Will emit when user signup ([b48323d](https://github.com/digithun/jamplay-nap/commit/b48323d))
+
+
+
 <a name="1.30.0"></a>
 # [1.30.0](https://github.com/digithun/jamplay-nap/compare/v1.29.5...v1.30.0) (2018-02-27)
 
