@@ -2,7 +2,7 @@ const request = require('superagent')
 const DataLoader = require('dataloader')
 const wallet = {
   silver: 1000,
-  gold: 1000,
+  gold: 10000,
   receipts: []
 }
 
@@ -29,7 +29,7 @@ const createConnector = (config, { token }) => {
     }
   } else {
     const chalk = require('chalk')
-    const callApi = async (path, data = {}) => {
+    const callApi = async (path, data = {}, timeout = 5000) => {
       console.log(chalk.yellow('Ewallet: ') + `External api call ${path}`, data)
 
       try {
@@ -39,7 +39,7 @@ const createConnector = (config, { token }) => {
         // add token to data
         .set('x-access-token', process.env.E_WALLET_ACCESS_TOKEN || 'undefined')
         .timeout({
-          response: 5000
+          response: timeout
         })
         .send(Object.assign({
           token
@@ -103,7 +103,7 @@ const createConnector = (config, { token }) => {
       },
       spendJelly: async ({ refId, spendType, merchantId, merchantAliasId, amount, currencyType, commissionRate, payload }) => {
         if (!token) throw new Error('authentication')
-        const result = await callApi('spend/spendJelly', { refId, spendType, merchantId, merchantAliasId, amount, currencyType, commissionRate, payload })
+        const result = await callApi('spend/spendJelly', { refId, spendType, merchantId, merchantAliasId, amount, currencyType, commissionRate, payload }, 60000)
         return result
       },
       // TO DO: change schema
