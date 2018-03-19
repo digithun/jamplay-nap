@@ -99,7 +99,9 @@ const config = {
   affiliate_api_key: process.env.AFFILIATE_API_KEY,
 
   // cors
-  cors_whitelist: process.env.CORS_WHITELIST ? process.env.CORS_WHITELIST.split(',') : null
+  cors_whitelist: process.env.CORS_WHITELIST ? process.env.CORS_WHITELIST.split(',') : null,
+
+  elastic_uri: process.env.ELASTIC_URI
 }
 
 module.exports = config
