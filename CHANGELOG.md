@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.33.0"></a>
+# [1.33.0](https://github.com/digithun/jamplay-nap/compare/1.32.0...1.33.0) (2018-03-29)
+
+
+### Bug Fixes
+
+* **build:** deployment name cicd ([8be0376](https://github.com/digithun/jamplay-nap/commit/8be0376))
+* **ewallet:** able to set timeout per api ([e112ffd](https://github.com/digithun/jamplay-nap/commit/e112ffd))
+* **express:** Less info via ping #JAMP-1247 ([6493855](https://github.com/digithun/jamplay-nap/commit/6493855))
+
+
+### Features
+
+* add get list follow and sub/unsubscribe ([212ef1a](https://github.com/digithun/jamplay-nap/commit/212ef1a))
+* add get list follow and sub/unsubscribe ([609d9eb](https://github.com/digithun/jamplay-nap/commit/609d9eb))
+* **follow:**  commit submodule graphql ([2aa90d3](https://github.com/digithun/jamplay-nap/commit/2aa90d3))
+* **follower:** add follower query for author ([9c2deac](https://github.com/digithun/jamplay-nap/commit/9c2deac))
+* **mongoose0elastic:** add mongoose elastic ([80928e1](https://github.com/digithun/jamplay-nap/commit/80928e1))
+
+
+
 <a name="1.31.0"></a>
 # [1.31.0](https://github.com/digithun/jamplay-nap/compare/v1.29.5...v1.31.0) (2018-03-12)
 
