@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.33.1"></a>
+## [1.33.1](https://github.com/digithun/jamplay-nap/compare/v1.33.0...v1.33.1) (2018-03-29)
+
+
+### Bug Fixes
+
+* **book-schema:** fix error ([f8c20c7](https://github.com/digithun/jamplay-nap/commit/f8c20c7))
+
+
+
 <a name="1.33.0"></a>
 # [1.33.0](https://github.com/digithun/jamplay-nap/compare/1.32.0...1.33.0) (2018-03-29)
 
