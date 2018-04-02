@@ -1,7 +1,7 @@
 const fs = require('fs')
 const path = require('path')
 const bodyParser = require('body-parser')
-const { apolloUploadExpress } = require('apollo-upload-server')
+const { apolloUploadExpress } = require('jamplay-apollo-upload-server')
 const connectors = require('./connectors')
 const { bigquery_service_endpoint, dev } = require('./config')
 const rimraf = require('rimraf')
