@@ -91,11 +91,11 @@ const willResetPasswordViaEmail = async (req, email, token) => {
   return user
 }
 
-const _sendEmailVerification = async (email, token, fullName) => {
+const _sendEmailVerification = async (email, token, fullName, cookies) => {
   // Will send email verification
   const { auth_local_uri, base_url } = require('./config')
   const { createVerificationURL } = require('./authen-local-passport')
-  const verification_url = createVerificationURL(auth_local_uri, base_url, token)
+  const verification_url = createVerificationURL(auth_local_uri, base_url, token, cookies._ga || '')
 
   // New user, will need verification by email
   const config = require('./config')
@@ -139,16 +139,16 @@ const willSignUp = async (req, email, password, extraFields) => {
     throw require('./errors/codes').AUTH_USER_NOT_FOUND
   }
 
-  const msg = await _sendEmailVerification(email, token, user.first_name + ' ' + user.last_name)
+  const msg = await _sendEmailVerification(email, token, user.first_name + ' ' + user.last_name, req.cookies)
 
   // Got msg?
   if (!msg) throw _emailError(` (${email})`)
 
   // User has been signup and wait for email verification
   NAP.emitter.emit(require('./events').USER_SIGNUP_WITH_EMAIL, {
-      req,
-      user
-    })
+    req,
+    user
+  })
 
   return user
 }

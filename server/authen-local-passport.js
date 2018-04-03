@@ -11,9 +11,10 @@ const createVerificationForChangeEmailURL = (oldEmail, newEmail, auth_change_ema
   return url.toString()
 }
 
-const createVerificationURL = (auth_local_uri, base_url, token) => {
+const createVerificationURL = (auth_local_uri, base_url, token, gaId) => {
   const url = new URL(auth_local_uri, base_url)
   url.pathname += `/${token}`
+  if (gaId) url.pathname += `?_ga=${gaId}`
   return url.toString()
 }
 const createPasswordResetURL = (auth_reset_uri, base_url, token) => {
@@ -382,31 +383,31 @@ const willUpdatePassword = async (user, password, new_password) => {
 
 const reset_password_by_token = (req, res) => {
   const { token, password } = req.body
-  ;(async () => {
-    let result = {}
-    const user = await willUpdatePasswordByToken(token, password).catch(err => (result = { errors: [err.message] }))
-    const AUTH_USER_NOT_FOUND = require('./errors/commons').AUTH_USER_NOT_FOUND
-    if (!user) {
-      result.errors = result.errors ? result.errors.concat(AUTH_USER_NOT_FOUND) : AUTH_USER_NOT_FOUND
-    }
+    ; (async () => {
+      let result = {}
+      const user = await willUpdatePasswordByToken(token, password).catch(err => (result = { errors: [err.message] }))
+      const AUTH_USER_NOT_FOUND = require('./errors/commons').AUTH_USER_NOT_FOUND
+      if (!user) {
+        result.errors = result.errors ? result.errors.concat(AUTH_USER_NOT_FOUND) : AUTH_USER_NOT_FOUND
+      }
 
-    return res.json(Object.assign(result, { data: { succeed: !result.errors, /* Will deprecated isReset */ isReset: !result.errors } }))
-  })()
+      return res.json(Object.assign(result, { data: { succeed: !result.errors, /* Will deprecated isReset */ isReset: !result.errors } }))
+    })()
 }
 
 const change_email_by_token = (req, res) => {
   const { token, password } = req.body
-  ;(async () => {
-    let result = {}
-    const user = await willVerifyEmailByToken(token, password).catch(err => (result = { errors: [err.message] }))
-    if (!user) {
-      const AUTH_USER_NOT_FOUND = require('./errors/commons').AUTH_USER_NOT_FOUND
-      result.errors = result.errors ? result.errors.concat(AUTH_USER_NOT_FOUND) : [AUTH_USER_NOT_FOUND]
-    }
+    ; (async () => {
+      let result = {}
+      const user = await willVerifyEmailByToken(token, password).catch(err => (result = { errors: [err.message] }))
+      if (!user) {
+        const AUTH_USER_NOT_FOUND = require('./errors/commons').AUTH_USER_NOT_FOUND
+        result.errors = result.errors ? result.errors.concat(AUTH_USER_NOT_FOUND) : [AUTH_USER_NOT_FOUND]
+      }
 
-    result = Object.assign(result, { data: { succeed: !result.errors } })
-    return res.json(result)
-  })()
+      result = Object.assign(result, { data: { succeed: !result.errors } })
+      return res.json(result)
+    })()
 }
 
 const auth_local = (req, res) => res.redirect('/auth/welcome')
