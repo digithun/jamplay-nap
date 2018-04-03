@@ -9,13 +9,14 @@ ENV NODE_ENV production
 COPY package*.json ./
 COPY graphql/content/package*.json ./graphql/content/
 COPY graphql/content/lib/validator/package*.json ./graphql/content/lib/validator/
-RUN npm config set registry https://registry.npmjs.org/ && \
-  npm i --production --depth 0 --unsafe-perm && \
-  npm i --production -g --quiet --depth 0 modclean && \
-  modclean -r -D ./node_modules && \
-  modclean -r -D ./graphql/content/node_modules && \
-  modclean -r -D ./graphql/content/lib/validator/node_modules && \
-  npm r -g --quiet modclean && du -ms .
+
+RUN npm config set registry https://registry.npmjs.org/
+RUN npm i --production --depth 0 --unsafe-perm
+RUN npm i --production -g --quiet --depth 0 modclean
+RUN modclean -r -D ./node_modules
+RUN modclean -r -D ./graphql/content/node_modules
+RUN modclean -r -D ./graphql/content/lib/validator/node_modules
+RUN npm r -g --quiet modclean && du -ms .
 
 FROM gcr.io/jamplay-prod/node-sharp:latest
 ENV NODE_ENV production
