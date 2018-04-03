@@ -1,4 +1,8 @@
 FROM gcr.io/jamplay-prod/node-sharp:latest as builder
+
+RUN apk update && apk upgrade && \
+    apk add --no-cache bash git openssh
+    
 # Ref : https://github.com/imagemin/n/issues/72
 # Ref : https://github.com/imagemin/pngquant-bin/issues/36
 RUN apk add --update-cache bash build-base nasm autoconf
