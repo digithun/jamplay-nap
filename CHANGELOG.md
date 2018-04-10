@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.34.0"></a>
+# [1.34.0](https://github.com/digithun/jamplay-nap/compare/v1.33.0...v1.34.0) (2018-04-10)
+
+
+### Bug Fixes
+
+* **book-schema:** fix error ([f8c20c7](https://github.com/digithun/jamplay-nap/commit/f8c20c7))
+* **ewallet:** add requestHeaders to ewallet ([3d7b242](https://github.com/digithun/jamplay-nap/commit/3d7b242))
+* **GAEMAIL:** temporary removed ([a5c7d5f](https://github.com/digithun/jamplay-nap/commit/a5c7d5f))
+* **package:** fix jamplay-apollo-upload-server ([08c077b](https://github.com/digithun/jamplay-nap/commit/08c077b))
+* **pen test:** fix pen test multipart crash ([b1d0a5e](https://github.com/digithun/jamplay-nap/commit/b1d0a5e)), closes [#1259](https://github.com/digithun/jamplay-nap/issues/1259)
+* **subscription:** fix spam noti when sub/unsub over and over ([02a788a](https://github.com/digithun/jamplay-nap/commit/02a788a))
+
+
+### Features
+
+* **EMAILVERIFY:** add email GA cookie ([9c4db55](https://github.com/digithun/jamplay-nap/commit/9c4db55))
+* **follow:**  commit graphql/content ([572dbff](https://github.com/digithun/jamplay-nap/commit/572dbff))
+* **notfication:** fix noti follower graphql content ([e9d15e0](https://github.com/digithun/jamplay-nap/commit/e9d15e0))
+* **notification:** add follower notification event ([5b4e53b](https://github.com/digithun/jamplay-nap/commit/5b4e53b))
+
+
+
 <a name="1.33.0"></a>
 # [1.33.0](https://github.com/digithun/jamplay-nap/compare/1.32.0...1.33.0) (2018-03-29)
 
