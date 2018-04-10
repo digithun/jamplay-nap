@@ -6,7 +6,7 @@ const wallet = {
   receipts: []
 }
 
-const createConnector = (config, { token }) => {
+const createConnector = (config, { token, headers }) => {
   if (!config.e_wallet_enabled) {
     return null
   }
@@ -42,7 +42,8 @@ const createConnector = (config, { token }) => {
           response: timeout
         })
         .send(Object.assign({
-          token
+          token,
+          requestHeaders: headers
         }, data))
 
         return result.body.data
