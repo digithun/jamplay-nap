@@ -5,7 +5,7 @@ const events = require('./events')
 const fetch = require('isomorphic-fetch')
 const config = require('./config')
 
-function affiliateHandler ({ req, user }) {
+function affiliateHandler({ req, user }) {
   const affiliate = req.cookies.affiliate
   console.log('got affiliate', affiliate, user._id)
   if (affiliate) {
@@ -20,13 +20,13 @@ function affiliateHandler ({ req, user }) {
         referralId: user._id
       })
     })
-    .then(async (res) => {
-      if (res.status !== 200) {
-        throw new Error('status not eq 200 ' + res.status + await res.text())
-      }
-      console.log('added affiliate', affiliate, user._id)
-    })
-    .catch(error => console.error('add affiliate error', user._id, error))
+      .then(async (res) => {
+        if (res.status !== 200) {
+          throw new Error('status not eq 200 ' + res.status + await res.text())
+        }
+        console.log('added affiliate', affiliate, user._id)
+      })
+      .catch(error => console.error('add affiliate error', user._id, error))
   }
 }
 NAP.emitter.on(events.USER_SIGNUP_WITH_EMAIL, affiliateHandler)

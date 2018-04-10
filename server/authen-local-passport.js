@@ -14,7 +14,7 @@ const createVerificationForChangeEmailURL = (oldEmail, newEmail, auth_change_ema
 const createVerificationURL = (auth_local_uri, base_url, token, gaId) => {
   const url = new URL(auth_local_uri, base_url)
   url.pathname += `/${token}`
-  if (gaId) url.pathname += `?_ga=${gaId}`
+  // if (gaId) url.pathname += `?_ga=${gaId}`
   return url.toString()
 }
 const createPasswordResetURL = (auth_reset_uri, base_url, token) => {

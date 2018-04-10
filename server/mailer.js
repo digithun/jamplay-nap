@@ -15,13 +15,14 @@ const _willSendByBuilder = async ({ mailgun_api_key, mailgun_domain, email, veri
   })
 
   // Template
-  const data = builder({mailgun_domain, email, verification_url, fullName})
+  const data = builder({ mailgun_domain, email, verification_url, fullName })
 
+  console.log("mailgunClient data", data)
   // Send
   return mailgunClient.messages.create(mailgun_domain, data)
 }
 
-const willSendVerification = async ({ mailgun_api_key, mailgun_domain, email, verification_url, fullName}) => {
+const willSendVerification = async ({ mailgun_api_key, mailgun_domain, email, verification_url, fullName }) => {
   const builder = require('../templates/email-signup')
   return _willSendByBuilder({ mailgun_api_key, mailgun_domain, email, verification_url, builder, fullName })
 }
@@ -48,7 +49,7 @@ const willSendPasswordReset = async ({ mailgun_api_key, mailgun_domain, email, p
 
   // Template
   const builder = require('../templates/email-forget')
-  const data = builder({mailgun_domain, email, verification_url: password_reset_url, fullName})
+  const data = builder({ mailgun_domain, email, verification_url: password_reset_url, fullName })
 
   // Send
   return mailgunClient.messages.create(mailgun_domain, data)
