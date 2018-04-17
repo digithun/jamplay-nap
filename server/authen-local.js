@@ -95,7 +95,7 @@ const _sendEmailVerification = async (email, token, fullName, cookies) => {
   // Will send email verification
   const { auth_local_uri, base_url } = require('./config')
   const { createVerificationURL } = require('./authen-local-passport')
-  const verification_url = createVerificationURL(auth_local_uri, base_url, token, cookies._ga || '')
+  const verification_url = createVerificationURL(auth_local_uri, base_url, token, { _ga: cookies._ga || '' })
 
   // New user, will need verification by email
   const config = require('./config')

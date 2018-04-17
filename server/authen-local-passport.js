@@ -11,10 +11,14 @@ const createVerificationForChangeEmailURL = (oldEmail, newEmail, auth_change_ema
   return url.toString()
 }
 
-const createVerificationURL = (auth_local_uri, base_url, token, gaId) => {
+const createVerificationURL = (auth_local_uri, base_url, token, query = {}) => {
   const url = new URL(auth_local_uri, base_url)
   url.pathname += `/${token}`
-  // if (gaId) url.pathname += `?_ga=${gaId}`
+
+  for (let k in query) {
+    url.searchParams.append(k, query[k])
+  }
+
   return url.toString()
 }
 const createPasswordResetURL = (auth_reset_uri, base_url, token) => {
