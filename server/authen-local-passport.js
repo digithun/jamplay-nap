@@ -284,6 +284,11 @@ const auth_local_token = (req, res) => {
       // Emit
       _dispatchUserStatus(req, user)
 
+      if (req.query.hasOwnProperty('_ga')) {
+        let today = new Date()
+        let expires = new Date(today.getFullYear() + 2, today.getMonth(), today.getDate()).toISOString()
+        req.cookie('_ga', req.query._ga, { expires })
+      }
       // Redirect
       res.redirect(require('./config').auth_verified_uri)
     })
