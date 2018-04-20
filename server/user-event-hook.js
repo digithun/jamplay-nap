@@ -5,7 +5,7 @@ const events = require('./events')
 const fetch = require('isomorphic-fetch')
 const config = require('./config')
 
-function affiliateHandler({ req, user }) {
+function affiliateHandler ({ req, user }) {
   const affiliate = req.cookies.affiliate
   console.log('got affiliate', affiliate, user._id)
   if (affiliate) {
@@ -26,7 +26,7 @@ function affiliateHandler({ req, user }) {
         }
         console.log('added affiliate', affiliate, user._id)
       })
-      .catch(error => console.error('add affiliate error', user._id, error))
+      .catch(error => console.error('add affiliate error', user._id, affiliate, error))
   }
 }
 NAP.emitter.on(events.USER_SIGNUP_WITH_EMAIL, affiliateHandler)
