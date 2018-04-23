@@ -11,10 +11,14 @@ const createVerificationForChangeEmailURL = (oldEmail, newEmail, auth_change_ema
   return url.toString()
 }
 
-const createVerificationURL = (auth_local_uri, base_url, token, gaId) => {
+const createVerificationURL = (auth_local_uri, base_url, token, query = {}) => {
   const url = new URL(auth_local_uri, base_url)
   url.pathname += `/${token}`
-  // if (gaId) url.pathname += `?_ga=${gaId}`
+
+  for (let k in query) {
+    url.searchParams.append(k, query[k])
+  }
+
   return url.toString()
 }
 const createPasswordResetURL = (auth_reset_uri, base_url, token) => {
@@ -272,11 +276,19 @@ const auth_reset_token = (req, res, next) => {
 const auth_local_token = (req, res) => {
   // Guard
   const token = req.params.token
+  console.log('token', token)
   _guardToken(token, res)
 
   // Verify
   _willMarkUserAsVerifiedByToken(token)
     .then(user => {
+
+      //Set _GA cookie if require
+      if (req.query.hasOwnProperty('_ga')) {
+        let today = new Date()
+        let expireAt = new Date(today.getFullYear() + 2, today.getMonth(), today.getDate()).toISOString()
+        res.cookie('_ga', req.query._ga, { expireAt })
+      }
       // Emit
       _dispatchUserStatus(req, user)
 
