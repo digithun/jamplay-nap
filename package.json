@@ -166,6 +166,7 @@
     "prop-types": "^15.6.0",
     "react-addons-test-utils": "^15.6.2",
     "react-test-renderer": "^16.0.0",
+    "s3-upload-stream": "^1.0.7",
     "standard-version": "^4.2.0"
   }
 }
