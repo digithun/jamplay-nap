@@ -10,7 +10,7 @@ steps:
 - name: 'gcr.io/cloud-builders/docker'
   args: ["push", "gcr.io/$PROJECT_ID/${_IMAGE_NAME}:latest"]
 - name: 'gcr.io/cloud-builders/kubectl'
-  args: ['set', 'image', 'deployment', '${_DEPLOYMENT_NAME}', 'jamplay-deployment=gcr.io/$PROJECT_ID/${_IMAGE_NAME}:$SHORT_SHA', "--namespace=staging"]
+  args: ['set', 'image', 'deployment', '${_DEPLOYMENT_NAME}', '${_IMAGE_NAME}=gcr.io/$PROJECT_ID/${_IMAGE_NAME}:$SHORT_SHA', "--namespace=staging"]
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=asia-southeast1-a'
   - 'CLOUDSDK_CONTAINER_CLUSTER=cluster-1'
