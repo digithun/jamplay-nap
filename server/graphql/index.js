@@ -115,4 +115,5 @@ module.exports.getGraphQLExtendedContext = (req) => {
 module.exports.config = (config) => {
   buildGraphqlSchema = config.schemaBuilder
   buildContext = config.contextBuilder
+  module.exports.costMap = config.costMap
 }
