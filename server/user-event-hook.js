@@ -65,7 +65,7 @@ module.exports = function ({ achievement_service_url, achievement_service_access
           payload
         }
         try {
-          console.log(chalk.yellow('dispatch event to', process.env.EVENT_SERVICE_URL))
+          console.log(chalk.yellow(`dispatch ${bodyPayload.type} event to`, process.env.EVENT_SERVICE_URL))
           await global.fetch(process.env.EVENT_SERVICE_URL, {
             method: 'POST',
             headers: {

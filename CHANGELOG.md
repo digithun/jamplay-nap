@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.35.0"></a>
+# [1.35.0](https://github.com/digithun/jamplay-nap/compare/v1.34.2...v1.35.0) (2018-04-23)
+
+
+### Bug Fixes
+
+* **GA_cookie:** fix cookie function for GA ([8d651dd](https://github.com/digithun/jamplay-nap/commit/8d651dd)), closes [#JAMP-1266](https://github.com/digithun/jamplay-nap/issues/JAMP-1266)
+* **graphql:** remove unused fields ([24dc816](https://github.com/digithun/jamplay-nap/commit/24dc816))
+
+
+### Features
+
+* **GA_MAIL:** Allow set _ga cookie from query ([8258db3](https://github.com/digithun/jamplay-nap/commit/8258db3)), closes [#JAMP-1266](https://github.com/digithun/jamplay-nap/issues/JAMP-1266)
+* **GA_MAIL:** fix param url ([2a4627e](https://github.com/digithun/jamplay-nap/commit/2a4627e))
+
+
+
 <a name="1.34.2"></a>
 ## [1.34.2](https://github.com/digithun/jamplay-nap/compare/v1.34.1...v1.34.2) (2018-04-20)
 
