@@ -1,4 +1,5 @@
 const fs = require('fs')
+const costAnalysis = require('graphql-cost-analysis').default
 const path = require('path')
 const bodyParser = require('body-parser')
 const { apolloUploadExpress } = require('jamplay-apollo-upload-server')
@@ -100,6 +101,8 @@ const init = (config, app) => {
   // Tracing
   tracing_enabled && tracing_uri && require('./logs/graphql-tracing').init(tracing_uri)
 
+  const costMap = require('./graphql').costMap
+
   app.use(
     '/graphql',
     // http://www.senchalabs.org/connect/limit.html
@@ -133,7 +136,7 @@ const init = (config, app) => {
       uploadDir
     }),
     authenticate,
-    graphqlExpress(async req => {
+    graphqlExpress(async (req) => {
       const { referer } = req.headers
       const extendContext = require('./graphql').getGraphQLExtendedContext(req)
       const opticsContext = optics_api_key && require('optics-agent').context(req)
@@ -147,6 +150,14 @@ const init = (config, app) => {
       return {
         schema,
         tracing: tracing_enabled,
+        validationRules: [
+          costMap ? costAnalysis({
+            costMap,
+            variables: req.body.variables,
+            maximumCost: 300,
+            defaultCost: 1
+          }) : null
+        ].filter(a => !!a),
         context,
         formatError: ({ originalError, message, stack }) => {
           if (originalError && !(originalError instanceof GenericError)) {

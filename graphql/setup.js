@@ -1,4 +1,4 @@
-const { addToGQC, contextBuilder } = require('./content/schema')
+const { addToGQC, contextBuilder, costMap } = require('./content/schema')
 const { green } = require('chalk')
 
 global.NAP.expose.config({
@@ -7,5 +7,6 @@ global.NAP.expose.config({
     addToGQC(GQC)
     return GQC.buildSchema()
   },
-  contextBuilder
+  contextBuilder,
+  costMap
 })

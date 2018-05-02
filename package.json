@@ -1,6 +1,6 @@
 {
   "name": "jamplay-nap",
-  "version": "1.35.0",
+  "version": "1.36.0",
   "main": "index.js",
   "standard": {
     "globals": [
@@ -84,6 +84,7 @@
     "graphql-compose-mongoose": "1.8.0",
     "graphql-compose-recompose": "0.0.1",
     "graphql-compose-relay": "^1.1.1",
+    "graphql-cost-analysis": "^1.0.1",
     "graphql-tag": "^2.5.0",
     "graphql-tools": "^2.6.1",
     "helmet": "^3.9.0",
@@ -128,6 +129,7 @@
     "redux": "^3.7.2",
     "redux-thunk": "^2.2.0",
     "rimraf": "^2.6.2",
+    "s3-upload-stream": "^1.0.7",
     "sharp": "^0.18.4",
     "superagent": "^3.7.0",
     "twitter": "^1.7.1",
