@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.36.0"></a>
+# [1.36.0](https://github.com/digithun/jamplay-nap/compare/v1.35.0...v1.36.0) (2018-05-02)
+
+
+### Bug Fixes
+
+* **cloudbuild:** fix dpeloyment container set name to IMAGE_NAME ([8208d3b](https://github.com/digithun/jamplay-nap/commit/8208d3b))
+* **package:** add s3-upload-stream ([af6a98f](https://github.com/digithun/jamplay-nap/commit/af6a98f))
+* **static-url:** removes static url if private bucket ([9d40ac7](https://github.com/digithun/jamplay-nap/commit/9d40ac7))
+
+
+### Features
+
+* **graphql:** add cost analysis ([ca69438](https://github.com/digithun/jamplay-nap/commit/ca69438))
+* **secureupload:** implement private bucket upload for writer-document ([08c140d](https://github.com/digithun/jamplay-nap/commit/08c140d))
+
+
+
+<a name="1.33.1"></a>
+## [1.33.1](https://github.com/digithun/jamplay-nap/compare/v1.33.0...v1.33.1) (2018-03-29)
+
+
+
 <a name="1.35.0"></a>
 # [1.35.0](https://github.com/digithun/jamplay-nap/compare/v1.34.2...v1.35.0) (2018-04-23)
 
