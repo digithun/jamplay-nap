@@ -13,7 +13,7 @@ const createConnector = (config, { token, headers }) => {
   const api = config.e_wallet_api
   if (api === 'DEV') {
     return {
-      hasReceipt: async ({ refId, spendType }) => !!wallet.receipts.find(r => r === refId),
+      hasReceipt: async ({ refId, spendType }) => !!wallet.receipts.find(r => r.toString() === refId.toString()),
       getJelly: async () => ({ gold: wallet.gold, silver: wallet.silver }),
       spendJelly: async ({ refId, spendType, merchantId, merchantAliasId, amount, currencyType, commissionRate, payload }) => {
         console.log('Ewallet.DEV.spendJelly: ', { refId, spendType, merchantId, merchantAliasId, amount, currencyType, commissionRate, payload })
