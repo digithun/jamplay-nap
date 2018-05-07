@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.37.0"></a>
+# [1.37.0](https://github.com/digithun/jamplay-nap/compare/v1.36.0...v1.37.0) (2018-05-07)
+
+
+### Bug Fixes
+
+* **graphql:** pass context to contextBuilder ([ce875a7](https://github.com/digithun/jamplay-nap/commit/ce875a7))
+* **purchase:** check purchase from from ewallet ([69c66c1](https://github.com/digithun/jamplay-nap/commit/69c66c1))
+
+
+### Features
+
+* **user:** add quest on regis by affiliate ([2cf5016](https://github.com/digithun/jamplay-nap/commit/2cf5016))
+
+
+
 <a name="1.36.0"></a>
 # [1.36.0](https://github.com/digithun/jamplay-nap/compare/v1.35.0...v1.36.0) (2018-05-02)
 
