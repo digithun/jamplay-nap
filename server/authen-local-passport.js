@@ -130,7 +130,9 @@ const _willValidateToken = async token => {
 const _markUserAsVerified = user => {
   // Backup previous email
   user.usedEmails = user.usedEmails || []
-  user.email && user.usedEmails.push(user.email)
+  if (user.email) {
+    user.usedEmails = [].concat(user.usedEmails, user.email)
+  }
 
   // Move unverified to verified email
   user.email = user.unverifiedEmail || user.email
@@ -282,8 +284,7 @@ const auth_local_token = (req, res) => {
   // Verify
   _willMarkUserAsVerifiedByToken(token)
     .then(user => {
-
-      //Set _GA cookie if require
+      // Set _GA cookie if require
       if (req.query.hasOwnProperty('_ga')) {
         let today = new Date()
         let expireAt = new Date(today.getFullYear() + 2, today.getMonth(), today.getDate()).toISOString()

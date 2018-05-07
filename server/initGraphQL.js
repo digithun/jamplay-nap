@@ -138,13 +138,16 @@ const init = (config, app) => {
     authenticate,
     graphqlExpress(async (req) => {
       const { referer } = req.headers
-      const extendContext = require('./graphql').getGraphQLExtendedContext(req)
       const opticsContext = optics_api_key && require('optics-agent').context(req)
-      const context = {
+      let context = {
         ...req,
-        ...extendContext,
         opticsContext,
         ...connectors({ req, config })
+      }
+      const extendContext = require('./graphql').getGraphQLExtendedContext(context)
+      context = {
+        ...context,
+        ...extendContext
       }
       // }
       return {
