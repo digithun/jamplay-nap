@@ -16,7 +16,7 @@ COPY graphql/content/lib/validator/package*.json ./graphql/content/lib/validator
 
 RUN npm config set registry https://registry.npmjs.org/
 RUN npm i --production --depth 0 --unsafe-perm
-RUN npm i --production -g --quiet --depth 0 modclean
+RUN npm i --production -g --quiet --depth 0 modclean@2.1.2
 RUN modclean -r -D ./node_modules
 RUN modclean -r -D ./graphql/content/node_modules
 RUN modclean -r -D ./graphql/content/lib/validator/node_modules
