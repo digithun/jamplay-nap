@@ -28,9 +28,8 @@ const createConnector = (config, { token, headers }) => {
       // addExchange: async () =>({token, amountIn, amountOut, conversionType, progressBarcode, status})
     }
   } else {
-    const chalk = require('chalk')
     const callApi = async (path, data = {}, timeout = 5000) => {
-      console.log(chalk.yellow('Ewallet: ') + `External api call ${path}`, data)
+      // console.log(chalk.yellow('Ewallet: ') + `External api call ${path}`, data)
 
       try {
         const result = await request
