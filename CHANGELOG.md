@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.37.2"></a>
+## [1.37.2](https://github.com/digithun/jamplay-nap/compare/v1.37.1...v1.37.2) (2018-05-22)
+
+
+### Bug Fixes
+
+* **book-review:** change isHighlight to isHidden ([ebf4170](https://github.com/digithun/jamplay-nap/commit/ebf4170))
+* **book-review:** update submodule ([a77334b](https://github.com/digithun/jamplay-nap/commit/a77334b))
+* **modclean:** use version 2.1.2 ([d98bd0e](https://github.com/digithun/jamplay-nap/commit/d98bd0e))
+
+
+
 <a name="1.37.1"></a>
 ## [1.37.1](https://github.com/digithun/jamplay-nap/compare/v1.37.0...v1.37.1) (2018-05-16)
 
