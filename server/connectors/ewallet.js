@@ -149,7 +149,7 @@ const createConnector = (config, { token, headers }) => {
       findIncomeByBook: async ({ bookId }) => {
         if (!token) return []
         const result = await callApi('spend/findIncomeByBook', { bookId })
-        return result.income || []
+        return result || {}
       },
       addExchangeByTruemoney: async ({ cashcardNO }) => {
         if (!token) return []
