@@ -34,7 +34,7 @@ const dispatch = async ({ type, sessionToken, payload, user }) => {
     if (process.env.EVENT_SERVICE_URL) {
       const bodyPayload = {
         type,
-        userId: user._id,
+        userId: user && user._id,
         timestamp: Date.now(),
         sender: 'nap',
         payload
@@ -52,10 +52,12 @@ const dispatch = async ({ type, sessionToken, payload, user }) => {
         })
       } catch (error) {
         console.error('EVENT_SERVICE: ', error)
+        console.log(bodyPayload)
       }
     }
   } catch (e) {
     console.log('user-event-hook: error')
+    console.log(user, type, payload)
     switch (e.name) {
       case 'Parameter "url" must be a string, not undefined':
         console.error('achievement_service_url not define in env')
