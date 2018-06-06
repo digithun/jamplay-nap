@@ -117,9 +117,9 @@ const createConnector = (config, { token, headers }) => {
         const result = await callApi('rate/findRateActive', { rateType, collectionType })
         return result
       },
-      findExchangeByToken: async ({skip, start, end}) => {
+      findExchangeByToken: async ({skip, start, end, type}) => {
         if (!token) return []
-        const result = await callApi('exchange/findByToken', { token, skip, start, end })
+        const result = await callApi('exchange/findByToken', { token, skip, start, end, type})
         return result || {}
       },
       findSpendByToken: async ({skip, start, end}) => {
