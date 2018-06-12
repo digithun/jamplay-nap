@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.37.5"></a>
+## [1.37.5](https://github.com/digithun/jamplay-nap/compare/v1.37.4...v1.37.5) (2018-06-12)
+
+
+### Bug Fixes
+
+* **book-revenue:** able to get count ([974006e](https://github.com/digithun/jamplay-nap/commit/974006e))
+* **exchange:** add type in query ([41071d8](https://github.com/digithun/jamplay-nap/commit/41071d8))
+* **resolvers:** author, user default profile use if env for resolve path ([3f2bbee](https://github.com/digithun/jamplay-nap/commit/3f2bbee))
+* **spend:** add amountSilver amountGold ([37d90f7](https://github.com/digithun/jamplay-nap/commit/37d90f7))
+
+
+
 <a name="1.37.4"></a>
 ## [1.37.4](https://github.com/digithun/jamplay-nap/compare/v1.37.3...v1.37.4) (2018-06-05)
 

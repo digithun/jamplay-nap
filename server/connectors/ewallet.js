@@ -117,15 +117,15 @@ const createConnector = (config, { token, headers }) => {
         const result = await callApi('rate/findRateActive', { rateType, collectionType })
         return result
       },
-      findExchangeByToken: async () => {
+      findExchangeByToken: async ({skip, start, end, type}) => {
         if (!token) return []
-        const result = await callApi('exchange/findByToken', { token })
-        return result.exchanges
+        const result = await callApi('exchange/findByToken', { token, skip, start, end, type})
+        return result || {}
       },
-      findSpendByToken: async () => {
+      findSpendByToken: async ({skip, start, end}) => {
         if (!token) return []
-        const result = await callApi('spend/findByToken', { token })
-        return result.spends
+        const result = await callApi('spend/findByToken', { token, skip, start, end })
+        return result || {}
       },
       findFeeTax: async () => {
         const result = await callGetApi('config/findConfig')
@@ -141,15 +141,16 @@ const createConnector = (config, { token, headers }) => {
         const result = await callApi('withdraw/findWithdrawByToken', { token })
         return result.withdraws || []
       },
-      findIncomeByToken: async () => {
+      findIncomeByToken: async ({skip}) => {
         if (!token) return []
-        const result = await callApi('spend/findIncomeByToken', { token })
-        return result.income || []
+        console.log(token, skip)
+        const result = await callApi('spend/findIncomeByToken', { token, skip })
+        return result || {}
       },
-      findIncomeByBook: async ({ bookId }) => {
+      findIncomeByBook: async ({ bookId, skip, start, end }) => {
         if (!token) return []
-        const result = await callApi('spend/findIncomeByBook', { bookId })
-        return result.income || []
+        const result = await callApi('spend/findIncomeByBook', { bookId, skip, start, end })
+        return result || {}
       },
       addExchangeByTruemoney: async ({ cashcardNO }) => {
         if (!token) return []
