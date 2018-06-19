@@ -131,7 +131,7 @@ const _sendEmailVerification = async (email, token, fullName, cookies) => {
   const { createVerificationURL } = require("./authen-local-passport");
   let params = {};
 
-  if (cookies.hasOwnProperty("_ga") && cookies._ga ) {
+  if (cookies && cookies.hasOwnProperty("_ga")) {
     params._ga = cookies._ga;
   }
 
@@ -140,7 +140,7 @@ const _sendEmailVerification = async (email, token, fullName, cookies) => {
     base_url,
     token,
     params
-  )
+  );
 
   // New user, will need verification by email
   const config = require("./config");
@@ -207,7 +207,7 @@ const willSignUp = async (req, email, password, extraFields) => {
 };
 
 // Register with email and password
-const willChallengeEmail = async (user, unverifiedEmail) => {
+const willChallengeEmail = async (req, user, unverifiedEmail) => {
   // Guard
   const { willValidateEmail } = require("./validator");
   const isValidEmail = await willValidateEmail(unverifiedEmail);
@@ -229,7 +229,8 @@ const willChallengeEmail = async (user, unverifiedEmail) => {
   const msg = await _sendEmailVerification(
     unverifiedEmail,
     token,
-    user.first_name + " " + user.last_name
+    user.first_name + " " + user.last_name,
+    req.cookies
   );
 
   // Got msg?
