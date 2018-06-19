@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.37.6"></a>
+## [1.37.6](https://github.com/digithun/jamplay-nap/compare/v1.37.5...v1.37.6) (2018-06-19)
+
+
+### Bug Fixes
+
+* **_ga:** fix no _ga registration ([7fa86eb](https://github.com/digithun/jamplay-nap/commit/7fa86eb))
+* **_ga:** fix register with facebook email ([815b17f](https://github.com/digithun/jamplay-nap/commit/815b17f))
+
+
+
 <a name="1.37.5"></a>
 ## [1.37.5](https://github.com/digithun/jamplay-nap/compare/v1.37.4...v1.37.5) (2018-06-12)
 

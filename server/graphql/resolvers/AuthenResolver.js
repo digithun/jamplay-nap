@@ -2,7 +2,7 @@ const { onError } = require('../../errors')
 
 const signUpWithFacebookAndEmail = async ({ context, args }) => {
   const user = await context.nap.willSignUpWithFacebookAndEmail(context, args.accessToken, args.email).catch(onError(context))
-  return user && context.nap.willChallengeEmail(user, args.email).catch(onError(context))
+  return user && context.nap.willChallengeEmail({ cookies:context.cookies },user, args.email).catch(onError(context))
 }
 
 const loginWithFacebook = async ({ context, args }) => {
