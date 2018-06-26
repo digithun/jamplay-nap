@@ -1,4 +1,5 @@
 const config = require('./config')
+const { ping } = require('jamplay-common')
 
 const init = ({ port }, nap) => {
   // Create a new Express application.
@@ -27,7 +28,7 @@ const init = ({ port }, nap) => {
   app.use(express.static('public'))
 
   // Ping for health check
-  app.get('/ping', (req, res) => res.send({uptime: process.uptime()}))
+  app.get('/ping', ping())
 
   return app
 }

@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.37.7"></a>
+## [1.37.7](https://github.com/digithun/jamplay-nap/compare/v1.37.6...v1.37.7) (2018-06-26)
+
+
+### Bug Fixes
+
+* **server:** use ping from jamplay-common ([5d2d458](https://github.com/digithun/jamplay-nap/commit/5d2d458))
+
+
+
 <a name="1.37.6"></a>
 ## [1.37.6](https://github.com/digithun/jamplay-nap/compare/v1.37.5...v1.37.6) (2018-06-19)
 
