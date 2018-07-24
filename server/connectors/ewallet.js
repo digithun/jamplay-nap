@@ -68,17 +68,32 @@ const createConnector = (config, { token, headers }) => {
     return {
       hasReceipt: async ({ refId, spendType }) => {
         if (!token) return false
-        return hasReceipt.load({ refId, spendType })
+        try {
+          return await hasReceipt.load({ refId, spendType })
+        } catch (error) {
+          console.error(error)
+          return false
+        }
       },
       hasCard: async ({ token }) => {
         if (!token) return false
-        const result = await callApi('creditcard/hasCard', { token })
-        return result
+        try {
+          const result = await callApi('creditcard/hasCard', { token })
+          return result
+        } catch(error) {
+          console.error(error)
+          return false
+        }
       },
       deleteCard: async ({ token }) => {
         if (!token) return false
-        const result = await callApi('creditcard/deleteCard', { token })
-        return result
+        try {
+          const result = await callApi('creditcard/deleteCard', { token })
+          return result
+        } catch(error) {
+          console.error(error)
+          return false
+        }
       },
       getJelly: async () => {
         if (!token) return { gold: 0, silver: 0 }
