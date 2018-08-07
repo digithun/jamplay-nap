@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.37.10"></a>
+## [1.37.10](https://github.com/digithun/jamplay-nap/compare/v1.37.9...v1.37.10) (2018-08-07)
+
+
+### Bug Fixes
+
+* **connecotrs.ewallet:** try cache if error return false on hasReceipt, deleteCard, hasCard ([6ec81a9](https://github.com/digithun/jamplay-nap/commit/6ec81a9))
+
+
+
 <a name="1.37.9"></a>
 ## [1.37.9](https://github.com/digithun/jamplay-nap/compare/v1.37.8...v1.37.9) (2018-07-19)
 
